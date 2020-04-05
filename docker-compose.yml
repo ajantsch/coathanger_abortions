@@ -1,0 +1,36 @@
+version: "3"
+services:
+  database:
+    container_name: ca-database
+    image: amazon/dynamodb-local
+    command: "-jar DynamoDBLocal.jar -sharedDb -dbPath /db"
+    volumes:
+      - ./_db/dev:/db:cached
+    ports:
+      - 8000:8000
+  server:
+    tty: true
+    container_name: ca-service
+    build:
+      context: ./service
+    volumes:
+      - ./app:/usr/src/app:cached
+    ports:
+      - 5000:5000
+    environment:
+      - PORT=5000
+      - HOME=/home
+      - AWS_REGION=eu-central-1
+      - DYNAMO_ENDPOINT=http://database:8000/db
+  client:
+    tty: true
+    container_name: ca-app
+    build:
+      context: ./app
+    volumes:
+      - ./client:/usr/src/app:cached
+    ports:
+      # live reload service port
+      - 35729:35729
+    depends_on:
+      - server

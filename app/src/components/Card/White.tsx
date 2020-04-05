@@ -4,11 +4,11 @@ import styled, { AnyStyledComponent } from "styled-components";
 
 import { BaseCardStyles } from "./Base";
 
-interface IAnswerCardProps {
+interface IWhiteCardProps {
   content: string;
 }
 
-class AnswerCard extends React.PureComponent<IAnswerCardProps, {}> {
+class WhiteCard extends React.PureComponent<IWhiteCardProps, {}> {
   render = () => {
     return (
       <AnswerCardRoot>
@@ -20,4 +20,4 @@ class AnswerCard extends React.PureComponent<IAnswerCardProps, {}> {
 
 const AnswerCardRoot: AnyStyledComponent = styled(BaseCardStyles)``;
 
-export default AnswerCard;
+export default WhiteCard;

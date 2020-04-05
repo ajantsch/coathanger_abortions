@@ -1,4 +1,4 @@
-import AnswerCard from "./Answer";
-import QuestionCard from "./Question";
+import BlackCard from "./Black";
+import WhiteCard from "./White";
 
-export { AnswerCard, QuestionCard };
+export { BlackCard, WhiteCard };

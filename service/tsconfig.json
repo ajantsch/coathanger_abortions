@@ -1,0 +1,38 @@
+{
+  "buildOnSave": false,
+  "compilerOptions": {
+    "allowJs": true,
+    "allowSyntheticDefaultImports": true,
+    "alwaysStrict": false,
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
+    "importHelpers": true,
+    "sourceMap": true,
+    "sourceRoot": "/",
+    "module": "es2015",
+    "moduleResolution": "node",
+    "newLine": "lf",
+    "noEmitHelpers": true,
+    "noFallthroughCasesInSwitch": true,
+    "noImplicitAny": false,
+    "noImplicitReturns": true,
+    "noImplicitThis": true,
+    "noUnusedLocals": false,
+    "noUnusedParameters": false,
+    "outDir": "build",
+    "pretty": true,
+    "removeComments": true,
+    "resolveJsonModule": true,
+    "skipLibCheck": true,
+    "strict": true,
+    "strictFunctionTypes": true,
+    "strictNullChecks": false,
+    "strictPropertyInitialization": false, // Option 'strictPropertyInitialization' cannot be specified without specifying option 'strictNullChecks'.
+    "stripInternal": true,
+    "suppressImplicitAnyIndexErrors": true,
+    "target": "es5"
+  },
+  "compileOnSave": false,
+  "exclude": ["node_modules"],
+  "include": ["src/**/*"]
+}
