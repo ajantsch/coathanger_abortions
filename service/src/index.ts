@@ -1,7 +1,9 @@
 import compression from "compression";
 import express from "express";
+import http from "http";
 import helmet from "helmet";
 import RateLimit from "express-rate-limit";
+import socket from "socket.io";
 
 import routes from "./routes";
 import { logger } from "./util";
@@ -16,6 +18,7 @@ const apiLimiter = RateLimit({
 
 const app = express();
 app.set("trust proxy", 1);
+app.set("port", port);
 app.use("/api/", apiLimiter);
 app.use(helmet());
 app.use(compression());
@@ -28,8 +31,13 @@ app.use("/health", (_req, res) => {
 
 app.use("/api/games/", routes.games);
 
-app.listen(port, () => {
+const server = http.createServer(app).listen(app.get("port"), function() {
   logger.info(
     `Server is running on http://localhost:${port} in ${NODE_ENV} mode`,
   );
+});
+
+const io = socket.listen(server);
+io.sockets.on("connection", () => {
+  logger.info("User connected");
 });

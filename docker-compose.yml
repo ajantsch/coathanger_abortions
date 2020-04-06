@@ -8,6 +8,7 @@ services:
     command: ["yarn", "build"]
     volumes:
       - ./service:/usr/src/app:cached
+      - ./service/node_modules:/usr/src/app/node_modules:cached
     ports:
       - 5000:5000
     environment:
@@ -24,6 +25,7 @@ services:
     command: ["yarn", "start"]
     volumes:
       - ./app:/usr/src/app:cached
+      - ./app/node_modules:/usr/src/app/node_modules:cached
     ports:
       - 4040:4040
     environment:
