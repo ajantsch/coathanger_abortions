@@ -6,7 +6,6 @@ const ACTIVE_GAMES: Map<string, IGame> = new Map();
 const findGame = async (id: string) => {
   const game = ACTIVE_GAMES.get(id);
   if (game) {
-    console.warn(game.players.entries());
     return {
       id: game.id,
       players: Array.from(game.players).map(value => {
