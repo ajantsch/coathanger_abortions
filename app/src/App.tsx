@@ -1,9 +1,16 @@
 import React from "react";
+import {
+  BrowserRouter as Router,
+  Switch,
+  Route,
+  Redirect,
+} from "react-router-dom";
 import { Container } from "@material-ui/core";
 import io from "socket.io-client";
 
 import Theme from "./Theme";
-import { BlackCard, WhiteCard } from "./components/Card";
+import { Start } from "./components/Start";
+import { Game } from "./components/Game";
 
 const { SOCKET_URL } = process.env;
 
@@ -16,8 +23,17 @@ class App extends React.Component {
     return (
       <Theme>
         <Container maxWidth="md">
-          <BlackCard content="This is a question card" />
-          <WhiteCard content="This is a answer card" />
+          <Router>
+            <Switch>
+              <Route path="/" exact default>
+                <Start />
+              </Route>
+              <Route path="/:game_id/">
+                <Game />
+              </Route>
+              <Redirect to="/"></Redirect>
+            </Switch>
+          </Router>
         </Container>
       </Theme>
     );
