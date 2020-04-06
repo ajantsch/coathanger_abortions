@@ -18,6 +18,8 @@ class WhiteCard extends React.PureComponent<IWhiteCardProps, {}> {
   };
 }
 
-const AnswerCardRoot: AnyStyledComponent = styled(BaseCardStyles)``;
+const AnswerCardRoot: AnyStyledComponent = styled(BaseCardStyles)`
+  border: 1px solid #e3e6eb;
+`;
 
 export default WhiteCard;
