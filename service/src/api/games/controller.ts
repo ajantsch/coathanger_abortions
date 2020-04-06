@@ -1,5 +1,7 @@
 import { Request, Response } from "express";
+
 import { addNewGame, addPlayerToGame } from "./repository";
+import { logger } from "../../util";
 
 const postGame = async (req: Request, res: Response) => {
   res.type("json");
@@ -10,7 +12,7 @@ const postGame = async (req: Request, res: Response) => {
     res.send(inserted);
     res.end();
   } catch (err) {
-    console.error(err);
+    logger.error(err);
     res.status(err.status);
     res.send(err);
   } finally {
@@ -30,7 +32,7 @@ const putGamePlayer = async (req: Request, res: Response) => {
     res.send(inserted);
     res.end();
   } catch (err) {
-    console.error(err);
+    logger.error(err);
     res.status(err.status);
     res.send(err);
   } finally {

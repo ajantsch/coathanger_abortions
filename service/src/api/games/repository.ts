@@ -1,5 +1,5 @@
 import { IGame, IPlayer } from "../../models";
-import { randomString, genUuid } from "../../util";
+import { logger, randomString, genUuid } from "../../util";
 import { getAllBlackCards, getAllWhiteCards } from "../cards/repository";
 
 const ACTIVE_GAMES: Map<string, IGame> = new Map();
@@ -22,7 +22,7 @@ const addNewGame = async () => {
   };
 
   ACTIVE_GAMES.set(game.id, game);
-  console.info(`New game started, id: ${game.id}`);
+  logger.info(`New game started, id: ${game.id}`);
   return game;
 };
 
@@ -36,7 +36,7 @@ const addPlayerToGame = async (gameId: string, name: string) => {
       wonCards: new Map<string, string>(),
     };
     game.players.set(player.id, player);
-    console.info(`New player added to game${game.id}: ${player.name}`);
+    logger.info(`New player added to game${game.id}: ${player.name}`);
     return player;
   }
 

@@ -4,6 +4,7 @@ import helmet from "helmet";
 import RateLimit from "express-rate-limit";
 
 import routes from "./routes";
+import { logger } from "./util";
 
 const { NODE_ENV, PORT } = process.env;
 const port = PORT || 5000;
@@ -28,7 +29,7 @@ app.use("/health", (_req, res) => {
 app.use("/api/games/", routes.games);
 
 app.listen(port, () => {
-  console.info(
+  logger.info(
     `Server is running on http://localhost:${port} in ${NODE_ENV} mode`,
   );
 });
