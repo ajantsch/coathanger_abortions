@@ -4,6 +4,7 @@ import { IGame, IPlayer } from "../../models";
 import { getAllBlackCards, getAllWhiteCards } from "../cards/repository";
 import { findGame, insertGame, insertGamePlayer } from "./repository";
 import { logger, randomString, genUuid } from "../../util";
+import { socket } from "../../server";
 
 const getGame = async (req: Request, res: Response) => {
   const id = req.params.game_id;
@@ -66,6 +67,9 @@ const putGamePlayer = async (req: Request, res: Response) => {
 
   try {
     const inserted = await insertGamePlayer(gameId, player);
+
+    socket.of(`/${gameId}`).emit("player_joined_game", inserted);
+
     res.status(201);
     res.send(inserted);
     res.end();

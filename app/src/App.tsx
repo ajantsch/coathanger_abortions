@@ -16,7 +16,11 @@ const { SOCKET_URL } = process.env;
 
 class App extends React.Component {
   componentDidMount() {
-    io(SOCKET_URL as string);
+    if (SOCKET_URL) {
+      io(SOCKET_URL, { transports: ["websocket"] }).on("connected", () => {
+        console.log("Socket connection to service established");
+      });
+    }
   }
 
   render = () => {

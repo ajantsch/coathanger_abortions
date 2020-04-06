@@ -1,20 +1,25 @@
 import React from "react";
 import { withRouter, RouteComponentProps } from "react-router";
+import io from "socket.io-client";
 
 import { GameService } from "../../services";
 
 import Enter from "./Enter";
 
+const { SOCKET_URL } = process.env;
+
 interface IGameState {
   gameId: string | undefined;
   playerId: string | undefined;
   players: Map<string, string>;
+  gameSocket: SocketIOClient.Socket | undefined;
 }
 
 const DEFAULT_STATE: IGameState = {
   gameId: undefined,
   playerId: undefined,
   players: new Map<string, string>(),
+  gameSocket: undefined,
 };
 
 class Game extends React.Component<
@@ -26,11 +31,37 @@ class Game extends React.Component<
     this.state = DEFAULT_STATE;
   }
 
+  connectGameSocket = (
+    gameId: string,
+    playerName: string,
+  ): SocketIOClient.Socket => {
+    const gameSocket = io.connect(`${SOCKET_URL}/${gameId}`);
+    gameSocket.on("connect", () => {
+      gameSocket.emit(
+        "player_connected",
+        `Player ${playerName} now has a socket connection to game ${gameId}`,
+      );
+      gameSocket.on(
+        "player_joined_game",
+        (player: { id: string; name: string }) => {
+          this.setState({
+            players: this.state.players.set(player.id, player.name),
+          });
+        },
+      );
+    });
+    return gameSocket;
+  };
+
   handleGameEntered = (playerId: string, playerName: string) => {
+    if (!this.state.gameId) {
+      return;
+    }
     sessionStorage.setItem(`chg_${this.state.gameId}`, playerId);
     this.setState({
       playerId,
       players: this.state.players.set(playerId, playerName),
+      gameSocket: this.connectGameSocket(this.state.gameId, playerName),
     });
   };
 
@@ -42,12 +73,18 @@ class Game extends React.Component<
           gameId: game.id,
           playerId: undefined,
           players: game.players,
+          gameSocket: undefined,
         };
         const previousPlayerId = window.sessionStorage.getItem(
           `chg_${game.id}`,
         );
-        if (previousPlayerId) {
+        if (previousPlayerId && game.players.has(previousPlayerId)) {
           state.playerId = previousPlayerId;
+
+          state.gameSocket = this.connectGameSocket(
+            game.id,
+            game.players.get(previousPlayerId) as string,
+          );
         }
         this.setState(state);
       }
