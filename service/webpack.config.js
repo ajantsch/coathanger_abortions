@@ -1,6 +1,5 @@
 const webpack = require("webpack");
 const path = require("path");
-const CopyWebpackPlugin = require("copy-webpack-plugin");
 const NodeExternals = require("webpack-node-externals");
 const WebpackShellPlugin = require("webpack-shell-plugin");
 const ForkTsCheckerWebpackPlugin = require("fork-ts-checker-webpack-plugin");
@@ -53,6 +52,10 @@ const config = {
         ],
       },
       {
+        test: /\.txt$/i,
+        use: "raw-loader",
+      },
+      {
         test: /\.(ts|js)$/,
         enforce: "pre",
         use: [
@@ -74,15 +77,6 @@ const config = {
       "process.env.PORT": JSON.stringify(PORT),
       "process.env.NODE_ENV": JSON.stringify(NODE_ENV),
     }),
-    new CopyWebpackPlugin(
-      [
-        {
-          from: "static",
-          to: "static",
-        },
-      ],
-      { copyUnmodified: localEnvironment },
-    ),
   ],
   optimization: {
     // Don't let webpack override our NODE_ENV
