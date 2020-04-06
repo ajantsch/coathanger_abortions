@@ -7,6 +7,10 @@ interface IGame {
     black: Map<string, string>;
     white: Map<string, string>;
   };
+  disposedCards: {
+    black: Map<string, string>;
+    white: Map<string, string>;
+  };
 }
 
 export { IGame };

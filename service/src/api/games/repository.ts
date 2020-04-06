@@ -1,16 +1,23 @@
 import { IGame, IPlayer } from "../../models";
 import { randomString, genUuid } from "../../util";
-import { BLACK_CARDS, WHITE_CARDS } from "../cards/repository";
+import { getAllBlackCards, getAllWhiteCards } from "../cards/repository";
 
 const ACTIVE_GAMES: Map<string, IGame> = new Map();
 
 const addNewGame = async () => {
+  const whiteCards = await getAllWhiteCards();
+  const blackCards = await getAllBlackCards();
+
   const game: IGame = {
     id: randomString(6, "aA#"),
-    players: new Map(),
+    players: new Map<string, IPlayer>(),
     availableCards: {
-      black: BLACK_CARDS,
-      white: WHITE_CARDS,
+      black: blackCards,
+      white: whiteCards,
+    },
+    disposedCards: {
+      black: new Map<string, string>(),
+      white: new Map<string, string>(),
     },
   };
 
@@ -25,6 +32,7 @@ const addPlayerToGame = async (gameId: string, name: string) => {
     const player: IPlayer = {
       id: genUuid(),
       name: name,
+      activeCards: new Map<string, string>(),
       wonCards: new Map<string, string>(),
     };
     game.players.set(player.id, player);

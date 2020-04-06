@@ -26,4 +26,12 @@ const WHITE_CARDS: Map<string, string> = new Map();
   );
 });
 
-export { BLACK_CARDS, WHITE_CARDS };
+const getAllWhiteCards = async (): Promise<Map<string, string>> => {
+  return WHITE_CARDS;
+};
+
+const getAllBlackCards = async (): Promise<Map<string, string>> => {
+  return BLACK_CARDS;
+};
+
+export { getAllBlackCards, getAllWhiteCards };
