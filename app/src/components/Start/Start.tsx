@@ -1,8 +1,8 @@
 import React from "react";
-import axios from "axios";
 import { Button, TextField } from "@material-ui/core";
+import { withRouter, RouteComponentProps } from "react-router";
 
-const { API_BASE_URL } = process.env;
+import { GameService } from "../../services";
 
 interface IStartState {
   name: string;
@@ -12,26 +12,52 @@ const DEFAULT_STATE: IStartState = {
   name: "",
 };
 
-class Start extends React.PureComponent<{}, IStartState> {
-  constructor(props: {}) {
+class Start extends React.PureComponent<RouteComponentProps, IStartState> {
+  constructor(props: RouteComponentProps) {
     super(props);
     this.state = DEFAULT_STATE;
   }
 
-  handleStartGame = () => {
-    axios.post(`${API_BASE_URL}/games`);
+  handleNameChange = (value: string) => {
+    this.setState({ name: value });
+  };
+
+  handleFormSubmit = async (event: React.FormEvent) => {
+    event.preventDefault();
+    const game = await GameService.startGame();
+    if (game) {
+      const player = await GameService.addGamePlayer(game.id, this.state.name);
+      if (player) {
+        this.props.history.push(`/${game.id}`);
+      }
+    }
   };
 
   render = () => {
     return (
-      <>
-        <TextField placeholder="Your Name"></TextField>
-        <Button variant="contained" onClick={this.handleStartGame}>
+      <form onSubmit={this.handleFormSubmit}>
+        <TextField
+          type="text"
+          id="name"
+          label="Your Name"
+          value={this.state.name}
+          onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
+            this.handleNameChange(event.target.value)
+          }
+          fullWidth
+          required
+        ></TextField>
+        <Button
+          type="submit"
+          variant="contained"
+          color="primary"
+          disabled={!this.state.name.length}
+        >
           Start new game
         </Button>
-      </>
+      </form>
     );
   };
 }
 
-export default Start;
+export default withRouter(Start);

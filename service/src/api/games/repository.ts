@@ -1,40 +1,26 @@
 import { IGame, IPlayer } from "../../models";
-import { logger, randomString, genUuid } from "../../util";
-import { getAllBlackCards, getAllWhiteCards } from "../cards/repository";
+import { logger } from "../../util";
 
 const ACTIVE_GAMES: Map<string, IGame> = new Map();
 
-const addNewGame = async () => {
-  const whiteCards = await getAllWhiteCards();
-  const blackCards = await getAllBlackCards();
+const findGame = async (id: string) => {
+  const game = ACTIVE_GAMES.get(id);
+  if (game) {
+    return { id: game.id };
+  }
 
-  const game: IGame = {
-    id: randomString(6, "aA#"),
-    players: new Map<string, IPlayer>(),
-    availableCards: {
-      black: blackCards,
-      white: whiteCards,
-    },
-    disposedCards: {
-      black: new Map<string, string>(),
-      white: new Map<string, string>(),
-    },
-  };
-
-  ACTIVE_GAMES.set(game.id, game);
-  logger.info(`New game started, id: ${game.id}`);
-  return game;
+  throw new Error(`Could not find game with id ${id}`);
 };
 
-const addPlayerToGame = async (gameId: string, name: string) => {
+const insertGame = async (game: IGame) => {
+  ACTIVE_GAMES.set(game.id, game);
+  logger.info(`New game started, id: ${game.id}`);
+  return { id: game.id };
+};
+
+const insertGamePlayer = async (gameId: string, player: IPlayer) => {
   const game = ACTIVE_GAMES.get(gameId);
   if (game) {
-    const player: IPlayer = {
-      id: genUuid(),
-      name: name,
-      activeCards: new Map<string, string>(),
-      wonCards: new Map<string, string>(),
-    };
     game.players.set(player.id, player);
     logger.info(`New player added to game${game.id}: ${player.name}`);
     return player;
@@ -43,4 +29,4 @@ const addPlayerToGame = async (gameId: string, name: string) => {
   throw new Error(`Could not find game with id ${gameId}`);
 };
 
-export { addNewGame, addPlayerToGame };
+export { findGame, insertGame, insertGamePlayer };

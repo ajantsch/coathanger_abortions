@@ -1,3 +1,3 @@
-import { postGame, putGamePlayer } from "./controller";
+import { getGame, postGame, putGamePlayer } from "./controller";
 
-export { postGame, putGamePlayer };
+export { getGame, postGame, putGamePlayer };

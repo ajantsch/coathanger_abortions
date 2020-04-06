@@ -1,6 +1,8 @@
 import React from "react";
 import { withRouter, RouteComponentProps } from "react-router";
 
+import { GameService } from "../../services";
+
 interface IGameState {
   gameId: string;
 }
@@ -13,6 +15,14 @@ class Game extends React.Component<
     super(props);
     this.state = { gameId: props.match.params.game_id };
   }
+
+  componentDidMount = async () => {
+    try {
+      await GameService.getGame(this.state.gameId);
+    } catch (e) {
+      this.props.history.push("/");
+    }
+  };
 
   render = () => {
     return <>{this.state.gameId}</>;
