@@ -1,36 +1,33 @@
 version: "3"
 services:
-  database:
-    container_name: ca-database
-    image: amazon/dynamodb-local
-    command: "-jar DynamoDBLocal.jar -sharedDb -dbPath /db"
-    volumes:
-      - ./_db/dev:/db:cached
-    ports:
-      - 8000:8000
-  server:
+  service:
     tty: true
     container_name: ca-service
     build:
       context: ./service
+    command: ["yarn", "build"]
     volumes:
-      - ./app:/usr/src/app:cached
+      - ./service:/usr/src/app:cached
     ports:
       - 5000:5000
     environment:
+      - NODE_ENV=local
+      - OPTIMIZED_BUILD=false
       - PORT=5000
-      - HOME=/home
       - AWS_REGION=eu-central-1
       - DYNAMO_ENDPOINT=http://database:8000/db
-  client:
+  app:
     tty: true
     container_name: ca-app
     build:
       context: ./app
+    command: ["yarn", "start"]
     volumes:
-      - ./client:/usr/src/app:cached
+      - ./app:/usr/src/app:cached
     ports:
-      # live reload service port
-      - 35729:35729
+      - 4040:4040
+    environment:
+      - NODE_ENV=local
+      - OPTIMIZED_BUILD=false
     depends_on:
-      - server
+      - service

@@ -1,8 +1,9 @@
 {
-  "name": "fl-business-card-generator-server",
+  "name": "coathanger-abortion-service",
   "version": "1.0.0",
+  "description": "Backend for Coathanger Abortion app",
   "main": "index.js",
-  "author": "andreas.jantschnig@finleap.com",
+  "author": "andreas.jantschnig@gmail.com",
   "license": "MIT",
   "private": true,
   "scripts": {
@@ -19,6 +20,7 @@
     "connect-dynamodb": "^2.0.4",
     "copy-webpack-plugin": "^5.1.1",
     "core-js": "^3.6.1",
+    "cors": "^2.8.5",
     "eslint": "^6.8.0",
     "eslint-config-prettier": "^6.9.0",
     "eslint-loader": "^3.0.3",
@@ -43,10 +45,12 @@
   },
   "devDependencies": {
     "@types/compression": "^1.0.1",
+    "@types/cors": "^2.8.6",
     "@types/express": "^4.17.2",
     "@types/express-rate-limit": "^5.0.0",
     "@types/express-session": "^1.15.16",
     "@types/helmet": "^0.0.45",
+    "@types/uuid": "^7.0.2",
     "@typescript-eslint/eslint-plugin": "^2.14.0",
     "@typescript-eslint/parser": "^2.14.0",
     "nodemon": "^2.0.2"
