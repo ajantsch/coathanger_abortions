@@ -8,7 +8,6 @@ class Start extends React.PureComponent<RouteComponentProps, {}> {
   handleFormSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
     const game = await GameService.startGame();
-    console.warn(game);
     if (game) {
       this.props.history.push(`/${game.id}`);
     }
