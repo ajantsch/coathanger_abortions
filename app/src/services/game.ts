@@ -4,6 +4,7 @@ const { API_BASE_URL } = process.env;
 
 export interface IGame {
   id: string;
+  players: Map<string, string>;
 }
 
 export interface IPlayer {
@@ -15,10 +16,19 @@ const startGame = async () => {
   return axios.post<IGame>(`${API_BASE_URL}/games`).then(res => res.data);
 };
 
-const getGame = async (gameId: string) => {
-  return axios
-    .get<IGame>(`${API_BASE_URL}/games/${gameId}`)
-    .then(res => res.data);
+const getGame = async (gameId: string): Promise<IGame> => {
+  return axios.get(`${API_BASE_URL}/games/${gameId}`).then(res => {
+    const game = {
+      id: res.data.id,
+      players: new Map<string, string>(
+        res.data.players.map((player: { id: string; name: string }) => [
+          player.id,
+          player.name,
+        ]),
+      ),
+    };
+    return game;
+  });
 };
 
 const addGamePlayer = async (gameId: string, name: string) => {

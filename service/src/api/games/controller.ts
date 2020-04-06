@@ -35,10 +35,6 @@ const postGame = async (_req: Request, res: Response) => {
       black: blackCards,
       white: whiteCards,
     },
-    disposedCards: {
-      black: new Map<string, string>(),
-      white: new Map<string, string>(),
-    },
   };
 
   try {
