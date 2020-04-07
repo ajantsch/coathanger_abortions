@@ -7,8 +7,6 @@ import socketio from "socket.io";
 
 import routes from "./routes";
 
-const { PORT } = process.env;
-const port = PORT || 5000;
 const apiLimiter = RateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
   max: 1000,
@@ -17,7 +15,6 @@ const apiLimiter = RateLimit({
 
 const app = express();
 app.set("trust proxy", 1);
-app.set("port", port);
 app.use("/api/", apiLimiter);
 app.use(helmet());
 app.use(compression());
@@ -33,4 +30,4 @@ app.use("/api/games/", routes.games);
 const server = http.createServer(app);
 const socket = socketio.listen(server);
 
-export { server, socket, port };
+export { server, socket };

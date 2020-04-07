@@ -1,7 +1,8 @@
-import { server, socket, port } from "./server";
+import { server, socket } from "./server";
 import { logger } from "./util";
 
-const { NODE_ENV } = process.env;
+const { NODE_ENV, PORT } = process.env;
+const port = PORT || 5000;
 
 server.listen(port, function() {
   logger.info(
