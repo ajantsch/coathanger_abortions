@@ -2,7 +2,7 @@ import React from "react";
 import { withRouter, RouteComponentProps } from "react-router";
 import io from "socket.io-client";
 
-import { GameService } from "../../services";
+import { GameService } from "../services";
 
 import Enter from "./Enter";
 

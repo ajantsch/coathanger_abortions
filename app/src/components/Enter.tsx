@@ -2,7 +2,7 @@ import React from "react";
 import { Button, TextField } from "@material-ui/core";
 import { withRouter, RouteComponentProps } from "react-router";
 
-import { GameService } from "../../services";
+import { GameService } from "../services";
 
 interface IEnterState {
   name: string;

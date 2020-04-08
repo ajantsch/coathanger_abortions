@@ -9,8 +9,8 @@ import { Container } from "@material-ui/core";
 import socket from "socket.io-client";
 
 import Theme from "./Theme";
-import { Start } from "./components/Start";
-import { Game } from "./components/Game";
+import Start from "./components/Start";
+import Game from "./components/Game";
 
 const { SOCKET_URL } = process.env;
 

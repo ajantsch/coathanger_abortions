@@ -2,7 +2,7 @@ import React from "react";
 import { Button } from "@material-ui/core";
 import { withRouter, RouteComponentProps } from "react-router";
 
-import { GameService } from "../../services";
+import { GameService } from "../services";
 
 class Start extends React.PureComponent<RouteComponentProps, {}> {
   handleFormSubmit = async (event: React.FormEvent) => {
