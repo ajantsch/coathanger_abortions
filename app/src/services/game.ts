@@ -12,7 +12,7 @@ export interface IPlayer {
   name: string;
 }
 
-const startGame = async () => {
+const createGame = async () => {
   return axios.post<IGame>(`${API_BASE_URL}/games`).then(res => res.data);
 };
 
@@ -26,4 +26,4 @@ const addGamePlayer = async (gameId: string, name: string) => {
     .then(res => res.data);
 };
 
-export default { startGame, getGame, addGamePlayer };
+export default { createGame, getGame, addGamePlayer };

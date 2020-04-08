@@ -9,7 +9,7 @@ import { Container } from "@material-ui/core";
 import socket from "socket.io-client";
 
 import Theme from "./Theme";
-import Start from "./components/Start";
+import Create from "./components/Create";
 import Game from "./components/Game";
 
 const { SOCKET_URL } = process.env;
@@ -30,7 +30,7 @@ class App extends React.Component {
           <Router>
             <Switch>
               <Route path="/" exact default>
-                <Start />
+                <Create />
               </Route>
               <Route path="/:game_id/">
                 <Game />

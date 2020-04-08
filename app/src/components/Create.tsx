@@ -4,10 +4,10 @@ import { withRouter, RouteComponentProps } from "react-router";
 
 import { GameService } from "../services";
 
-class Start extends React.PureComponent<RouteComponentProps, {}> {
+class Create extends React.PureComponent<RouteComponentProps, {}> {
   handleFormSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
-    const game = await GameService.startGame();
+    const game = await GameService.createGame();
     if (game) {
       this.props.history.push(`/${game.id}`);
     }
@@ -17,11 +17,11 @@ class Start extends React.PureComponent<RouteComponentProps, {}> {
     return (
       <form onSubmit={this.handleFormSubmit}>
         <Button type="submit" variant="contained" color="primary">
-          Start new game
+          Create new game
         </Button>
       </form>
     );
   };
 }
 
-export default withRouter(Start);
+export default withRouter(Create);
