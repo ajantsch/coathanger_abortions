@@ -10,7 +10,7 @@ interface IEnterState {
 
 interface IEnterProps extends RouteComponentProps {
   gameId: string;
-  gameEnteredCallback: (id: string, name: string) => void;
+  gameEnteredCallback: (player: { id: string; name: string }) => void;
 }
 
 const DEFAULT_STATE: IEnterState = {
@@ -34,7 +34,7 @@ class Enter extends React.PureComponent<IEnterProps, IEnterState> {
       this.state.name,
     );
     if (player) {
-      this.props.gameEnteredCallback(player.id, player.name);
+      this.props.gameEnteredCallback({ id: player.id, name: player.name });
     }
   };
 

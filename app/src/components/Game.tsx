@@ -5,20 +5,21 @@ import io from "socket.io-client";
 import { GameService } from "../services";
 
 import Enter from "./Enter";
+import Players from "./Players";
 
 const { SOCKET_URL } = process.env;
 
 interface IGameState {
   gameId: string | undefined;
   playerId: string | undefined;
-  players: Map<string, string>;
+  players: { id: string; name: string }[];
   gameSocket: SocketIOClient.Socket | undefined;
 }
 
 const DEFAULT_STATE: IGameState = {
   gameId: undefined,
   playerId: undefined,
-  players: new Map<string, string>(),
+  players: [],
   gameSocket: undefined,
 };
 
@@ -45,7 +46,7 @@ class Game extends React.Component<
         "player_joined_game",
         (player: { id: string; name: string }) => {
           this.setState({
-            players: this.state.players.set(player.id, player.name),
+            players: [...this.state.players, player],
           });
         },
       );
@@ -53,15 +54,15 @@ class Game extends React.Component<
     return gameSocket;
   };
 
-  handleGameEntered = (playerId: string, playerName: string) => {
+  handleGameEntered = (player: { id: string; name: string }) => {
     if (!this.state.gameId) {
       return;
     }
-    sessionStorage.setItem(`chg_${this.state.gameId}`, playerId);
+    sessionStorage.setItem(`chg_${this.state.gameId}`, player.id);
     this.setState({
-      playerId,
-      players: this.state.players.set(playerId, playerName),
-      gameSocket: this.connectGameSocket(this.state.gameId, playerName),
+      playerId: player.id,
+      players: [...this.state.players, player],
+      gameSocket: this.connectGameSocket(this.state.gameId, player.name),
     });
   };
 
@@ -78,12 +79,16 @@ class Game extends React.Component<
         const previousPlayerId = window.sessionStorage.getItem(
           `chg_${game.id}`,
         );
-        if (previousPlayerId && game.players.has(previousPlayerId)) {
+        if (
+          previousPlayerId &&
+          !!game.players.filter(player => player.id === previousPlayerId).length
+        ) {
           state.playerId = previousPlayerId;
 
           state.gameSocket = this.connectGameSocket(
             game.id,
-            game.players.get(previousPlayerId) as string,
+            game.players.filter(player => player.id === previousPlayerId)[0]
+              .name,
           );
         }
         this.setState(state);
@@ -102,11 +107,9 @@ class Game extends React.Component<
             gameEnteredCallback={this.handleGameEntered}
           />
         )}
-        {this.state.playerId &&
-          this.state.gameId &&
-          Array.from(this.state.players).map(player => {
-            return <p key={player[0]}>{player[1]}</p>;
-          })}
+        {this.state.playerId && this.state.gameId && (
+          <Players players={this.state.players} />
+        )}
       </>
     );
   };
