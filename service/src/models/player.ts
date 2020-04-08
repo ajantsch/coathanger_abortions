@@ -1,8 +1,10 @@
+import { ICard } from "./card";
+
 interface IPlayer {
   id: string;
   name: string;
-  activeCards: Map<string, string>;
-  wonCards: Map<string, string>;
+  activeCards: ICard[];
+  wonCards: ICard[];
 }
 
 export { IPlayer };

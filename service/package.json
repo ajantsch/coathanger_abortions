@@ -9,6 +9,7 @@
   "scripts": {
     "build": "webpack",
     "start": "node build",
+    "start:dev": "env NODE_ENV=local yarn build",
     "start:watch": "nodemon build",
     "lint": "eslint --ext .ts,.js src",
     "lint:apply": "eslint --ext .ts,.js src --fix"

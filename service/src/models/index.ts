@@ -1,4 +1,5 @@
+import { ICard } from "./card";
 import { IGame } from "./game";
 import { IPlayer } from "./player";
 
-export { IGame, IPlayer };
+export { ICard, IGame, IPlayer };

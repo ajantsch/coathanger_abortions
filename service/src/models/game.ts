@@ -1,11 +1,9 @@
-import { IPlayer } from "./player";
-
 interface IGame {
   id: string;
-  players: Map<IPlayer["id"], IPlayer>;
+  players: { id: string; name: string }[];
   availableCards: {
-    black: Map<string, string>;
-    white: Map<string, string>;
+    black: { id: string; content: string }[];
+    white: { id: string; content: string }[];
   };
 }
 

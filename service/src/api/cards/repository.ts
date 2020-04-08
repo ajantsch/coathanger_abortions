@@ -1,37 +1,41 @@
 import crypto from "crypto";
 
-import blackCards from "../../data/cards_black.txt";
-import whiteCards from "../../data/cards_white.txt";
+import { ICard } from "../../models";
 
-const BLACK_CARDS: Map<string, string> = new Map();
-const WHITE_CARDS: Map<string, string> = new Map();
+import questionCards from "../../data/questions.txt";
+import answerCards from "../../data/answers.txt";
 
-(blackCards as string).split("\n").map(line => {
-  BLACK_CARDS.set(
-    crypto
+const QUESTION_CARDS: ICard[] = [];
+const ANSWER_CARDS: ICard[] = [];
+
+(questionCards as string).split("\n").map(line => {
+  QUESTION_CARDS.push({
+    id: crypto
       .createHash("md5")
       .update(line)
       .digest("hex"),
-    line,
-  );
+    content: line,
+    type: "question",
+  });
 });
 
-(whiteCards as string).split("\n").map(line => {
-  WHITE_CARDS.set(
-    crypto
+(answerCards as string).split("\n").map(line => {
+  ANSWER_CARDS.push({
+    id: crypto
       .createHash("md5")
       .update(line)
       .digest("hex"),
-    line,
-  );
+    content: line,
+    type: "answer",
+  });
 });
 
-const getAllWhiteCards = async (): Promise<Map<string, string>> => {
-  return WHITE_CARDS;
+const getAnswerCards = async (): Promise<ICard[]> => {
+  return ANSWER_CARDS;
 };
 
-const getAllBlackCards = async (): Promise<Map<string, string>> => {
-  return BLACK_CARDS;
+const getQuestionCards = async (): Promise<ICard[]> => {
+  return QUESTION_CARDS;
 };
 
-export { getAllBlackCards, getAllWhiteCards };
+export { getQuestionCards, getAnswerCards };

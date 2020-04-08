@@ -6,7 +6,7 @@ import {
   Redirect,
 } from "react-router-dom";
 import { Container } from "@material-ui/core";
-import io from "socket.io-client";
+import socket from "socket.io-client";
 
 import Theme from "./Theme";
 import { Start } from "./components/Start";
@@ -17,7 +17,7 @@ const { SOCKET_URL } = process.env;
 class App extends React.Component {
   componentDidMount() {
     if (SOCKET_URL) {
-      io(SOCKET_URL, { transports: ["websocket"] }).on("connected", () => {
+      socket(SOCKET_URL).on("connected", () => {
         console.log("Socket connection to service established");
       });
     }

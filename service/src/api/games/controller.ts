@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 
 import { IGame, IPlayer } from "../../models";
-import { getAllBlackCards, getAllWhiteCards } from "../cards/repository";
+import { getQuestionCards, getAnswerCards } from "../cards/repository";
 import { findGame, insertGame, insertGamePlayer } from "./repository";
 import { logger, randomString, genUuid } from "../../util";
 import { socket } from "../../server";
@@ -26,12 +26,12 @@ const getGame = async (req: Request, res: Response) => {
 const postGame = async (_req: Request, res: Response) => {
   res.type("json");
 
-  const whiteCards = await getAllWhiteCards();
-  const blackCards = await getAllBlackCards();
+  const whiteCards = await getAnswerCards();
+  const blackCards = await getQuestionCards();
 
   const game: IGame = {
     id: randomString(6, "aA#"),
-    players: new Map<string, IPlayer>(),
+    players: [],
     availableCards: {
       black: blackCards,
       white: whiteCards,
@@ -61,8 +61,8 @@ const putGamePlayer = async (req: Request, res: Response) => {
   const player: IPlayer = {
     id: genUuid(),
     name: name,
-    activeCards: new Map<string, string>(),
-    wonCards: new Map<string, string>(),
+    activeCards: [],
+    wonCards: [],
   };
 
   try {
