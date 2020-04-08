@@ -49,7 +49,7 @@ function randomString(length: number, chars: string) {
   return result;
 }
 
-function shuffle(array: unknown[]) {
+function shuffle<T>(array: T[]): T[] {
   for (let i = array.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1)); // random index from 0 to i
 
@@ -60,6 +60,7 @@ function shuffle(array: unknown[]) {
     // let t = array[i]; array[i] = array[j]; array[j] = t
     [array[i], array[j]] = [array[j], array[i]];
   }
+  return array;
 }
 
 export { genUuid, readLines, randomString, shuffle };

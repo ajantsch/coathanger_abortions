@@ -1,9 +1,12 @@
+import { IPlayer } from "./player";
+import { ICard } from "./card";
+
 interface IGame {
   id: string;
-  players: { id: string; name: string }[];
+  players: IPlayer[];
   availableCards: {
-    black: { id: string; content: string }[];
-    white: { id: string; content: string }[];
+    questions: ICard[];
+    answers: ICard[];
   };
 }
 

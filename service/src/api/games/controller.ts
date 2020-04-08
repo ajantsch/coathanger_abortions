@@ -2,8 +2,13 @@ import { Request, Response } from "express";
 
 import { IGame, IPlayer } from "../../models";
 import { getQuestionCards, getAnswerCards } from "../cards/repository";
-import { findGame, insertGame, insertGamePlayer } from "./repository";
-import { logger, randomString, genUuid } from "../../util";
+import {
+  findGame,
+  insertGame,
+  insertGamePlayer,
+  findGamePlayer,
+} from "./repository";
+import { logger, randomString, genUuid, shuffle } from "../../util";
 import { socket } from "../../server";
 
 const getGame = async (req: Request, res: Response) => {
@@ -26,15 +31,15 @@ const getGame = async (req: Request, res: Response) => {
 const postGame = async (_req: Request, res: Response) => {
   res.type("json");
 
-  const whiteCards = await getAnswerCards();
-  const blackCards = await getQuestionCards();
+  const answerCards = await getAnswerCards();
+  const questionCards = await getQuestionCards();
 
   const game: IGame = {
     id: randomString(6, "aA#"),
     players: [],
     availableCards: {
-      black: blackCards,
-      white: whiteCards,
+      questions: shuffle(questionCards),
+      answers: shuffle(answerCards),
     },
   };
 
@@ -66,6 +71,9 @@ const putGamePlayer = async (req: Request, res: Response) => {
   };
 
   try {
+    const game = await findGame(gameId);
+    player.activeCards = game.availableCards.answers.splice(0, 5);
+
     const inserted = await insertGamePlayer(gameId, player);
 
     socket.of(`/${gameId}`).emit("player_joined_game", inserted);
@@ -82,4 +90,23 @@ const putGamePlayer = async (req: Request, res: Response) => {
   }
 };
 
-export { getGame, postGame, putGamePlayer };
+const getGamePlayer = async (req: Request, res: Response) => {
+  const gameId = req.params.game_id;
+  const playerId = req.params.playerId;
+
+  res.type("json");
+
+  try {
+    const game = await findGamePlayer(gameId, playerId);
+    res.status(200);
+    res.send(game);
+  } catch (err) {
+    logger.error(err);
+    res.status(404);
+    res.send(err);
+  } finally {
+    res.end();
+  }
+};
+
+export { getGame, postGame, putGamePlayer, getGamePlayer };

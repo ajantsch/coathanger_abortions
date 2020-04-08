@@ -3,6 +3,7 @@ import { Button, TextField } from "@material-ui/core";
 import { withRouter, RouteComponentProps } from "react-router";
 
 import { GameService } from "../services";
+import { IPlayer } from "../services/game";
 
 interface IEnterState {
   name: string;
@@ -10,7 +11,7 @@ interface IEnterState {
 
 interface IEnterProps extends RouteComponentProps {
   gameId: string;
-  gameEnteredCallback: (player: { id: string; name: string }) => void;
+  gameEnteredCallback: (player: IPlayer) => void;
 }
 
 const DEFAULT_STATE: IEnterState = {
@@ -34,7 +35,7 @@ class Enter extends React.PureComponent<IEnterProps, IEnterState> {
       this.state.name,
     );
     if (player) {
-      this.props.gameEnteredCallback({ id: player.id, name: player.name });
+      this.props.gameEnteredCallback(player);
     }
   };
 

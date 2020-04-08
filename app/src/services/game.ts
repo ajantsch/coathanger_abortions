@@ -10,6 +10,13 @@ export interface IGame {
 export interface IPlayer {
   id: string;
   name: string;
+  activeCards: ICard[];
+  wonCards: ICard[];
+}
+
+export interface ICard {
+  id: string;
+  content: string;
 }
 
 const createGame = async () => {
@@ -26,4 +33,10 @@ const addGamePlayer = async (gameId: string, name: string) => {
     .then(res => res.data);
 };
 
-export default { createGame, getGame, addGamePlayer };
+const getGamePlayer = async (gameId: string, playerId: string) => {
+  return axios
+    .get<IPlayer>(`${API_BASE_URL}/games/${gameId}/player/${playerId}`)
+    .then(res => res.data);
+};
+
+export default { createGame, getGame, addGamePlayer, getGamePlayer };
