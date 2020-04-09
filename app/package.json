@@ -7,10 +7,10 @@
   "license": "MIT",
   "private": true,
   "scripts": {
-    "start": "env NODE_ENV=local webpack-dev-server --inline --progress",
+    "start": "yarn build",
     "build": "env NODE_ENV=production && webpack --profile",
     "build:local": "env NODE_ENV=local OPTIMIZED_BUILD=true webpack --profile --progress",
-    "server:build": "node express --port 4000 --base build --silent",
+    "server:build": "node express --base build --silent",
     "lint": "eslint --ext .ts,.tsx,.js,.tsx src",
     "lint:apply": "eslint --ext .ts,.tsx,.js,.tsx src --fix"
   },
@@ -33,6 +33,7 @@
     "eslint-plugin-import": "^2.20.1",
     "eslint-plugin-prettier": "^3.1.2",
     "eslint-plugin-react": "^7.17.0",
+    "express": "^4.17.1",
     "file-loader": "^5.0.2",
     "fork-ts-checker-webpack-plugin": "^3.1.1",
     "html-webpack-plugin": "^3.2.0",
@@ -51,7 +52,8 @@
     "typescript": "^3.7.4",
     "webpack": "^4.41.5",
     "webpack-cli": "^3.3.10",
-    "webpack-dev-server": "^3.10.3",
+    "webpack-livereload-plugin": "^2.3.0",
+    "webpack-shell-plugin": "^0.5.0",
     "yargs": "^15.1.0"
   },
   "devDependencies": {

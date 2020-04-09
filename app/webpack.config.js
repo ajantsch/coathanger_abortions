@@ -5,9 +5,11 @@ const HtmlWebpackPlugin = require("html-webpack-plugin");
 const CopyWebpackPlugin = require("copy-webpack-plugin");
 const TerserPlugin = require("terser-webpack-plugin");
 const ForkTsCheckerWebpackPlugin = require("fork-ts-checker-webpack-plugin");
+const WebpackShellPlugin = require("webpack-shell-plugin");
+const LiveReloadPlugin = require("webpack-livereload-plugin");
 const { CleanWebpackPlugin } = require("clean-webpack-plugin");
 
-const { NODE_ENV, OPTIMIZED_BUILD } = process.env;
+const { NODE_ENV, OPTIMIZED_BUILD, PORT } = process.env;
 const webpackDotEnvPath = `./config/.env.${NODE_ENV}`;
 const webpackEnvVars = Dotenv.config({ path: webpackDotEnvPath }).parsed;
 const localEnvironment = NODE_ENV === "local";
@@ -21,6 +23,9 @@ const webpackDevtool = isOptimized
 const config = {
   mode: webpackMode,
   watch: webpackWatch,
+  watchOptions: {
+    poll: true,
+  },
   entry: "./src/index.tsx",
   output: {
     path: path.resolve(__dirname, "build"),
@@ -96,29 +101,17 @@ const config = {
     // Don't let webpack override our NODE_ENV
     nodeEnv: false,
   },
-  devServer: {
-    compress: true,
-    host: "0.0.0.0",
-    port: 4040,
-    contentBase: ["./src/public"],
-    historyApiFallback: true,
-    stats: {
-      assets: false,
-      cached: false,
-      cachedAssets: false,
-      children: false,
-      chunkModules: false,
-      chunkOrigins: false,
-      performance: false,
-      reason: false,
-      source: false,
-    },
-    watchContentBase: true,
-  },
 };
 
 if (localEnvironment) {
-  config.plugins.push(new ForkTsCheckerWebpackPlugin());
+  config.plugins.push(
+    new ForkTsCheckerWebpackPlugin(),
+    new LiveReloadPlugin(),
+    new WebpackShellPlugin({
+      dev: true,
+      onBuildEnd: ["yarn server:build"],
+    }),
+  );
 }
 
 if (isOptimized) {

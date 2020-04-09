@@ -4,7 +4,9 @@ var argv = require("yargs").argv;
 var compression = require("compression");
 var express = require("express");
 
-var port = argv.port || 4000;
+var { PORT } = process.env;
+
+var port = PORT || 8080;
 var base = argv.base || "";
 
 var renderIndex = (req, res) => {

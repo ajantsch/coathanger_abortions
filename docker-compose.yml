@@ -28,8 +28,11 @@ services:
       - ./app/node_modules:/usr/src/app/node_modules:cached
     ports:
       - 4040:4040
+      # live reload server port
+      - 35729:35729
     environment:
       - NODE_ENV=local
       - OPTIMIZED_BUILD=false
+      - PORT=4040
     depends_on:
       - service
