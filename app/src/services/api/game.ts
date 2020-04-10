@@ -5,6 +5,8 @@ const { API_BASE_URL } = process.env;
 export interface IGame {
   id: string;
   players: { id: string; name: string }[];
+  czar: string;
+  activeQuestionCard: ICard | undefined;
 }
 
 export interface IPlayer {
@@ -39,4 +41,16 @@ const getGamePlayer = async (gameId: string, playerId: string) => {
     .then(res => res.data);
 };
 
-export default { createGame, getGame, addGamePlayer, getGamePlayer };
+const drawQuestionCard = async (gameId: string) => {
+  return axios
+    .get<ICard>(`${API_BASE_URL}/games/${gameId}/draw/question`)
+    .then(res => res.data);
+};
+
+export default {
+  createGame,
+  getGame,
+  addGamePlayer,
+  getGamePlayer,
+  drawQuestionCard,
+};

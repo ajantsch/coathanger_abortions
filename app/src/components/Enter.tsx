@@ -2,8 +2,8 @@ import React from "react";
 import { Button, TextField } from "@material-ui/core";
 import { withRouter, RouteComponentProps } from "react-router";
 
-import { GameService } from "../services";
-import { IPlayer } from "../services/game";
+import { GameApi } from "../services/api";
+import { IPlayer } from "../services/api/game";
 
 interface IEnterState {
   name: string;
@@ -30,7 +30,7 @@ class Enter extends React.PureComponent<IEnterProps, IEnterState> {
 
   handleFormSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
-    const player = await GameService.addGamePlayer(
+    const player = await GameApi.addGamePlayer(
       this.props.gameId,
       this.state.name,
     );

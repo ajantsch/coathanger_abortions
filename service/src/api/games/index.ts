@@ -1,3 +1,9 @@
-import { getGame, postGame, putGamePlayer, getGamePlayer } from "./controller";
+import {
+  getGame,
+  postGame,
+  putGamePlayer,
+  getGamePlayer,
+  getQuestionCard,
+} from "./controller";
 
-export { getGame, postGame, putGamePlayer, getGamePlayer };
+export { getGame, postGame, putGamePlayer, getGamePlayer, getQuestionCard };

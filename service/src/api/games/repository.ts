@@ -1,4 +1,4 @@
-import { IGame, IPlayer } from "../../models";
+import { IGame, IPlayer, ICard } from "../../models";
 import { logger } from "../../util";
 
 const ACTIVE_GAMES: Map<string, IGame> = new Map();
@@ -24,7 +24,10 @@ const insertGame = async (game: IGame) => {
   );
 };
 
-const insertGamePlayer = async (gameId: string, player: IPlayer) => {
+const insertGamePlayer = async (
+  gameId: string,
+  player: IPlayer,
+): Promise<IPlayer> => {
   const game = ACTIVE_GAMES.get(gameId);
   if (game) {
     game.players.push(player);
@@ -39,8 +42,8 @@ const insertGamePlayer = async (gameId: string, player: IPlayer) => {
 const findGamePlayer = async (gameId: string, playerId: string) => {
   const game = ACTIVE_GAMES.get(gameId);
   if (game) {
-    const player = game.players.filter(player => player.id === playerId);
-    if (player && player.length) {
+    const player = game.players.find(player => player.id === playerId);
+    if (player) {
       return player;
     }
 
@@ -50,4 +53,37 @@ const findGamePlayer = async (gameId: string, playerId: string) => {
   throw new Error(`Could not find game with id ${gameId}`);
 };
 
-export { findGame, insertGame, insertGamePlayer, findGamePlayer };
+const drawQuestionCard = async (gameId: string): Promise<ICard> => {
+  const game = ACTIVE_GAMES.get(gameId);
+  if (game) {
+    const card = game.availableCards.questions.splice(0, 1)[0];
+    game.activeQuestionCard = card;
+    ACTIVE_GAMES.set(gameId, game);
+    return card;
+  }
+
+  throw new Error(`Could not find game with id ${gameId}`);
+};
+
+const setGameCzar = async (
+  gameId: string,
+  playerId: string,
+): Promise<IGame> => {
+  const game = ACTIVE_GAMES.get(gameId);
+  if (game) {
+    game.czar = playerId;
+    ACTIVE_GAMES.set(gameId, game);
+    return game;
+  }
+
+  throw new Error(`Could not find game with id ${gameId}`);
+};
+
+export {
+  findGame,
+  insertGame,
+  insertGamePlayer,
+  findGamePlayer,
+  drawQuestionCard,
+  setGameCzar,
+};

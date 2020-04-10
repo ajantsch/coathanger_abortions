@@ -1,27 +1,31 @@
 import React from "react";
+import { Button } from "@material-ui/core";
 import { withRouter, RouteComponentProps } from "react-router";
-import io from "socket.io-client";
 
-import { GameService } from "../services";
-import { IPlayer } from "../services/game";
+import { GameApi } from "../services/api";
+import { GameSocket } from "../services/sockets";
+import { IPlayer, ICard } from "../services/api/game";
 
 import Enter from "./Enter";
 import Players from "./Players";
+import Card from "./Card";
 import PlayerCards from "./PlayerCards";
-
-const { SOCKET_URL } = process.env;
 
 interface IGameState {
   gameId: string | undefined;
   player: IPlayer | undefined;
+  playerIsCzar: boolean;
   players: { id: string; name: string }[];
+  activeQuestionCard: ICard | undefined;
   gameSocket: SocketIOClient.Socket | undefined;
 }
 
 const DEFAULT_STATE: IGameState = {
   gameId: undefined,
   player: undefined,
+  playerIsCzar: false,
   players: [],
+  activeQuestionCard: undefined,
   gameSocket: undefined,
 };
 
@@ -34,67 +38,85 @@ class Game extends React.Component<
     this.state = DEFAULT_STATE;
   }
 
-  connectGameSocket = (
+  connectGameSocket = async (
     gameId: string,
     playerName: string,
-  ): SocketIOClient.Socket => {
-    const gameSocket = io.connect(`${SOCKET_URL}/${gameId}`);
-    gameSocket.on("connect", () => {
-      gameSocket.emit(
-        "player_connected",
-        `Player ${playerName} now has a socket connection to game ${gameId}`,
-      );
-      gameSocket.on(
-        "player_joined_game",
-        (player: { id: string; name: string }) => {
-          this.setState({
-            players: [...this.state.players, player],
-          });
-        },
-      );
+  ): Promise<SocketIOClient.Socket> => {
+    const gameSocket = await GameSocket.connectToGame(gameId, playerName);
+
+    gameSocket.on("player_joined", (player: { id: string; name: string }) => {
+      console.warn("Player joined:", player.name);
+      this.setState({
+        players: [...this.state.players, player],
+      });
+    });
+
+    //TODO: doesn't work on first player
+    gameSocket.on("czar_set", (playerId: string) => {
+      console.warn("Czar set:", playerId);
+      this.setState({ playerIsCzar: playerId === this.state.player?.id });
     });
     return gameSocket;
   };
 
-  handleGameEntered = (player: IPlayer) => {
+  handleGameEntered = async (player: IPlayer) => {
     if (!this.state.gameId) {
       return;
     }
-    sessionStorage.setItem(`chg_${this.state.gameId}`, player.id);
-    this.setState({
-      player,
-      players: [...this.state.players, { id: player.id, name: player.name }],
-      gameSocket: this.connectGameSocket(this.state.gameId, player.name),
-    });
+    try {
+      const game = await GameApi.getGame(this.state.gameId);
+      sessionStorage.setItem(`chg_${this.state.gameId}`, player.id);
+      this.setState({
+        player,
+        playerIsCzar: player.id === game.czar,
+        players: [...this.state.players, { id: player.id, name: player.name }],
+        gameSocket: await this.connectGameSocket(
+          this.state.gameId,
+          player.name,
+        ),
+      });
+    } catch (e) {
+      console.error(e);
+    }
+  };
+
+  handleDrawQuestionCard = async () => {
+    if (!this.state.gameId) {
+      return;
+    }
+    const activeQuestionCard = await GameApi.drawQuestionCard(
+      this.state.gameId,
+    );
+    this.setState({ activeQuestionCard });
   };
 
   componentDidMount = async () => {
     try {
-      const game = await GameService.getGame(this.props.match.params.game_id);
+      const game = await GameApi.getGame(this.props.match.params.game_id);
       if (game) {
         const state: IGameState = {
+          ...DEFAULT_STATE,
           gameId: game.id,
-          player: undefined,
           players: game.players,
-          gameSocket: undefined,
         };
         const previousPlayerId = window.sessionStorage.getItem(
           `chg_${game.id}`,
         );
         if (
           previousPlayerId &&
-          !!game.players.filter(player => player.id === previousPlayerId).length
+          game.players.map(player => player.id).includes(previousPlayerId)
         ) {
-          state.player = await GameService.getGamePlayer(
-            game.id,
-            previousPlayerId,
-          );
+          state.player = await GameApi.getGamePlayer(game.id, previousPlayerId);
 
-          state.gameSocket = this.connectGameSocket(
+          state.gameSocket = await this.connectGameSocket(
             game.id,
             game.players.filter(player => player.id === previousPlayerId)[0]
               .name,
           );
+
+          if (previousPlayerId === game.czar) {
+            state.playerIsCzar = true;
+          }
         }
         this.setState(state);
       }
@@ -116,6 +138,21 @@ class Game extends React.Component<
           <>
             <Players players={this.state.players} />
             <PlayerCards cards={this.state.player.activeCards} />
+            {this.state.activeQuestionCard && (
+              <Card
+                type="question"
+                content={this.state.activeQuestionCard.content}
+              />
+            )}
+            {this.state.playerIsCzar && !this.state.activeQuestionCard && (
+              <Button
+                variant="contained"
+                color="primary"
+                onClick={this.handleDrawQuestionCard}
+              >
+                Draw question card
+              </Button>
+            )}
           </>
         )}
       </>
