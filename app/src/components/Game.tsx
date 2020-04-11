@@ -81,7 +81,12 @@ class Game extends React.Component<
   };
 
   handleDrawQuestionCard = async () => {
-    if (!this.state.gameId) {
+    if (
+      !this.state.gameId ||
+      !this.state.player ||
+      this.state.czar !== this.state.player.id ||
+      this.state.activeQuestionCard
+    ) {
       return;
     }
     const activeQuestionCard = await GameApi.drawQuestionCard(
@@ -99,6 +104,7 @@ class Game extends React.Component<
           gameId: game.id,
           players: game.players,
           czar: game.czar,
+          activeQuestionCard: game.activeQuestionCard,
         };
         const previousPlayerId = window.sessionStorage.getItem(
           `chg_${game.id}`,
