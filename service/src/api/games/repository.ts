@@ -57,9 +57,47 @@ const drawQuestionCard = async (gameId: string): Promise<ICard> => {
   const game = ACTIVE_GAMES.get(gameId);
   if (game) {
     const card = game.availableCards.questions.splice(0, 1)[0];
-    game.activeQuestionCard = card;
+    game.activeCards.question = card;
     ACTIVE_GAMES.set(gameId, game);
     return card;
+  }
+
+  throw new Error(`Could not find game with id ${gameId}`);
+};
+
+const selectAnswerCard = async (
+  gameId: string,
+  playerId: string,
+  card: ICard,
+) => {
+  const game = ACTIVE_GAMES.get(gameId);
+  if (game) {
+    if (game.czar !== playerId) {
+      if (!game.activeCards.answers.find(entry => entry.player === playerId)) {
+        const playerIndex = game.players
+          .map(player => player.id)
+          .indexOf(playerId);
+
+        const selectedCardIndex = game.players[playerIndex].activeCards
+          .map(card => card.id)
+          .indexOf(card.id);
+
+        if (selectedCardIndex >= 0) {
+          game.players[playerIndex].activeCards.splice(selectedCardIndex, 1);
+          game.activeCards.answers.push({ player: playerId, card });
+          ACTIVE_GAMES.set(gameId, game);
+          return card;
+        }
+
+        throw new Error(
+          `Player ${playerId} doesn't have card ${card.id} in his deck`,
+        );
+      }
+
+      throw new Error(`Player ${playerId} has already selected answer card`);
+    }
+
+    throw new Error(`Cannot select answer card as czar`);
   }
 
   throw new Error(`Could not find game with id ${gameId}`);
@@ -85,5 +123,6 @@ export {
   insertGamePlayer,
   findGamePlayer,
   drawQuestionCard,
+  selectAnswerCard,
   setGameCzar,
 };

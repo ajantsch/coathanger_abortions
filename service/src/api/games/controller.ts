@@ -1,6 +1,8 @@
 import { Request, Response } from "express";
 
 import { IGame, IPlayer } from "../../models";
+import { newGame } from "../../models/game";
+import { newPlayer } from "../../models/player";
 import { getQuestionCards, getAnswerCards } from "../cards/repository";
 import {
   findGame,
@@ -8,6 +10,7 @@ import {
   insertGamePlayer,
   findGamePlayer,
   drawQuestionCard,
+  selectAnswerCard,
   setGameCzar,
 } from "./repository";
 import { logger, randomString, genUuid, shuffle } from "../../util";
@@ -39,14 +42,12 @@ const postGame = async (_req: Request, res: Response) => {
   const questionCards = await getQuestionCards();
 
   const game: IGame = {
+    ...newGame(),
     id: randomString(6, "aA#"),
-    players: [],
-    czar: undefined,
     availableCards: {
       questions: shuffle(questionCards),
       answers: shuffle(answerCards),
     },
-    activeQuestionCard: undefined,
   };
 
   try {
@@ -70,10 +71,9 @@ const putGamePlayer = async (req: Request, res: Response) => {
   res.type("json");
 
   const player: IPlayer = {
+    ...newPlayer(),
     id: genUuid(),
     name: name,
-    activeCards: [],
-    wonCards: [],
   };
 
   try {
@@ -100,7 +100,7 @@ const putGamePlayer = async (req: Request, res: Response) => {
   } catch (err) {
     logger.error(err);
     res.status(500);
-    res.send(err);
+    res.send(err.message);
   } finally {
     res.end();
   }
@@ -119,7 +119,7 @@ const getGamePlayer = async (req: Request, res: Response) => {
   } catch (err) {
     logger.error(err);
     res.status(404);
-    res.send(err);
+    res.send(err.message);
   } finally {
     res.end();
   }
@@ -132,15 +132,47 @@ const getQuestionCard = async (req: Request, res: Response) => {
 
   try {
     const card = await drawQuestionCard(gameId);
+
+    socket.of(`/${gameId}`).emit("question_card_drawn", card);
+
     res.status(200);
     res.send(card);
   } catch (err) {
     logger.error(err);
     res.status(404);
-    res.send(err);
+    res.send(err.message);
   } finally {
     res.end();
   }
 };
 
-export { getGame, postGame, putGamePlayer, getGamePlayer, getQuestionCard };
+const putAnswerCard = async (req: Request, res: Response) => {
+  const gameId = req.params.game_id;
+  const { player: playerId, card } = req.body;
+
+  res.type("json");
+
+  try {
+    const answer = await selectAnswerCard(gameId, playerId, card);
+
+    socket.of(`/${gameId}`).emit("answer_card_given", card);
+
+    res.status(200);
+    res.send(answer);
+  } catch (err) {
+    logger.error(err);
+    res.status(404);
+    res.send(err.message);
+  } finally {
+    res.end();
+  }
+};
+
+export {
+  getGame,
+  postGame,
+  putGamePlayer,
+  getGamePlayer,
+  getQuestionCard,
+  putAnswerCard,
+};

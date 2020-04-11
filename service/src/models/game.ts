@@ -9,7 +9,26 @@ interface IGame {
     questions: ICard[];
     answers: ICard[];
   };
-  activeQuestionCard: ICard;
+  activeCards: {
+    question: ICard;
+    answers: { player: string; card: ICard }[];
+  };
 }
 
-export { IGame };
+const newGame = (): IGame => {
+  return {
+    id: undefined,
+    players: [],
+    czar: undefined,
+    availableCards: {
+      questions: [],
+      answers: [],
+    },
+    activeCards: {
+      question: undefined,
+      answers: [],
+    },
+  };
+};
+
+export { IGame, newGame };

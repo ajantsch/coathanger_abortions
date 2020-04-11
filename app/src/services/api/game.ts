@@ -6,7 +6,10 @@ export interface IGame {
   id: string;
   players: { id: string; name: string }[];
   czar: string;
-  activeQuestionCard: ICard | undefined;
+  activeCards: {
+    question: ICard | undefined;
+    answers: { player: string; card: ICard }[];
+  };
 }
 
 export interface IPlayer {
@@ -47,10 +50,24 @@ const drawQuestionCard = async (gameId: string) => {
     .then(res => res.data);
 };
 
+const selectAnswerCard = async (
+  gameId: string,
+  playerId: string,
+  card: ICard,
+) => {
+  return axios
+    .put<ICard>(`${API_BASE_URL}/games/${gameId}/answer`, {
+      player: playerId,
+      card,
+    })
+    .then(res => res.data);
+};
+
 export default {
   createGame,
   getGame,
   addGamePlayer,
   getGamePlayer,
   drawQuestionCard,
+  selectAnswerCard,
 };

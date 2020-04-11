@@ -16,7 +16,10 @@ interface IGameState {
   player: IPlayer | undefined;
   players: { id: string; name: string }[];
   czar: string | undefined;
-  activeQuestionCard: ICard | undefined;
+  activeCards: {
+    question: ICard | undefined;
+    answers: { player: string; card: ICard }[];
+  };
   gameSocket: SocketIOClient.Socket | undefined;
 }
 
@@ -25,7 +28,10 @@ const DEFAULT_STATE: IGameState = {
   player: undefined,
   players: [],
   czar: undefined,
-  activeQuestionCard: undefined,
+  activeCards: {
+    question: undefined,
+    answers: [],
+  },
   gameSocket: undefined,
 };
 
@@ -45,17 +51,28 @@ class Game extends React.Component<
     const gameSocket = await GameSocket.connectToGame(gameId, playerName);
 
     gameSocket.on("player_joined", (player: { id: string; name: string }) => {
-      console.warn("Player joined:", player.name);
+      console.warn("Player joined:", player);
       this.setState({
         players: [...this.state.players, player],
       });
     });
 
-    //TODO: doesn't work on first player
     gameSocket.on("czar_set", (playerId: string) => {
       console.warn("Czar set:", playerId);
       this.setState({ czar: playerId });
     });
+
+    gameSocket.on("question_card_drawn", (card: ICard) => {
+      console.warn("Question card drawn:", card);
+      this.setState({
+        activeCards: { ...this.state.activeCards, question: card },
+      });
+    });
+
+    gameSocket.on("answer_card_given", (card: ICard) => {
+      console.warn("Answer card given:", card);
+    });
+
     return gameSocket;
   };
 
@@ -85,14 +102,30 @@ class Game extends React.Component<
       !this.state.gameId ||
       !this.state.player ||
       this.state.czar !== this.state.player.id ||
-      this.state.activeQuestionCard
+      this.state.activeCards.question
     ) {
       return;
     }
     const activeQuestionCard = await GameApi.drawQuestionCard(
       this.state.gameId,
     );
-    this.setState({ activeQuestionCard });
+    this.setState({
+      activeCards: { ...this.state.activeCards, question: activeQuestionCard },
+    });
+  };
+
+  handleAnswerCardSelected = (card: ICard) => {
+    if (!this.state.player) {
+      return;
+    }
+    const playerCards = [...this.state.player.activeCards];
+    playerCards.splice(
+      this.state.player.activeCards.map(card => card.id).indexOf(card.id),
+      1,
+    );
+    this.setState({
+      player: { ...this.state.player, activeCards: playerCards },
+    });
   };
 
   componentDidMount = async () => {
@@ -104,7 +137,7 @@ class Game extends React.Component<
           gameId: game.id,
           players: game.players,
           czar: game.czar,
-          activeQuestionCard: game.activeQuestionCard,
+          activeCards: game.activeCards,
         };
         const previousPlayerId = window.sessionStorage.getItem(
           `chg_${game.id}`,
@@ -140,15 +173,21 @@ class Game extends React.Component<
         {this.state.player && this.state.gameId && (
           <>
             <Players players={this.state.players} czar={this.state.czar} />
-            <PlayerCards cards={this.state.player.activeCards} />
-            {this.state.activeQuestionCard && (
+            <PlayerCards
+              gameId={this.state.gameId}
+              playerId={this.state.player.id}
+              cards={this.state.player.activeCards}
+              cardSelectedCallback={this.handleAnswerCardSelected}
+            />
+            {this.state.activeCards.question && (
               <Card
+                id={this.state.activeCards.question.id}
                 type="question"
-                content={this.state.activeQuestionCard.content}
+                content={this.state.activeCards.question.content}
               />
             )}
             {this.state.czar === this.state.player.id &&
-              !this.state.activeQuestionCard && (
+              !this.state.activeCards.question && (
                 <Button
                   variant="contained"
                   color="primary"

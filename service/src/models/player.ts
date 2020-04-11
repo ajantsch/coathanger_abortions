@@ -7,4 +7,13 @@ interface IPlayer {
   wonCards: ICard[];
 }
 
-export { IPlayer };
+const newPlayer = (): IPlayer => {
+  return {
+    id: undefined,
+    name: undefined,
+    activeCards: [],
+    wonCards: [],
+  };
+};
+
+export { IPlayer, newPlayer };
