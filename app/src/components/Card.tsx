@@ -5,6 +5,9 @@ import styled, { AnyStyledComponent } from "styled-components";
 import Icon from "../images/icon.png";
 import IconInverted from "../images/icon_inverted.png";
 
+import CoathangerBlack from "../images/coathanger_black.png";
+import CoathangerWhite from "../images/coathanger_white.png";
+
 interface ICardProps {
   content: string;
   type: "answer" | "question";
@@ -27,21 +30,21 @@ export const CardRoot: AnyStyledComponent = styled(Paper)`
     border-radius: 20px;
     padding: 20px;
 
-    background-size: 25px 25px;
-    background-position: left 20px bottom 20px;
+    background-size: 100px 58px;
+    background-position: right 20px bottom 20px;
     background-repeat: no-repeat;
 
     box-shadow: 0px 2px 24px #e3e6eb;
 
     &.question {
       background-color: #000000;
-      background-image: url(${IconInverted});
+      background-image: url(${CoathangerWhite});
       color: #ffffff;
     }
 
     &.answer {
       background-color: #ffffff;
-      background-image: url(${Icon});
+      background-image: url(${CoathangerBlack});
       border: 1px solid #e3e6eb;
       color: #000000;
     }

@@ -22,10 +22,11 @@ class PlayerCards extends React.PureComponent<IPlayerCardsProps, {}> {
 const CardStack: AnyStyledComponent = styled.div`
   overflow: hidden;
   padding: 20px 0;
+  margin: 0 -20px;
 
   > .card {
     float: left;
-    margin: 0 20px -220px 20px;
+    margin: 0 20px -220px;
 
     &:last-of-type {
       margin-bottom: 0;
