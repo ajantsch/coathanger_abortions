@@ -14,8 +14,8 @@ import PlayerCards from "./PlayerCards";
 interface IGameState {
   gameId: string | undefined;
   player: IPlayer | undefined;
-  playerIsCzar: boolean;
   players: { id: string; name: string }[];
+  czar: string | undefined;
   activeQuestionCard: ICard | undefined;
   gameSocket: SocketIOClient.Socket | undefined;
 }
@@ -23,8 +23,8 @@ interface IGameState {
 const DEFAULT_STATE: IGameState = {
   gameId: undefined,
   player: undefined,
-  playerIsCzar: false,
   players: [],
+  czar: undefined,
   activeQuestionCard: undefined,
   gameSocket: undefined,
 };
@@ -54,7 +54,7 @@ class Game extends React.Component<
     //TODO: doesn't work on first player
     gameSocket.on("czar_set", (playerId: string) => {
       console.warn("Czar set:", playerId);
-      this.setState({ playerIsCzar: playerId === this.state.player?.id });
+      this.setState({ czar: playerId });
     });
     return gameSocket;
   };
@@ -64,11 +64,11 @@ class Game extends React.Component<
       return;
     }
     try {
-      const game = await GameApi.getGame(this.state.gameId);
       sessionStorage.setItem(`chg_${this.state.gameId}`, player.id);
+      const game = await GameApi.getGame(this.state.gameId);
       this.setState({
         player,
-        playerIsCzar: player.id === game.czar,
+        czar: game.czar,
         players: [...this.state.players, { id: player.id, name: player.name }],
         gameSocket: await this.connectGameSocket(
           this.state.gameId,
@@ -98,6 +98,7 @@ class Game extends React.Component<
           ...DEFAULT_STATE,
           gameId: game.id,
           players: game.players,
+          czar: game.czar,
         };
         const previousPlayerId = window.sessionStorage.getItem(
           `chg_${game.id}`,
@@ -113,10 +114,6 @@ class Game extends React.Component<
             game.players.filter(player => player.id === previousPlayerId)[0]
               .name,
           );
-
-          if (previousPlayerId === game.czar) {
-            state.playerIsCzar = true;
-          }
         }
         this.setState(state);
       }
@@ -136,7 +133,7 @@ class Game extends React.Component<
         )}
         {this.state.player && this.state.gameId && (
           <>
-            <Players players={this.state.players} />
+            <Players players={this.state.players} czar={this.state.czar} />
             <PlayerCards cards={this.state.player.activeCards} />
             {this.state.activeQuestionCard && (
               <Card
@@ -144,15 +141,16 @@ class Game extends React.Component<
                 content={this.state.activeQuestionCard.content}
               />
             )}
-            {this.state.playerIsCzar && !this.state.activeQuestionCard && (
-              <Button
-                variant="contained"
-                color="primary"
-                onClick={this.handleDrawQuestionCard}
-              >
-                Draw question card
-              </Button>
-            )}
+            {this.state.czar === this.state.player.id &&
+              !this.state.activeQuestionCard && (
+                <Button
+                  variant="contained"
+                  color="primary"
+                  onClick={this.handleDrawQuestionCard}
+                >
+                  Draw question card
+                </Button>
+              )}
           </>
         )}
       </>

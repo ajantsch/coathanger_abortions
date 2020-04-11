@@ -13,7 +13,7 @@ interface ICardProps {
 class Card extends React.PureComponent<ICardProps, {}> {
   render = () => {
     return (
-      <CardRoot className={this.props.type}>
+      <CardRoot className={`card ${this.props.type}`}>
         <Typography variant="h6">{this.props.content}</Typography>
       </CardRoot>
     );
@@ -22,12 +22,10 @@ class Card extends React.PureComponent<ICardProps, {}> {
 
 export const CardRoot: AnyStyledComponent = styled(Paper)`
   && {
-    display: block;
     width: 250px;
     height: 350px;
     border-radius: 20px;
     padding: 20px;
-    margin: 20px;
 
     background-size: 25px 25px;
     background-position: left 20px bottom 20px;
