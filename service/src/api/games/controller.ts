@@ -78,10 +78,7 @@ const putGamePlayer = async (req: Request, res: Response) => {
 
   try {
     const game = await findGame(gameId);
-    player.activeCards = game.availableCards.answers.splice(
-      0,
-      PLAYER_ANSWER_CARD_COUNT,
-    );
+    player.activeCards = game.availableCards.answers.splice(0, PLAYER_ANSWER_CARD_COUNT);
 
     const inserted = await insertGamePlayer(gameId, player);
 
@@ -168,11 +165,4 @@ const putAnswerCard = async (req: Request, res: Response) => {
   }
 };
 
-export {
-  getGame,
-  postGame,
-  putGamePlayer,
-  getGamePlayer,
-  getQuestionCard,
-  putAnswerCard,
-};
+export { getGame, postGame, putGamePlayer, getGamePlayer, getQuestionCard, putAnswerCard };

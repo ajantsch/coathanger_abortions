@@ -30,10 +30,7 @@ class Enter extends React.PureComponent<IEnterProps, IEnterState> {
 
   handleFormSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
-    const player = await GameApi.addGamePlayer(
-      this.props.gameId,
-      this.state.name,
-    );
+    const player = await GameApi.addGamePlayer(this.props.gameId, this.state.name);
     if (player) {
       this.props.gameEnteredCallback(player);
     }
@@ -47,19 +44,12 @@ class Enter extends React.PureComponent<IEnterProps, IEnterState> {
           id="name"
           label="Your Name"
           value={this.state.name}
-          onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
-            this.handleNameChange(event.target.value)
-          }
+          onChange={(event: React.ChangeEvent<HTMLInputElement>) => this.handleNameChange(event.target.value)}
           fullWidth
           required
           autoFocus
         ></TextField>
-        <Button
-          type="submit"
-          variant="contained"
-          color="primary"
-          disabled={!this.state.name.length}
-        >
+        <Button type="submit" variant="contained" color="primary" disabled={!this.state.name.length}>
           Enter game
         </Button>
       </form>

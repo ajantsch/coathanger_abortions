@@ -15,11 +15,7 @@ interface IPlayerCardsProps {
 
 class PlayerCards extends React.PureComponent<IPlayerCardsProps, {}> {
   handleCardSelected = async (card: ICard) => {
-    const selectedCard = await GameApi.selectAnswerCard(
-      this.props.gameId,
-      this.props.playerId,
-      card,
-    );
+    const selectedCard = await GameApi.selectAnswerCard(this.props.gameId, this.props.playerId, card);
 
     if (this.props.cardSelectedCallback) {
       this.props.cardSelectedCallback(selectedCard);

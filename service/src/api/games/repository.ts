@@ -19,15 +19,10 @@ const insertGame = async (game: IGame) => {
     return game;
   }
 
-  throw new Error(
-    `Could not create game with id ${game.id} because id already exists`,
-  );
+  throw new Error(`Could not create game with id ${game.id} because id already exists`);
 };
 
-const insertGamePlayer = async (
-  gameId: string,
-  player: IPlayer,
-): Promise<IPlayer> => {
+const insertGamePlayer = async (gameId: string, player: IPlayer): Promise<IPlayer> => {
   const game = ACTIVE_GAMES.get(gameId);
   if (game) {
     game.players.push(player);
@@ -65,22 +60,14 @@ const drawQuestionCard = async (gameId: string): Promise<ICard> => {
   throw new Error(`Could not find game with id ${gameId}`);
 };
 
-const selectAnswerCard = async (
-  gameId: string,
-  playerId: string,
-  card: ICard,
-) => {
+const selectAnswerCard = async (gameId: string, playerId: string, card: ICard) => {
   const game = ACTIVE_GAMES.get(gameId);
   if (game) {
     if (game.czar !== playerId) {
       if (!game.activeCards.answers.find(entry => entry.player === playerId)) {
-        const playerIndex = game.players
-          .map(player => player.id)
-          .indexOf(playerId);
+        const playerIndex = game.players.map(player => player.id).indexOf(playerId);
 
-        const selectedCardIndex = game.players[playerIndex].activeCards
-          .map(card => card.id)
-          .indexOf(card.id);
+        const selectedCardIndex = game.players[playerIndex].activeCards.map(card => card.id).indexOf(card.id);
 
         if (selectedCardIndex >= 0) {
           game.players[playerIndex].activeCards.splice(selectedCardIndex, 1);
@@ -89,9 +76,7 @@ const selectAnswerCard = async (
           return card;
         }
 
-        throw new Error(
-          `Player ${playerId} doesn't have card ${card.id} in his deck`,
-        );
+        throw new Error(`Player ${playerId} doesn't have card ${card.id} in his deck`);
       }
 
       throw new Error(`Player ${playerId} has already selected answer card`);
@@ -103,10 +88,7 @@ const selectAnswerCard = async (
   throw new Error(`Could not find game with id ${gameId}`);
 };
 
-const setGameCzar = async (
-  gameId: string,
-  playerId: string,
-): Promise<IGame> => {
+const setGameCzar = async (gameId: string, playerId: string): Promise<IGame> => {
   const game = ACTIVE_GAMES.get(gameId);
   if (game) {
     game.czar = playerId;
@@ -117,12 +99,4 @@ const setGameCzar = async (
   throw new Error(`Could not find game with id ${gameId}`);
 };
 
-export {
-  findGame,
-  insertGame,
-  insertGamePlayer,
-  findGamePlayer,
-  drawQuestionCard,
-  selectAnswerCard,
-  setGameCzar,
-};
+export { findGame, insertGame, insertGamePlayer, findGamePlayer, drawQuestionCard, selectAnswerCard, setGameCzar };

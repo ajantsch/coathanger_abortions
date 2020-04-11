@@ -44,8 +44,7 @@ function randomString(length: number, chars: string) {
   if (chars.indexOf("#") > -1) mask += "0123456789";
   if (chars.indexOf("!") > -1) mask += "~`!@#$%^&*()_+-={}[]:\";'<>?,./|\\";
   let result = "";
-  for (let i = length; i > 0; --i)
-    result += mask[Math.floor(Math.random() * mask.length)];
+  for (let i = length; i > 0; --i) result += mask[Math.floor(Math.random() * mask.length)];
   return result;
 }
 

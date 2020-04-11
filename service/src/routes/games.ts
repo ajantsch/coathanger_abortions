@@ -1,12 +1,5 @@
 import { DefaultRouter } from "../routers";
-import {
-  getGame,
-  postGame,
-  putGamePlayer,
-  getGamePlayer,
-  getQuestionCard,
-  putAnswerCard,
-} from "../api/games";
+import { getGame, postGame, putGamePlayer, getGamePlayer, getQuestionCard, putAnswerCard } from "../api/games";
 
 const router = DefaultRouter();
 router.post("/", postGame);

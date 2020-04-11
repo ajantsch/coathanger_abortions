@@ -39,22 +39,14 @@ const addGamePlayer = async (gameId: string, name: string) => {
 };
 
 const getGamePlayer = async (gameId: string, playerId: string) => {
-  return axios
-    .get<IPlayer>(`${API_BASE_URL}/games/${gameId}/player/${playerId}`)
-    .then(res => res.data);
+  return axios.get<IPlayer>(`${API_BASE_URL}/games/${gameId}/player/${playerId}`).then(res => res.data);
 };
 
 const drawQuestionCard = async (gameId: string) => {
-  return axios
-    .get<ICard>(`${API_BASE_URL}/games/${gameId}/draw/question`)
-    .then(res => res.data);
+  return axios.get<ICard>(`${API_BASE_URL}/games/${gameId}/draw/question`).then(res => res.data);
 };
 
-const selectAnswerCard = async (
-  gameId: string,
-  playerId: string,
-  card: ICard,
-) => {
+const selectAnswerCard = async (gameId: string, playerId: string, card: ICard) => {
   return axios
     .put<ICard>(`${API_BASE_URL}/games/${gameId}/answer`, {
       player: playerId,

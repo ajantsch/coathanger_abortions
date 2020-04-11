@@ -26,10 +26,7 @@ class Card extends React.PureComponent<ICardProps, {}> {
 
   render = () => {
     return (
-      <CardRoot
-        className={`card ${this.props.type}`}
-        onClick={this.handleCardClicked}
-      >
+      <CardRoot className={`card ${this.props.type}`} onClick={this.handleCardClicked}>
         <Typography variant="h6">{this.props.content}</Typography>
       </CardRoot>
     );

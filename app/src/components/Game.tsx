@@ -35,19 +35,13 @@ const DEFAULT_STATE: IGameState = {
   gameSocket: undefined,
 };
 
-class Game extends React.Component<
-  RouteComponentProps<{ game_id: string }>,
-  IGameState
-> {
+class Game extends React.Component<RouteComponentProps<{ game_id: string }>, IGameState> {
   constructor(props: RouteComponentProps<{ game_id: string }>) {
     super(props);
     this.state = DEFAULT_STATE;
   }
 
-  connectGameSocket = async (
-    gameId: string,
-    playerName: string,
-  ): Promise<SocketIOClient.Socket> => {
+  connectGameSocket = async (gameId: string, playerName: string): Promise<SocketIOClient.Socket> => {
     const gameSocket = await GameSocket.connectToGame(gameId, playerName);
 
     gameSocket.on("player_joined", (player: { id: string; name: string }) => {
@@ -87,10 +81,7 @@ class Game extends React.Component<
         player,
         czar: game.czar,
         players: [...this.state.players, { id: player.id, name: player.name }],
-        gameSocket: await this.connectGameSocket(
-          this.state.gameId,
-          player.name,
-        ),
+        gameSocket: await this.connectGameSocket(this.state.gameId, player.name),
       });
     } catch (e) {
       console.error(e);
@@ -106,9 +97,7 @@ class Game extends React.Component<
     ) {
       return;
     }
-    const activeQuestionCard = await GameApi.drawQuestionCard(
-      this.state.gameId,
-    );
+    const activeQuestionCard = await GameApi.drawQuestionCard(this.state.gameId);
     this.setState({
       activeCards: { ...this.state.activeCards, question: activeQuestionCard },
     });
@@ -119,10 +108,7 @@ class Game extends React.Component<
       return;
     }
     const playerCards = [...this.state.player.activeCards];
-    playerCards.splice(
-      this.state.player.activeCards.map(card => card.id).indexOf(card.id),
-      1,
-    );
+    playerCards.splice(this.state.player.activeCards.map(card => card.id).indexOf(card.id), 1);
     this.setState({
       player: { ...this.state.player, activeCards: playerCards },
     });
@@ -139,19 +125,13 @@ class Game extends React.Component<
           czar: game.czar,
           activeCards: game.activeCards,
         };
-        const previousPlayerId = window.sessionStorage.getItem(
-          `chg_${game.id}`,
-        );
-        if (
-          previousPlayerId &&
-          game.players.map(player => player.id).includes(previousPlayerId)
-        ) {
+        const previousPlayerId = window.sessionStorage.getItem(`chg_${game.id}`);
+        if (previousPlayerId && game.players.map(player => player.id).includes(previousPlayerId)) {
           state.player = await GameApi.getGamePlayer(game.id, previousPlayerId);
 
           state.gameSocket = await this.connectGameSocket(
             game.id,
-            game.players.filter(player => player.id === previousPlayerId)[0]
-              .name,
+            game.players.filter(player => player.id === previousPlayerId)[0].name,
           );
         }
         this.setState(state);
@@ -165,10 +145,7 @@ class Game extends React.Component<
     return (
       <>
         {!this.state.player && this.state.gameId && (
-          <Enter
-            gameId={this.state.gameId}
-            gameEnteredCallback={this.handleGameEntered}
-          />
+          <Enter gameId={this.state.gameId} gameEnteredCallback={this.handleGameEntered} />
         )}
         {this.state.player && this.state.gameId && (
           <>
@@ -186,16 +163,11 @@ class Game extends React.Component<
                 content={this.state.activeCards.question.content}
               />
             )}
-            {this.state.czar === this.state.player.id &&
-              !this.state.activeCards.question && (
-                <Button
-                  variant="contained"
-                  color="primary"
-                  onClick={this.handleDrawQuestionCard}
-                >
-                  Draw question card
-                </Button>
-              )}
+            {this.state.czar === this.state.player.id && !this.state.activeCards.question && (
+              <Button variant="contained" color="primary" onClick={this.handleDrawQuestionCard}>
+                Draw question card
+              </Button>
+            )}
           </>
         )}
       </>
