@@ -8,7 +8,7 @@
   "private": true,
   "scripts": {
     "start": "yarn build",
-    "build": "env NODE_ENV=production && webpack --profile",
+    "build": "webpack --profile",
     "build:local": "env NODE_ENV=local OPTIMIZED_BUILD=true webpack --profile --progress",
     "server:build": "node express --base build --silent",
     "lint": "eslint --ext .ts,.tsx,.js,.tsx src",

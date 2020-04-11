@@ -9,7 +9,7 @@ const WebpackShellPlugin = require("webpack-shell-plugin");
 const LiveReloadPlugin = require("webpack-livereload-plugin");
 const { CleanWebpackPlugin } = require("clean-webpack-plugin");
 
-const { NODE_ENV, OPTIMIZED_BUILD, PORT } = process.env;
+const { NODE_ENV, OPTIMIZED_BUILD } = process.env;
 const webpackDotEnvPath = `./config/.env.${NODE_ENV}`;
 const webpackEnvVars = Dotenv.config({ path: webpackDotEnvPath }).parsed;
 const localEnvironment = NODE_ENV === "local";
@@ -23,9 +23,6 @@ const webpackDevtool = isOptimized
 const config = {
   mode: webpackMode,
   watch: webpackWatch,
-  watchOptions: {
-    poll: true,
-  },
   entry: "./src/index.tsx",
   output: {
     path: path.resolve(__dirname, "build"),

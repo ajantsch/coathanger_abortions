@@ -1,9 +1,4 @@
-FROM node:13-alpine
-
-WORKDIR /usr/src/app
-COPY . ./
-
-RUN yarn install --frozen-lockfile --non-interactive --silent
+FROM node:12-alpine
 
 ARG OPTIMIZED_BUILD=true
 ENV OPTIMIZED_BUILD=${OPTIMIZED_BUILD}
@@ -16,5 +11,11 @@ ENV PORT=${PORT}
 
 ARG AWS_REGION=eu-central-1
 ENV AWS_REGION=${AWS_REGION}
+
+WORKDIR /usr/src/app
+COPY . ./
+
+RUN yarn install && yarn build
+EXPOSE ${PORT}
 
 CMD ["yarn", "start"]
