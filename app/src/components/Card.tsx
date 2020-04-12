@@ -1,6 +1,6 @@
 import React from "react";
 import { Paper, Typography } from "@material-ui/core";
-import styled, { AnyStyledComponent } from "styled-components";
+import styled, { css, AnyStyledComponent } from "styled-components";
 
 import { ICard } from "../services/api/game";
 
@@ -11,6 +11,7 @@ interface ICardProps {
   id: string;
   content: string;
   type: "answer" | "question";
+  showBack?: boolean;
   onCardClick?: (card: ICard) => void;
 }
 
@@ -27,39 +28,80 @@ class Card extends React.PureComponent<ICardProps, {}> {
 
   render = () => {
     return (
-      <CardRoot className={`card ${this.props.type}`} onClick={this.handleCardClicked}>
-        <Typography variant="h6">{this.props.content}</Typography>
+      <CardRoot onClick={this.handleCardClicked}>
+        <CardAnimation className={this.props.showBack && "flipped"}>
+          <CardFront className={`card ${this.props.type}`}>
+            <Typography variant="h6">{this.props.content}</Typography>
+          </CardFront>
+          <CardBack className={`card ${this.props.type}`} />
+        </CardAnimation>
       </CardRoot>
     );
   };
 }
 
-export const CardRoot: AnyStyledComponent = styled(Paper)`
-  && {
-    width: 250px;
-    height: 350px;
-    border-radius: 20px;
-    padding: 20px;
-    margin: 25px;
+const CardRoot: AnyStyledComponent = styled.div`
+  width: 250px;
+  height: 350px;
+  margin: 25px;
+  perspective: 600px;
+`;
 
+const CardAnimation: AnyStyledComponent = styled.div`
+  position: relative;
+  width: 100%;
+  height: 100%;
+  cursor: pointer;
+
+  transition: transform 1s;
+  transform-style: preserve-3d;
+
+  &.flipped {
+    transform: rotateY(180deg);
+  }
+`;
+
+const SharedCardStyles = css`
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  border-radius: 20px;
+  padding: 20px;
+  backface-visibility: hidden;
+
+  &.question {
+    background-color: #000000;
+    background-image: url(${CoathangerWhite});
+    color: #ffffff;
+  }
+
+  &.answer {
+    background-color: #ffffff;
+    background-image: url(${CoathangerBlack});
+    border: 1px solid #e3e6eb;
+    color: #000000;
+  }
+`;
+
+const CardFront: AnyStyledComponent = styled(Paper)`
+  && {
     background-size: 100px 58px;
     background-position: right 20px bottom 20px;
     background-repeat: no-repeat;
 
-    box-shadow: 0px 2px 24px #e3e6eb;
+    ${SharedCardStyles}
+  }
+`;
 
-    &.question {
-      background-color: #000000;
-      background-image: url(${CoathangerWhite});
-      color: #ffffff;
-    }
+const CardBack: AnyStyledComponent = styled(Paper)`
+  && {
+    background-size: 200px 116px;
+    background-position: center center;
+    background-repeat: no-repeat;
 
-    &.answer {
-      background-color: #ffffff;
-      background-image: url(${CoathangerBlack});
-      border: 1px solid #e3e6eb;
-      color: #000000;
-    }
+    transform: rotateY(180deg);
+
+    ${SharedCardStyles}
   }
 `;
 
