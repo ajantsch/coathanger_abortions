@@ -1,15 +1,16 @@
 import React from "react";
-import { Button } from "@material-ui/core";
+import { Button, Typography } from "@material-ui/core";
 import { withRouter, RouteComponentProps } from "react-router";
 
 import { GameApi } from "../services/api";
 import { GameSocket } from "../services/sockets";
-import { IPlayer, ICard } from "../services/api/game";
+import { IPlayer, ICard, IGivenAnswer } from "../services/api/game";
 
 import Enter from "./Enter";
 import Players from "./Players";
 import Card from "./Card";
-import PlayerCards from "./PlayerCards";
+import CardStack from "./CardStack";
+import Round from "./Round";
 
 interface IGameState {
   gameId: string | undefined;
@@ -63,8 +64,11 @@ class Game extends React.Component<RouteComponentProps<{ game_id: string }>, IGa
       });
     });
 
-    gameSocket.on("answer_card_given", (card: ICard) => {
-      console.warn("Answer card given:", card);
+    gameSocket.on("answer_card_given", (answer: IGivenAnswer) => {
+      console.warn("Answer card given:", answer.card);
+      this.setState({
+        activeCards: { ...this.state.activeCards, answers: [...this.state.activeCards.answers, answer] },
+      });
     });
 
     return gameSocket;
@@ -103,15 +107,19 @@ class Game extends React.Component<RouteComponentProps<{ game_id: string }>, IGa
     });
   };
 
-  handleAnswerCardSelected = (card: ICard) => {
-    if (!this.state.player) {
+  handleAnswerCardSelected = async (card: ICard) => {
+    if (!this.state.gameId || !this.state.player) {
       return;
     }
-    const playerCards = [...this.state.player.activeCards];
-    playerCards.splice(this.state.player.activeCards.map(card => card.id).indexOf(card.id), 1);
-    this.setState({
-      player: { ...this.state.player, activeCards: playerCards },
-    });
+
+    try {
+      const selectedCard = await GameApi.selectAnswerCard(this.state.gameId, this.state.player.id, card);
+      const playerCards = [...this.state.player.activeCards];
+      playerCards.splice(this.state.player.activeCards.map(card => card.id).indexOf(selectedCard.id), 1);
+      this.setState({
+        player: { ...this.state.player, activeCards: playerCards },
+      });
+    } catch (e) {}
   };
 
   componentDidMount = async () => {
@@ -149,13 +157,14 @@ class Game extends React.Component<RouteComponentProps<{ game_id: string }>, IGa
         )}
         {this.state.player && this.state.gameId && (
           <>
-            <Players players={this.state.players} czar={this.state.czar} />
-            <PlayerCards
-              gameId={this.state.gameId}
-              playerId={this.state.player.id}
-              cards={this.state.player.activeCards}
-              cardSelectedCallback={this.handleAnswerCardSelected}
-            />
+            {this.state.czar === this.state.player.id && !this.state.activeCards.question && (
+              <Button variant="contained" color="primary" onClick={this.handleDrawQuestionCard}>
+                Draw question card
+              </Button>
+            )}
+            <Round question={this.state.activeCards.question} answers={this.state.activeCards.answers} />
+            <Typography variant="h5">Your cards</Typography>
+            <CardStack cards={this.state.player.activeCards} onCardClick={this.handleAnswerCardSelected} />
             {this.state.activeCards.question && (
               <Card
                 id={this.state.activeCards.question.id}
@@ -163,11 +172,7 @@ class Game extends React.Component<RouteComponentProps<{ game_id: string }>, IGa
                 content={this.state.activeCards.question.content}
               />
             )}
-            {this.state.czar === this.state.player.id && !this.state.activeCards.question && (
-              <Button variant="contained" color="primary" onClick={this.handleDrawQuestionCard}>
-                Draw question card
-              </Button>
-            )}
+            <Players players={this.state.players} czar={this.state.czar} />
           </>
         )}
       </>

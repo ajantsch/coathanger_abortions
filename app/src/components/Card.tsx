@@ -11,14 +11,15 @@ interface ICardProps {
   id: string;
   content: string;
   type: "answer" | "question";
-  onCardSelected?: (card: ICard) => void;
+  onCardClick?: (card: ICard) => void;
 }
 
 class Card extends React.PureComponent<ICardProps, {}> {
   handleCardClicked = () => {
-    if (this.props.onCardSelected) {
-      this.props.onCardSelected({
+    if (this.props.onCardClick) {
+      this.props.onCardClick({
         id: this.props.id,
+        type: "answer",
         content: this.props.content,
       });
     }
@@ -39,6 +40,7 @@ export const CardRoot: AnyStyledComponent = styled(Paper)`
     height: 350px;
     border-radius: 20px;
     padding: 20px;
+    margin: 25px;
 
     background-size: 100px 58px;
     background-position: right 20px bottom 20px;

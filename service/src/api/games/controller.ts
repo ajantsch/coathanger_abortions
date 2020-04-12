@@ -152,7 +152,7 @@ const putAnswerCard = async (req: Request, res: Response) => {
   try {
     const answer = await selectAnswerCard(gameId, playerId, card);
 
-    socket.of(`/${gameId}`).emit("answer_card_given", card);
+    socket.of(`/${gameId}`).emit("answer_card_given", { player: playerId, card });
 
     res.status(200);
     res.send(answer);

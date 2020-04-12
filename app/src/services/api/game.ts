@@ -8,8 +8,13 @@ export interface IGame {
   czar: string;
   activeCards: {
     question: ICard | undefined;
-    answers: { player: string; card: ICard }[];
+    answers: IGivenAnswer[];
   };
+}
+
+export interface IGivenAnswer {
+  player: string;
+  card: ICard;
 }
 
 export interface IPlayer {
@@ -21,6 +26,7 @@ export interface IPlayer {
 
 export interface ICard {
   id: string;
+  type: "answer" | "question";
   content: string;
 }
 

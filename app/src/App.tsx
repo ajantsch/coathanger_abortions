@@ -1,6 +1,7 @@
 import React from "react";
 import { BrowserRouter as Router, Switch, Route, Redirect } from "react-router-dom";
-import { Container } from "@material-ui/core";
+import { Box, Container } from "@material-ui/core";
+import styled, { AnyStyledComponent } from "styled-components";
 import socket from "socket.io-client";
 
 import Theme from "./Theme";
@@ -21,22 +22,31 @@ class App extends React.Component {
   render = () => {
     return (
       <Theme>
-        <Container maxWidth="md">
-          <Router>
-            <Switch>
-              <Route path="/" exact default>
-                <Create />
-              </Route>
-              <Route path="/:game_id/">
-                <Game />
-              </Route>
-              <Redirect to="/"></Redirect>
-            </Switch>
-          </Router>
+        <Container maxWidth="lg">
+          <CenterBox>
+            <Router>
+              <Switch>
+                <Route path="/" exact default>
+                  <Create />
+                </Route>
+                <Route path="/:game_id/">
+                  <Game />
+                </Route>
+                <Redirect to="/"></Redirect>
+              </Switch>
+            </Router>
+          </CenterBox>
         </Container>
       </Theme>
     );
   };
 }
+
+const CenterBox: AnyStyledComponent = styled(Box)`
+  && {
+    padding: 20px 0;
+    margin: 0 auto;
+  }
+`;
 
 export default App;
