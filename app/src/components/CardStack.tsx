@@ -7,6 +7,7 @@ import Card from "./Card";
 
 interface ICardStackProps {
   cards: ICard[];
+  cardsHidden?: boolean;
   onCardClick?: (card: ICard) => void;
 }
 
@@ -19,10 +20,16 @@ class CardStack extends React.Component<ICardStackProps, {}> {
 
   render = () => {
     return (
-      <Box display="flex" flexDirection="row" flexWrap="wrap" justifyContent="flex-start">
+      <Box display="flex" flexDirection="row" flexWrap="wrap">
         {this.props.cards.map(card => (
           <CardBox key={card.id} display="flex">
-            <Card id={card.id} type={card.type} content={card.content} onCardClick={this.handleCardClicked} />
+            <Card
+              id={card.id}
+              type={card.type}
+              content={card.content}
+              isHidden={this.props.cardsHidden}
+              onCardClick={this.handleCardClicked}
+            />
           </CardBox>
         ))}
       </Box>
@@ -32,7 +39,7 @@ class CardStack extends React.Component<ICardStackProps, {}> {
 
 const CardBox: AnyStyledComponent = styled(Box)`
   && {
-    margin-bottom: -220px;
+    margin-bottom: -250px;
 
     &:last-of-type {
       margin-bottom: 0;

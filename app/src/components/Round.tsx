@@ -9,6 +9,7 @@ import CardStack from "./CardStack";
 interface IRoundProps {
   question: ICard | undefined;
   answers: { player: string; card: ICard }[];
+  answersVisible: boolean;
 }
 
 class Round extends React.Component<IRoundProps, {}> {
@@ -23,7 +24,7 @@ class Round extends React.Component<IRoundProps, {}> {
           )}
         </Box>
         <Box flexGrow={1} flexShrink={0} flexBasis={250}>
-          <CardStack cards={this.props.answers.map(answer => answer.card)} />
+          <CardStack cards={this.props.answers.map(answer => answer.card)} cardsHidden={!this.props.answersVisible} />
         </Box>
       </Box>
     );

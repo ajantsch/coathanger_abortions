@@ -11,7 +11,7 @@ interface ICardProps {
   id: string;
   content: string;
   type: "answer" | "question";
-  showBack?: boolean;
+  isHidden?: boolean;
   onCardClick?: (card: ICard) => void;
 }
 
@@ -29,11 +29,11 @@ class Card extends React.PureComponent<ICardProps, {}> {
   render = () => {
     return (
       <CardRoot onClick={this.handleCardClicked}>
-        <CardAnimation className={this.props.showBack && "flipped"}>
+        <CardAnimation className={this.props.isHidden && "hidden"}>
+          <CardBack className={`card ${this.props.type}`} />
           <CardFront className={`card ${this.props.type}`}>
             <Typography variant="h6">{this.props.content}</Typography>
           </CardFront>
-          <CardBack className={`card ${this.props.type}`} />
         </CardAnimation>
       </CardRoot>
     );
@@ -51,12 +51,11 @@ const CardAnimation: AnyStyledComponent = styled.div`
   position: relative;
   width: 100%;
   height: 100%;
-  cursor: pointer;
 
   transition: transform 1s;
   transform-style: preserve-3d;
 
-  &.flipped {
+  &.hidden {
     transform: rotateY(180deg);
   }
 `;

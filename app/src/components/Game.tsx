@@ -162,7 +162,11 @@ class Game extends React.Component<RouteComponentProps<{ game_id: string }>, IGa
                 Draw question card
               </Button>
             )}
-            <Round question={this.state.activeCards.question} answers={this.state.activeCards.answers} />
+            <Round
+              question={this.state.activeCards.question}
+              answers={this.state.activeCards.answers}
+              answersVisible={this.state.activeCards.answers.length >= this.state.players.length - 1}
+            />
             <Typography variant="h5">Your cards</Typography>
             <CardStack cards={this.state.player.activeCards} onCardClick={this.handleAnswerCardSelected} />
             {this.state.activeCards.question && (
