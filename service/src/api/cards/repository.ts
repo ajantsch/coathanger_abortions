@@ -8,27 +8,33 @@ import answerCards from "../../data/answers.txt";
 const QUESTION_CARDS: ICard[] = [];
 const ANSWER_CARDS: ICard[] = [];
 
-(questionCards as string).split("\n").map(line => {
-  QUESTION_CARDS.push({
-    id: crypto
-      .createHash("md5")
-      .update(line)
-      .digest("hex"),
-    content: line,
-    type: "question",
+(questionCards as string)
+  .split("\n")
+  .filter(line => !!line.length)
+  .map(line => {
+    QUESTION_CARDS.push({
+      id: crypto
+        .createHash("md5")
+        .update(line)
+        .digest("hex"),
+      content: line,
+      type: "question",
+    });
   });
-});
 
-(answerCards as string).split("\n").map(line => {
-  ANSWER_CARDS.push({
-    id: crypto
-      .createHash("md5")
-      .update(line)
-      .digest("hex"),
-    content: line,
-    type: "answer",
+(answerCards as string)
+  .split("\n")
+  .filter(line => !!line.length)
+  .map(line => {
+    ANSWER_CARDS.push({
+      id: crypto
+        .createHash("md5")
+        .update(line)
+        .digest("hex"),
+      content: line,
+      type: "answer",
+    });
   });
-});
 
 const getAnswerCards = async (): Promise<ICard[]> => {
   return ANSWER_CARDS;
