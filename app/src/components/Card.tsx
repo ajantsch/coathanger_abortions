@@ -88,6 +88,8 @@ const CardFront: AnyStyledComponent = styled(Paper)`
     background-position: right 20px bottom 20px;
     background-repeat: no-repeat;
 
+    transform: rotateY(0deg);
+
     ${SharedCardStyles}
   }
 `;
