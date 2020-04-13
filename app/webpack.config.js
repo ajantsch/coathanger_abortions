@@ -10,15 +10,16 @@ const LiveReloadPlugin = require("webpack-livereload-plugin");
 const { CleanWebpackPlugin } = require("clean-webpack-plugin");
 
 const { NODE_ENV, OPTIMIZED_BUILD } = process.env;
-const webpackDotEnvPath = `./config/.env.${NODE_ENV}`;
-const webpackEnvVars = Dotenv.config({ path: webpackDotEnvPath }).parsed;
+
+const envConfigPath = `./config/.env.${NODE_ENV}`;
+const envConfig = Dotenv.config({ path: envConfigPath }).parsed;
 const localEnvironment = NODE_ENV === "local";
 const isOptimized = OPTIMIZED_BUILD === "true" || NODE_ENV === "production";
 const webpackWatch = localEnvironment && !isOptimized;
 const webpackMode = isOptimized ? "production" : "development";
-const webpackDevtool = isOptimized
-  ? "hidden-source-map"
-  : "cheap-eval-source-map";
+const webpackDevtool = isOptimized ? "hidden-source-map" : "cheap-eval-source-map";
+
+console.log(`Webpack building in ${isOptimized ? "optimized" : "non-optimized"} mode`);
 
 const config = {
   mode: webpackMode,
@@ -89,7 +90,7 @@ const config = {
     new webpack.DefinePlugin({
       // We need NODE_ENV in the env object and as a separate expression
       // Otherwise, webpack will not build properly.
-      "process.env": JSON.stringify({ NODE_ENV, ...webpackEnvVars }),
+      "process.env": JSON.stringify({ ...process.env, ...envConfig }),
       "process.env.NODE_ENV": JSON.stringify(NODE_ENV),
     }),
     new CleanWebpackPlugin(),

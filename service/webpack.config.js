@@ -1,24 +1,22 @@
 const webpack = require("webpack");
 const path = require("path");
+const Dotenv = require("dotenv");
 const NodeExternals = require("webpack-node-externals");
 const WebpackShellPlugin = require("webpack-shell-plugin");
 const ForkTsCheckerWebpackPlugin = require("fork-ts-checker-webpack-plugin");
 const { CleanWebpackPlugin } = require("clean-webpack-plugin");
 
-const { NODE_ENV, OPTIMIZED_BUILD, PORT } = process.env;
+const { NODE_ENV, OPTIMIZED_BUILD } = process.env;
 
-// Webpack setup
+const envConfigPath = `./config/.env.${NODE_ENV}`;
+const envConfig = Dotenv.config({ path: envConfigPath }).parsed;
 const localEnvironment = NODE_ENV === "local";
-const optimizedBuild = OPTIMIZED_BUILD === "true";
-const webpackMode = optimizedBuild ? "production" : "development";
-const webpackWatch = localEnvironment;
-const webpackDevtool = optimizedBuild
-  ? "hidden-source-map"
-  : "cheap-eval-source-map";
+const isOptimized = OPTIMIZED_BUILD === "true" || NODE_ENV === "production";
+const webpackWatch = localEnvironment && !isOptimized;
+const webpackMode = isOptimized ? "production" : "development";
+const webpackDevtool = isOptimized ? "hidden-source-map" : "cheap-eval-source-map";
 
-console.log(
-  `Building webpack in ${optimizedBuild ? "optimized" : "non-optimized"} mode`,
-);
+console.log(`Webpack building in ${isOptimized ? "optimized" : "non-optimized"} mode`);
 
 const config = {
   entry: "./src/index.ts",
@@ -74,7 +72,7 @@ const config = {
     new webpack.DefinePlugin({
       // We need NODE_ENV in the env object and as a separate expression
       // Otherwise, webpack will not build properly.
-      "process.env.PORT": JSON.stringify(PORT),
+      "process.env": JSON.stringify({ ...process.env, ...envConfig }),
       "process.env.NODE_ENV": JSON.stringify(NODE_ENV),
     }),
   ],

@@ -24,8 +24,6 @@ app.get("/*", renderIndex);
 
 var server = app.listen(port, function() {
   if (!argv.silent) {
-    console.log(
-      "This express server is listening on port:" + server.address().port,
-    );
+    console.log("This express server is listening on port:" + server.address().port);
   }
 });
