@@ -4,7 +4,7 @@ const { API_BASE_URL } = process.env;
 
 export interface IGame {
   id: string;
-  players: { id: string; name: string }[];
+  players: Omit<IPlayer, "activeCards">[];
   czar: string;
   activeCards: {
     question: ICard | undefined;
@@ -61,6 +61,16 @@ const selectAnswerCard = async (gameId: string, playerId: string, card: ICard) =
     .then(res => res.data);
 };
 
+const selectRoundWinner = async (gameId: string, playerId: string, answer: IGivenAnswer) => {
+  return axios
+    .post(`${API_BASE_URL}/games/${gameId}/round/winner`, { player: playerId, card: answer.card })
+    .then(res => res.data);
+};
+
+const startNewRound = async (gameId: string) => {
+  return axios.put(`${API_BASE_URL}/games/${gameId}/round/start`).then(res => res.data);
+};
+
 export default {
   createGame,
   getGame,
@@ -68,4 +78,6 @@ export default {
   getGamePlayer,
   drawQuestionCard,
   selectAnswerCard,
+  selectRoundWinner,
+  startNewRound,
 };

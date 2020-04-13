@@ -15,7 +15,7 @@ import Round from "./Round";
 interface IGameState {
   gameId: string | undefined;
   player: IPlayer | undefined;
-  players: { id: string; name: string }[];
+  players: Omit<IPlayer, "activeCards">[];
   czar: string | undefined;
   activeCards: {
     question: ICard | undefined;
@@ -48,7 +48,7 @@ class Game extends React.Component<RouteComponentProps<{ game_id: string }>, IGa
     gameSocket.on("player_joined", (player: { id: string; name: string }) => {
       console.warn("Player joined:", player);
       this.setState({
-        players: [...this.state.players, player],
+        players: [...this.state.players, { ...player, wonCards: [] }],
       });
     });
 
@@ -65,10 +65,27 @@ class Game extends React.Component<RouteComponentProps<{ game_id: string }>, IGa
     });
 
     gameSocket.on("answer_card_given", (answer: IGivenAnswer) => {
-      console.warn("Answer card given:", answer.card);
+      console.warn("Answer card given:", answer);
       this.setState({
         activeCards: { ...this.state.activeCards, answers: [...this.state.activeCards.answers, answer] },
       });
+    });
+
+    gameSocket.on("round_finished", (winner: IGivenAnswer) => {
+      console.warn("Winner of the round:", winner);
+      const playerIndex = this.state.players.map(player => player.id).indexOf(winner.player);
+      const players = [...this.state.players];
+      const updatedPlayer = this.state.players[playerIndex];
+      updatedPlayer.wonCards = [...updatedPlayer.wonCards, winner.card];
+      players[playerIndex] = updatedPlayer;
+      if (playerIndex >= 0) {
+        this.setState({ players });
+      }
+      if (this.state.player) {
+        if (winner.player === this.state.player.id) {
+          console.warn("YOU HAVE WON!");
+        }
+      }
     });
 
     return gameSocket;
@@ -84,7 +101,7 @@ class Game extends React.Component<RouteComponentProps<{ game_id: string }>, IGa
       this.setState({
         player,
         czar: game.czar,
-        players: [...this.state.players, { id: player.id, name: player.name }],
+        players: [...this.state.players, { id: player.id, name: player.name, wonCards: player.wonCards }],
         gameSocket: await this.connectGameSocket(this.state.gameId, player.name),
       });
     } catch (e) {
@@ -119,6 +136,16 @@ class Game extends React.Component<RouteComponentProps<{ game_id: string }>, IGa
       this.setState({
         player: { ...this.state.player, activeCards: playerCards },
       });
+    } catch (e) {}
+  };
+
+  handleRoundWinnerSelected = async (winner: IGivenAnswer) => {
+    if (!this.state.gameId || !this.state.player) {
+      return;
+    }
+
+    try {
+      await GameApi.selectRoundWinner(this.state.gameId, this.state.player.id, winner);
     } catch (e) {}
   };
 
@@ -166,16 +193,10 @@ class Game extends React.Component<RouteComponentProps<{ game_id: string }>, IGa
               question={this.state.activeCards.question}
               answers={this.state.activeCards.answers}
               answersVisible={this.state.activeCards.answers.length >= this.state.players.length - 1}
+              winnerSelected={this.handleRoundWinnerSelected}
             />
             <Typography variant="h5">Your cards</Typography>
             <CardStack cards={this.state.player.activeCards} onCardClick={this.handleAnswerCardSelected} />
-            {this.state.activeCards.question && (
-              <Card
-                id={this.state.activeCards.question.id}
-                type="question"
-                content={this.state.activeCards.question.content}
-              />
-            )}
             <Players players={this.state.players} czar={this.state.czar} />
           </>
         )}

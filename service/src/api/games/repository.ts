@@ -94,6 +94,7 @@ const selectAnswerCard = async (gameId: string, playerId: string, card: ICard) =
   }
 
   game.players[playerIndex].activeCards.splice(selectedCardIndex, 1);
+  logger.info(`player answer received from ${playerId}`);
   game.activeCards.answers.push({ player: playerId, card });
   ACTIVE_GAMES.set(gameId, game);
   return card;
@@ -104,11 +105,13 @@ const selectWinningCard = async (gameId: string, playerId: string, cardId: strin
   if (!game) {
     throw new Error(`Could not find game with id ${gameId}`);
   }
+
   if (game.czar !== playerId) {
     throw new Error(`Cannot select winning card if you are not the czar`);
   }
 
   const winningAnswer = game.activeCards.answers.find(answer => answer.card.id === cardId);
+  logger.info(`winning answer selected, player is ${winningAnswer.player}`);
 
   if (!winningAnswer) {
     throw new Error(`Card with id ${cardId} not found in set of answers`);

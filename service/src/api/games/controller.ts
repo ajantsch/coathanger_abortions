@@ -174,9 +174,9 @@ const postWinningAnswer = async (req: Request, res: Response) => {
   res.type("json");
 
   try {
-    const answer = await selectWinningCard(gameId, playerId, card);
+    const answer = await selectWinningCard(gameId, playerId, card.id);
 
-    socket.of(`/${gameId}`).emit("round_finished", { player: playerId, card });
+    socket.of(`/${gameId}`).emit("round_finished", answer);
 
     res.status(200);
     res.send(answer);
