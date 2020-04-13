@@ -11,6 +11,8 @@ import {
   findGamePlayer,
   drawQuestionCard,
   selectAnswerCard,
+  selectWinningCard,
+  startNewRound,
   setGameCzar,
 } from "./repository";
 import { logger, randomString, genUuid, shuffle } from "../../util";
@@ -165,4 +167,56 @@ const putAnswerCard = async (req: Request, res: Response) => {
   }
 };
 
-export { getGame, postGame, putGamePlayer, getGamePlayer, getQuestionCard, putAnswerCard };
+const postWinningAnswer = async (req: Request, res: Response) => {
+  const gameId = req.params.game_id;
+  const { player: playerId, card } = req.body;
+
+  res.type("json");
+
+  try {
+    const answer = await selectWinningCard(gameId, playerId, card);
+
+    socket.of(`/${gameId}`).emit("round_finished", { player: playerId, card });
+
+    res.status(200);
+    res.send(answer);
+  } catch (err) {
+    logger.error(err);
+    res.status(404);
+    res.send(err.message);
+  } finally {
+    res.end();
+  }
+};
+
+const putNewRound = async (req: Request, res: Response) => {
+  const gameId = req.params.game_id;
+
+  res.type("json");
+
+  try {
+    const answer = await startNewRound(gameId);
+
+    socket.of(`/${gameId}`).emit("new_round");
+
+    res.status(200);
+    res.send(answer);
+  } catch (err) {
+    logger.error(err);
+    res.status(404);
+    res.send(err.message);
+  } finally {
+    res.end();
+  }
+};
+
+export {
+  getGame,
+  postGame,
+  putGamePlayer,
+  getGamePlayer,
+  getQuestionCard,
+  putAnswerCard,
+  postWinningAnswer,
+  putNewRound,
+};

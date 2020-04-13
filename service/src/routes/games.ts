@@ -1,5 +1,14 @@
 import { DefaultRouter } from "../routers";
-import { getGame, postGame, putGamePlayer, getGamePlayer, getQuestionCard, putAnswerCard } from "../api/games";
+import {
+  getGame,
+  postGame,
+  putGamePlayer,
+  getGamePlayer,
+  getQuestionCard,
+  putAnswerCard,
+  postWinningAnswer,
+  putNewRound,
+} from "../api/games";
 
 const router = DefaultRouter();
 router.post("/", postGame);
@@ -8,5 +17,7 @@ router.put("/:game_id/player", putGamePlayer);
 router.get("/:game_id/player/:player_id", getGamePlayer);
 router.get("/:game_id/draw/question", getQuestionCard);
 router.put("/:game_id/answer", putAnswerCard);
+router.put("/:game_id/round/start", putNewRound);
+router.post("/:game_id/round/winner", postWinningAnswer);
 
 export default router;
