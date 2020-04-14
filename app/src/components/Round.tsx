@@ -1,23 +1,36 @@
 import React from "react";
+import { connect } from "react-redux";
+import { AnyAction, bindActionCreators, Dispatch } from "redux";
 import { Box } from "@material-ui/core";
 
-import { ICard, IGivenAnswer } from "../services/api/game";
+import { ICard } from "../interfaces";
+import { AppState } from "../reducers";
+import actions from "../actions";
 
 import Card from "./Card";
 import CardStack from "./CardStack";
 
 interface IRoundProps {
-  question: ICard | undefined;
-  answers: IGivenAnswer[];
   answersVisible: boolean;
-  winnerSelected: (winner: IGivenAnswer) => void;
 }
 
-class Round extends React.Component<IRoundProps, {}> {
+const mapStateToProps = (state: AppState) => ({
+  game: state.game,
+});
+
+const mapDispatchToProps = (dispatch: Dispatch<AnyAction>) =>
+  bindActionCreators({ giveAnswer: actions.giveAnswer, setWinner: actions.setWinner }, dispatch);
+
+class Round extends React.Component<
+  ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps> & IRoundProps,
+  {}
+> {
   handleCardClicked = (card: ICard) => {
-    const winner = this.props.answers.find(answer => answer.card.id === card.id);
-    if (winner) {
-      this.props.winnerSelected(winner);
+    if (this.props.game.czar === this.props.game.me?.id) {
+      const winner = this.props.game.currentRound.answers.find(answer => answer.card.id === card.id);
+      if (winner) {
+        this.props.setWinner(winner);
+      }
     }
   };
 
@@ -25,15 +38,11 @@ class Round extends React.Component<IRoundProps, {}> {
     return (
       <Box display="flex" flexDirection="row" flexWrap="wrap">
         <Box flexGrow={0} flexShrink={0} flexBasis={250}>
-          {this.props.question ? (
-            <Card id={this.props.question.id} type="question" content={this.props.question.content} />
-          ) : (
-            <></>
-          )}
+          {this.props.game.currentRound.question ? <Card card={this.props.game.currentRound.question} /> : <></>}
         </Box>
         <Box flexGrow={1} flexShrink={0} flexBasis={250}>
           <CardStack
-            cards={this.props.answers.map(answer => answer.card)}
+            cards={this.props.game.currentRound.answers.map(answer => answer.card)}
             cardsHidden={!this.props.answersVisible}
             onCardClick={this.handleCardClicked}
           />
@@ -43,4 +52,4 @@ class Round extends React.Component<IRoundProps, {}> {
   };
 }
 
-export default Round;
+export default connect(mapStateToProps, mapDispatchToProps)(Round);

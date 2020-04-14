@@ -1,43 +1,37 @@
 import React from "react";
+import { Provider } from "react-redux";
 import { BrowserRouter as Router, Switch, Route, Redirect } from "react-router-dom";
 import { Box, Container } from "@material-ui/core";
 import styled, { AnyStyledComponent } from "styled-components";
-import socket from "socket.io-client";
+
+import store from "./store";
 
 import Theme from "./Theme";
 import Create from "./components/Create";
 import Game from "./components/Game";
 
-const { SOCKET_URL } = process.env;
-
 class App extends React.Component {
-  componentDidMount() {
-    if (SOCKET_URL) {
-      socket(SOCKET_URL).on("connected", () => {
-        console.log("Socket connection to service established");
-      });
-    }
-  }
-
   render = () => {
     return (
-      <Theme>
-        <Container maxWidth="lg">
-          <CenterBox>
-            <Router>
-              <Switch>
-                <Route path="/" exact default>
-                  <Create />
-                </Route>
-                <Route path="/:game_id/">
-                  <Game />
-                </Route>
-                <Redirect to="/"></Redirect>
-              </Switch>
-            </Router>
-          </CenterBox>
-        </Container>
-      </Theme>
+      <Provider store={store}>
+        <Theme>
+          <Container maxWidth="lg">
+            <CenterBox>
+              <Router>
+                <Switch>
+                  <Route path="/" exact default>
+                    <Create />
+                  </Route>
+                  <Route path="/:game_id/">
+                    <Game />
+                  </Route>
+                  <Redirect to="/"></Redirect>
+                </Switch>
+              </Router>
+            </CenterBox>
+          </Container>
+        </Theme>
+      </Provider>
     );
   };
 }

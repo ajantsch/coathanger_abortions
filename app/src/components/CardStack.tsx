@@ -2,7 +2,7 @@ import React from "react";
 import { Box } from "@material-ui/core";
 import styled, { AnyStyledComponent } from "styled-components";
 
-import { ICard } from "../services/api/game";
+import { ICard } from "../interfaces";
 import Card from "./Card";
 
 interface ICardStackProps {
@@ -12,7 +12,7 @@ interface ICardStackProps {
   onCardClick?: (card: ICard) => void;
 }
 
-class CardStack extends React.Component<ICardStackProps, {}> {
+class CardStack extends React.PureComponent<ICardStackProps, {}> {
   handleCardClicked = (card: ICard) => {
     if (this.props.onCardClick) {
       this.props.onCardClick(card);
@@ -24,13 +24,7 @@ class CardStack extends React.Component<ICardStackProps, {}> {
       <Box display="flex" flexDirection="row" flexWrap="wrap">
         {this.props.cards.map(card => (
           <CardBox key={card.id} display="flex" className={this.props.condensed && "condensed"}>
-            <Card
-              id={card.id}
-              type={card.type}
-              content={card.content}
-              isHidden={this.props.cardsHidden}
-              onCardClick={this.handleCardClicked}
-            />
+            <Card card={card} isHidden={this.props.cardsHidden} onCardClick={this.handleCardClicked} />
           </CardBox>
         ))}
       </Box>

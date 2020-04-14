@@ -1,25 +1,32 @@
 import React from "react";
 import { Button, TextField } from "@material-ui/core";
+import { connect } from "react-redux";
+import { AnyAction, bindActionCreators, Dispatch } from "redux";
 import { withRouter, RouteComponentProps } from "react-router";
 
-import { GameApi } from "../services/api";
-import { IPlayer } from "../services/api/game";
+import { AppState } from "../reducers";
+import actions from "../actions";
 
 interface IEnterState {
   name: string;
-}
-
-interface IEnterProps extends RouteComponentProps {
-  gameId: string;
-  gameEnteredCallback: (player: IPlayer) => void;
 }
 
 const DEFAULT_STATE: IEnterState = {
   name: "",
 };
 
-class Enter extends React.PureComponent<IEnterProps, IEnterState> {
-  constructor(props: IEnterProps) {
+const mapStateToProps = (state: AppState) => ({
+  game: state.game,
+});
+
+const mapDispatchToProps = (dispatch: Dispatch<AnyAction>) =>
+  bindActionCreators({ joinGame: actions.joinGame }, dispatch);
+
+class Enter extends React.PureComponent<
+  ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps> & RouteComponentProps,
+  IEnterState
+> {
+  constructor(props: ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps> & RouteComponentProps) {
     super(props);
     this.state = DEFAULT_STATE;
   }
@@ -30,10 +37,7 @@ class Enter extends React.PureComponent<IEnterProps, IEnterState> {
 
   handleFormSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
-    const player = await GameApi.addGamePlayer(this.props.gameId, this.state.name);
-    if (player) {
-      this.props.gameEnteredCallback(player);
-    }
+    this.props.joinGame(this.state.name);
   };
 
   render = () => {
@@ -57,4 +61,4 @@ class Enter extends React.PureComponent<IEnterProps, IEnterState> {
   };
 }
 
-export default withRouter(Enter);
+export default connect(mapStateToProps, mapDispatchToProps)(withRouter(Enter));

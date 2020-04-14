@@ -1,22 +1,22 @@
 import React from "react";
+import { connect } from "react-redux";
 import { Typography } from "@material-ui/core";
 
-import { IPlayer } from "../services/api/game";
+import { AppState } from "../reducers";
 
-interface IPlayersProps {
-  players: Omit<IPlayer, "activeCards">[];
-  czar?: string;
-}
+const mapStateToProps = (state: AppState) => ({
+  game: state.game,
+});
 
-class Players extends React.PureComponent<IPlayersProps, {}> {
+class Players extends React.PureComponent<ReturnType<typeof mapStateToProps>, {}> {
   render = () => {
     return (
       <>
         <Typography variant="h4">Players</Typography>
-        {this.props.players.map(player => (
+        {this.props.game.players.map(player => (
           <Typography variant="body1" key={player.id}>
             {`${player.name} (${player.wonCards.length} won cards)`}
-            {this.props.czar === player.id && " (czar)"}
+            {this.props.game.czar === player.id && " (czar)"}
           </Typography>
         ))}
       </>
@@ -24,4 +24,4 @@ class Players extends React.PureComponent<IPlayersProps, {}> {
   };
 }
 
-export default Players;
+export default connect(mapStateToProps)(Players);

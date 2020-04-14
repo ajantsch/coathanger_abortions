@@ -1,15 +1,39 @@
 import React from "react";
+import { connect } from "react-redux";
+import { AnyAction, bindActionCreators, Dispatch } from "redux";
 import { Button } from "@material-ui/core";
 import { withRouter, RouteComponentProps } from "react-router";
 
-import { GameApi } from "../services/api";
+import { AppState } from "../reducers";
+import actions from "../actions";
 
-class Create extends React.PureComponent<RouteComponentProps, {}> {
+const mapStateToProps = (state: AppState) => ({
+  game: state.game,
+});
+
+const mapDispatchToProps = (dispatch: Dispatch<AnyAction>) =>
+  bindActionCreators({ startGame: actions.startGame }, dispatch);
+
+class Create extends React.PureComponent<
+  ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps> & RouteComponentProps,
+  {}
+> {
   handleFormSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
-    const game = await GameApi.createGame();
-    if (game) {
-      this.props.history.push(`/${game.id}`);
+    this.props.startGame();
+  };
+
+  componentDidUpdate = () => {
+    console.warn(this.props.game);
+    if (this.props.game.id) {
+      this.props.history.push(`/${this.props.game.id}`);
+    }
+  };
+
+  componentDidMount = () => {
+    console.warn(this.props.game);
+    if (this.props.game.id) {
+      this.props.history.push(`/${this.props.game.id}`);
     }
   };
 
@@ -24,4 +48,4 @@ class Create extends React.PureComponent<RouteComponentProps, {}> {
   };
 }
 
-export default withRouter(Create);
+export default connect(mapStateToProps, mapDispatchToProps)(withRouter(Create));

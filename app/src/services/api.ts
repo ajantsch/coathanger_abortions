@@ -1,34 +1,8 @@
 import axios from "axios";
 
+import { IGame, IPlayer, IQuestionCard, ICard, IGivenAnswer } from "../interfaces";
+
 const { API_BASE_URL } = process.env;
-
-export interface IGame {
-  id: string;
-  players: Omit<IPlayer, "activeCards">[];
-  czar: string;
-  activeCards: {
-    question: ICard | undefined;
-    answers: IGivenAnswer[];
-  };
-}
-
-export interface IGivenAnswer {
-  player: string;
-  card: ICard;
-}
-
-export interface IPlayer {
-  id: string;
-  name: string;
-  activeCards: ICard[];
-  wonCards: ICard[];
-}
-
-export interface ICard {
-  id: string;
-  type: "answer" | "question";
-  content: string;
-}
 
 const createGame = async () => {
   return axios.post<IGame>(`${API_BASE_URL}/games`).then(res => res.data);
@@ -49,12 +23,12 @@ const getGamePlayer = async (gameId: string, playerId: string) => {
 };
 
 const drawQuestionCard = async (gameId: string) => {
-  return axios.get<ICard>(`${API_BASE_URL}/games/${gameId}/draw/question`).then(res => res.data);
+  return axios.get<IQuestionCard>(`${API_BASE_URL}/games/${gameId}/draw/question`).then(res => res.data);
 };
 
 const selectAnswerCard = async (gameId: string, playerId: string, card: ICard) => {
   return axios
-    .put<ICard>(`${API_BASE_URL}/games/${gameId}/answer`, {
+    .put<IGivenAnswer>(`${API_BASE_URL}/games/${gameId}/answer`, {
       player: playerId,
       card,
     })

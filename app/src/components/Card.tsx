@@ -2,15 +2,13 @@ import React from "react";
 import { Paper, Typography } from "@material-ui/core";
 import styled, { css, AnyStyledComponent } from "styled-components";
 
-import { ICard } from "../services/api/game";
+import { ICard } from "../interfaces";
 
 import CoathangerBlack from "../images/coathanger_black.png";
 import CoathangerWhite from "../images/coathanger_white.png";
 
 interface ICardProps {
-  id: string;
-  content: string;
-  type: "answer" | "question";
+  card: ICard;
   isHidden?: boolean;
   onCardClick?: (card: ICard) => void;
 }
@@ -18,11 +16,7 @@ interface ICardProps {
 class Card extends React.PureComponent<ICardProps, {}> {
   handleCardClicked = () => {
     if (this.props.onCardClick) {
-      this.props.onCardClick({
-        id: this.props.id,
-        type: "answer",
-        content: this.props.content,
-      });
+      this.props.onCardClick(this.props.card);
     }
   };
 
@@ -30,9 +24,9 @@ class Card extends React.PureComponent<ICardProps, {}> {
     return (
       <CardRoot onClick={this.handleCardClicked}>
         <CardAnimation className={this.props.isHidden && "hidden"}>
-          <CardBack className={`card ${this.props.type}`} />
-          <CardFront className={`card ${this.props.type}`}>
-            <Typography variant="h6">{this.props.content}</Typography>
+          <CardBack className={`card ${this.props.card.type}`} />
+          <CardFront className={`card ${this.props.card.type}`}>
+            <Typography variant="h6">{this.props.card.content}</Typography>
           </CardFront>
         </CardAnimation>
       </CardRoot>
