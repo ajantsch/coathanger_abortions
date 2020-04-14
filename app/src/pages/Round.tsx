@@ -1,7 +1,7 @@
 import React from "react";
 import { connect } from "react-redux";
 import { AnyAction, bindActionCreators, Dispatch } from "redux";
-import { Box } from "@material-ui/core";
+import { Box, Button } from "@material-ui/core";
 
 import { ICard } from "../interfaces";
 import { AppState } from "../reducers";
@@ -19,12 +19,27 @@ const mapStateToProps = (state: AppState) => ({
 });
 
 const mapDispatchToProps = (dispatch: Dispatch<AnyAction>) =>
-  bindActionCreators({ giveAnswer: actions.giveAnswer, setWinner: actions.setWinner }, dispatch);
+  bindActionCreators(
+    { drawQuestion: actions.drawQuestion, giveAnswer: actions.giveAnswer, setWinner: actions.setWinner },
+    dispatch,
+  );
 
 class Round extends React.Component<
   ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps> & IRoundProps,
   {}
 > {
+  handleDrawQuestion = async () => {
+    if (
+      !this.props.game.id ||
+      !this.props.game.me ||
+      this.props.game.czar !== this.props.game.me.id ||
+      this.props.game.currentRound.question
+    ) {
+      return;
+    }
+    this.props.drawQuestion();
+  };
+
   handleCardClicked = (card: ICard) => {
     if (this.props.game.czar === this.props.game.me?.id) {
       const winner = this.props.game.currentRound.answers.find(answer => answer.card.id === card.id);
@@ -36,18 +51,25 @@ class Round extends React.Component<
 
   render = () => {
     return (
-      <Box display="flex" flexDirection="row" flexWrap="wrap">
-        <Box flexGrow={0} flexShrink={0} flexBasis={250}>
-          {this.props.game.currentRound.question ? <Card card={this.props.game.currentRound.question} /> : <></>}
+      <>
+        {this.props.game.czar === this.props.game.me?.id && !this.props.game.currentRound.question && (
+          <Button variant="contained" color="primary" onClick={this.handleDrawQuestion}>
+            Draw question card
+          </Button>
+        )}
+        <Box display="flex" flexDirection="row" flexWrap="wrap">
+          <Box flexGrow={0} flexShrink={0} flexBasis={250}>
+            {this.props.game.currentRound.question ? <Card card={this.props.game.currentRound.question} /> : <></>}
+          </Box>
+          <Box flexGrow={1} flexShrink={0} flexBasis={250}>
+            <CardStack
+              cards={this.props.game.currentRound.answers.map(answer => answer.card)}
+              cardsHidden={!this.props.answersVisible}
+              onCardClick={this.handleCardClicked}
+            />
+          </Box>
         </Box>
-        <Box flexGrow={1} flexShrink={0} flexBasis={250}>
-          <CardStack
-            cards={this.props.game.currentRound.answers.map(answer => answer.card)}
-            cardsHidden={!this.props.answersVisible}
-            onCardClick={this.handleCardClicked}
-          />
-        </Box>
-      </Box>
+      </>
     );
   };
 }

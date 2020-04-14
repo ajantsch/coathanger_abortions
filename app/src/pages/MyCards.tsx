@@ -1,6 +1,7 @@
 import React from "react";
 import { connect } from "react-redux";
 import { AnyAction, bindActionCreators, Dispatch } from "redux";
+import { Typography } from "@material-ui/core";
 
 import CardStack from "../components/CardStack";
 import { AppState } from "../reducers";
@@ -19,7 +20,12 @@ class MyCards extends React.PureComponent<
   {}
 > {
   handleAnswerCardClicked = (card: ICard) => {
-    if (!this.props.game || !this.props.game.me) {
+    if (
+      !this.props.game ||
+      !this.props.game.me ||
+      !this.props.game.currentRound ||
+      this.props.game.czar === this.props.game.me.id
+    ) {
       return;
     }
     this.props.giveAnswer({ player: this.props.game.me.id, card });
@@ -30,6 +36,7 @@ class MyCards extends React.PureComponent<
       <>
         {this.props.game.me && (
           <>
+            <Typography variant="h5">Your cards</Typography>
             <CardStack cards={this.props.game.me.activeCards} onCardClick={this.handleAnswerCardClicked} />
             <CardStack cards={this.props.game.me.wonCards} />
           </>

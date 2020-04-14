@@ -8,7 +8,8 @@ import store from "./store";
 
 import Theme from "./Theme";
 import NewGame from "./pages/NewGame";
-import Game from "./pages/Game";
+import JoinGame from "./pages/JoinGame";
+import PlayGame from "./pages/PlayGame";
 
 class App extends React.Component {
   render = () => {
@@ -19,12 +20,9 @@ class App extends React.Component {
             <CenterBox>
               <Router>
                 <Switch>
-                  <Route path="/" exact default>
-                    <NewGame />
-                  </Route>
-                  <Route path="/:game_id/">
-                    <Game />
-                  </Route>
+                  <Route path="/" exact default component={NewGame} />
+                  <Route path="/:game_id/join" component={JoinGame} />
+                  <Route path="/:game_id/" component={PlayGame} />
                   <Redirect to="/" />
                 </Switch>
               </Router>

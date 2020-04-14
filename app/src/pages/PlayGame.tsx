@@ -1,7 +1,6 @@
 import React from "react";
 import { connect } from "react-redux";
 import { AnyAction, bindActionCreators, Dispatch } from "redux";
-import { Button, Typography } from "@material-ui/core";
 import { withRouter, RouteComponentProps } from "react-router";
 
 import { AppState } from "../reducers";
@@ -18,27 +17,12 @@ const mapStateToProps = (state: AppState) => ({
 });
 
 const mapDispatchToProps = (dispatch: Dispatch<AnyAction>) =>
-  bindActionCreators(
-    { getGame: actions.getGame, playerJoined: actions.remotePlayerJoined, drawQuestion: actions.drawQuestion },
-    dispatch,
-  );
+  bindActionCreators({ getGame: actions.getGame }, dispatch);
 
-class Game extends React.Component<
+class PlayGame extends React.Component<
   ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps> & RouteComponentProps<{ game_id: string }>,
   {}
 > {
-  handleDrawQuestionCard = async () => {
-    if (
-      !this.props.game.id ||
-      !this.props.game.me ||
-      this.props.game.czar !== this.props.game.me.id ||
-      this.props.game.currentRound.question
-    ) {
-      return;
-    }
-    this.props.drawQuestion();
-  };
-
   componentDidUpdate = () => {
     if (!this.props.game.id) {
       this.props.history.push("/");
@@ -57,13 +41,7 @@ class Game extends React.Component<
         {!this.props.game.me && this.props.game.id && <JoinGame />}
         {this.props.game.me && this.props.game.id && (
           <>
-            {this.props.game.czar === this.props.game.me.id && !this.props.game.currentRound.question && (
-              <Button variant="contained" color="primary" onClick={this.handleDrawQuestionCard}>
-                Draw question card
-              </Button>
-            )}
             <Round answersVisible={this.props.game.currentRound.answers.length >= this.props.game.players.length - 1} />
-            <Typography variant="h5">Your cards</Typography>
             <MyCards />
             <Players />
           </>
@@ -73,4 +51,4 @@ class Game extends React.Component<
   };
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(withRouter(Game));
+export default connect(mapStateToProps, mapDispatchToProps)(withRouter(PlayGame));
