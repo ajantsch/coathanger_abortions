@@ -1,11 +1,9 @@
 import React from "react";
 import { Button, TextField } from "@material-ui/core";
-import { connect } from "react-redux";
-import { AnyAction, bindActionCreators, Dispatch } from "redux";
-import { withRouter, RouteComponentProps } from "react-router";
 
-import { AppState } from "../reducers";
-import actions from "../actions";
+interface IJoinGameFormProps {
+  onFormSubmit: (name: string) => void;
+}
 
 interface IEnterState {
   name: string;
@@ -15,18 +13,8 @@ const DEFAULT_STATE: IEnterState = {
   name: "",
 };
 
-const mapStateToProps = (state: AppState) => ({
-  game: state.game,
-});
-
-const mapDispatchToProps = (dispatch: Dispatch<AnyAction>) =>
-  bindActionCreators({ joinGame: actions.joinGame }, dispatch);
-
-class Enter extends React.PureComponent<
-  ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps> & RouteComponentProps,
-  IEnterState
-> {
-  constructor(props: ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps> & RouteComponentProps) {
+class JoinGameForm extends React.PureComponent<IJoinGameFormProps, IEnterState> {
+  constructor(props: IJoinGameFormProps) {
     super(props);
     this.state = DEFAULT_STATE;
   }
@@ -37,13 +25,7 @@ class Enter extends React.PureComponent<
 
   handleFormSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
-    this.props.joinGame(this.state.name);
-  };
-
-  componentDidMount = () => {
-    if (!this.props.game.id) {
-      this.props.history.push("/");
-    }
+    this.props.onFormSubmit(this.state.name);
   };
 
   render = () => {
@@ -67,4 +49,4 @@ class Enter extends React.PureComponent<
   };
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(withRouter(Enter));
+export default JoinGameForm;

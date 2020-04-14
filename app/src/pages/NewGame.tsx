@@ -1,11 +1,12 @@
 import React from "react";
 import { connect } from "react-redux";
 import { AnyAction, bindActionCreators, Dispatch } from "redux";
-import { Button } from "@material-ui/core";
 import { withRouter, RouteComponentProps } from "react-router";
 
 import { AppState } from "../reducers";
 import actions from "../actions";
+
+import CreateGameForm from "../components/CreateGameForm";
 
 const mapStateToProps = (state: AppState) => ({
   game: state.game,
@@ -14,12 +15,10 @@ const mapStateToProps = (state: AppState) => ({
 const mapDispatchToProps = (dispatch: Dispatch<AnyAction>) =>
   bindActionCreators({ startGame: actions.startGame }, dispatch);
 
-class Create extends React.PureComponent<
-  ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps> & RouteComponentProps,
-  {}
+class NewGame extends React.Component<
+  ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps> & RouteComponentProps
 > {
-  handleFormSubmit = async (event: React.FormEvent) => {
-    event.preventDefault();
+  handleCreateGame = () => {
     this.props.startGame();
   };
 
@@ -36,14 +35,8 @@ class Create extends React.PureComponent<
   };
 
   render = () => {
-    return (
-      <form onSubmit={this.handleFormSubmit}>
-        <Button type="submit" variant="contained" color="primary">
-          Create new game
-        </Button>
-      </form>
-    );
+    return <CreateGameForm onFormSubmit={this.handleCreateGame} />;
   };
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(withRouter(Create));
+export default connect(mapStateToProps, mapDispatchToProps)(withRouter(NewGame));

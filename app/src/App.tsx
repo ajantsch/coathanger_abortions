@@ -7,8 +7,8 @@ import styled, { AnyStyledComponent } from "styled-components";
 import store from "./store";
 
 import Theme from "./Theme";
-import Create from "./components/Create";
-import Game from "./components/Game";
+import NewGame from "./pages/NewGame";
+import Game from "./pages/Game";
 
 class App extends React.Component {
   render = () => {
@@ -20,12 +20,12 @@ class App extends React.Component {
               <Router>
                 <Switch>
                   <Route path="/" exact default>
-                    <Create />
+                    <NewGame />
                   </Route>
                   <Route path="/:game_id/">
                     <Game />
                   </Route>
-                  <Redirect to="/"></Redirect>
+                  <Redirect to="/" />
                 </Switch>
               </Router>
             </CenterBox>

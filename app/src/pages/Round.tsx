@@ -7,8 +7,8 @@ import { ICard } from "../interfaces";
 import { AppState } from "../reducers";
 import actions from "../actions";
 
-import Card from "./Card";
-import CardStack from "./CardStack";
+import Card from "../components/Card";
+import CardStack from "../components/CardStack";
 
 interface IRoundProps {
   answersVisible: boolean;

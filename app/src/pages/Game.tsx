@@ -8,9 +8,9 @@ import { AppState } from "../reducers";
 import actions from "../actions";
 // import GameApi from "../services/api";
 
-import Enter from "./Enter";
-import Players from "./Players";
-import MyCards from "../pages/MyCards";
+import JoinGame from "./JoinGame";
+import Players from "../components/Players";
+import MyCards from "./MyCards";
 import Round from "./Round";
 
 const mapStateToProps = (state: AppState) => ({
@@ -54,7 +54,7 @@ class Game extends React.Component<
   render = () => {
     return (
       <>
-        {!this.props.game.me && this.props.game.id && <Enter />}
+        {!this.props.game.me && this.props.game.id && <JoinGame />}
         {this.props.game.me && this.props.game.id && (
           <>
             {this.props.game.czar === this.props.game.me.id && !this.props.game.currentRound.question && (
