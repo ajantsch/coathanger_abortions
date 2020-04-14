@@ -24,14 +24,12 @@ class Create extends React.PureComponent<
   };
 
   componentDidUpdate = () => {
-    console.warn(this.props.game);
     if (this.props.game.id) {
       this.props.history.push(`/${this.props.game.id}`);
     }
   };
 
   componentDidMount = () => {
-    console.warn(this.props.game);
     if (this.props.game.id) {
       this.props.history.push(`/${this.props.game.id}`);
     }

@@ -39,15 +39,16 @@ class Game extends React.Component<
     this.props.drawQuestion();
   };
 
-  /*
   componentDidUpdate = () => {
     if (!this.props.game.id) {
       this.props.history.push("/");
     }
   };
-  */
+
   componentDidMount = async () => {
-    // this.props.getGame(this.props.match.params.game_id);
+    if (this.props.match.params.game_id) {
+      this.props.getGame(this.props.match.params.game_id);
+    }
   };
 
   render = () => {

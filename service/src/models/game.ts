@@ -9,7 +9,7 @@ interface IGame {
     questions: ICard[];
     answers: ICard[];
   };
-  activeCards: {
+  currentRound: {
     question: ICard;
     answers: { player: string; card: ICard }[];
   };
@@ -24,7 +24,7 @@ const newGame = (): IGame => {
       questions: [],
       answers: [],
     },
-    activeCards: {
+    currentRound: {
       question: undefined,
       answers: [],
     },

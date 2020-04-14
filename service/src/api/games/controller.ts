@@ -18,7 +18,18 @@ import {
 import { logger, randomString, genUuid, shuffle } from "../../util";
 import { socket } from "../../server";
 
-const PLAYER_ANSWER_CARD_COUNT = 5;
+const PLAYER_ANSWER_CARD_COUNT = 10;
+
+function gameOutputSanitization(game: IGame) {
+  const { availableCards, ...sanitized } = {
+    ...game,
+    players: game.players.map(player => {
+      const { activeCards, ...sanitized } = player;
+      return sanitized;
+    }),
+  };
+  return sanitized;
+}
 
 const getGame = async (req: Request, res: Response) => {
   const id = req.params.game_id;
@@ -27,7 +38,7 @@ const getGame = async (req: Request, res: Response) => {
   try {
     const game = await findGame(id);
     res.status(200);
-    res.send(game);
+    res.send(gameOutputSanitization(game));
   } catch (err) {
     logger.error(err);
     res.status(404);
@@ -55,7 +66,7 @@ const postGame = async (_req: Request, res: Response) => {
   try {
     const inserted = await insertGame(game);
     res.status(201);
-    res.send(inserted);
+    res.send(gameOutputSanitization(inserted));
     res.end();
   } catch (err) {
     logger.error(err);
@@ -87,7 +98,9 @@ const putGamePlayer = async (req: Request, res: Response) => {
     socket.of(`/${gameId}`).emit("player_joined", inserted);
 
     const updatedGame = await findGame(gameId);
+
     // if the first player was added to the game, elect him czar
+    // TODO: doesn't work as player only registers socket after response
     if (updatedGame && updatedGame.players.length === 1) {
       setGameCzar(updatedGame.id, updatedGame.players[0].id);
       socket.of(`/${gameId}`).emit("czar_set", updatedGame.players[0].id);

@@ -23,6 +23,7 @@ module.exports = {
       { prefixWithI: "always" },
     ],
     "@typescript-eslint/no-non-null-assertion": "off",
+    "@typescript-eslint/no-unused-vars" : ["error", { "ignoreRestSiblings": true }],
   },
   overrides: [
     {

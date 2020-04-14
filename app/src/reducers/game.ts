@@ -1,7 +1,7 @@
 import { IGame, IGivenAnswer } from "../interfaces";
 import { GameAction, GameActionTypes } from "../actions/game";
 
-const initialState: IGame = {
+export const initialState: IGame = {
   id: undefined,
   me: undefined,
   players: [],
@@ -38,7 +38,7 @@ export default function(state: IGame = initialState, action: GameAction) {
     case GameActionTypes.GET_GAME:
       return { ...state, ...action.payload };
     case GameActionTypes.START_GAME:
-      return { ...state, id: action.payload.id };
+      return { ...state, ...action.payload };
     case GameActionTypes.JOIN_GAME:
       return {
         ...state,

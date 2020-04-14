@@ -55,7 +55,7 @@ const startNewRound = async (gameId: string) => {
     throw new Error(`Could not find game with id ${gameId}`);
   }
 
-  game.activeCards = {
+  game.currentRound = {
     question: undefined,
     answers: [],
   };
@@ -69,7 +69,7 @@ const drawQuestionCard = async (gameId: string): Promise<ICard> => {
   }
 
   const card = game.availableCards.questions.splice(0, 1)[0];
-  game.activeCards.question = card;
+  game.currentRound.question = card;
   ACTIVE_GAMES.set(gameId, game);
   return card;
 };
@@ -82,7 +82,7 @@ const selectAnswerCard = async (gameId: string, playerId: string, card: ICard) =
   if (game.czar === playerId) {
     throw new Error(`Cannot select answer card as czar`);
   }
-  if (game.activeCards.answers.find(entry => entry.player === playerId)) {
+  if (game.currentRound.answers.find(entry => entry.player === playerId)) {
     throw new Error(`Player ${playerId} has already selected answer card`);
   }
 
@@ -95,7 +95,7 @@ const selectAnswerCard = async (gameId: string, playerId: string, card: ICard) =
 
   game.players[playerIndex].activeCards.splice(selectedCardIndex, 1);
   logger.info(`player answer received from ${playerId}`);
-  game.activeCards.answers.push({ player: playerId, card });
+  game.currentRound.answers.push({ player: playerId, card });
   ACTIVE_GAMES.set(gameId, game);
   return card;
 };
@@ -110,7 +110,7 @@ const selectWinningCard = async (gameId: string, playerId: string, cardId: strin
     throw new Error(`Cannot select winning card if you are not the czar`);
   }
 
-  const winningAnswer = game.activeCards.answers.find(answer => answer.card.id === cardId);
+  const winningAnswer = game.currentRound.answers.find(answer => answer.card.id === cardId);
   logger.info(`winning answer selected, player is ${winningAnswer.player}`);
 
   if (!winningAnswer) {

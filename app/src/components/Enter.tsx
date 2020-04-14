@@ -40,6 +40,12 @@ class Enter extends React.PureComponent<
     this.props.joinGame(this.state.name);
   };
 
+  componentDidMount = () => {
+    if (!this.props.game.id) {
+      this.props.history.push("/");
+    }
+  };
+
   render = () => {
     return (
       <form onSubmit={this.handleFormSubmit}>

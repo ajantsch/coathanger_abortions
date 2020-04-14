@@ -23,13 +23,8 @@ module.exports = {
     // e.g. "@typescript-eslint/explicit-function-return-type": "off",
     "@typescript-eslint/camelcase": "off",
     "@typescript-eslint/explicit-function-return-type": "off",
-    "@typescript-eslint/interface-name-prefix": [
-      "error",
-      { prefixWithI: "always" },
-    ],
-    "@typescript-eslint/no-explicit-any": "off",
-    "@typescript-eslint/no-non-null-assertion": "off",
-    "@typescript-eslint/no-unused-vars": "off",
+    "@typescript-eslint/interface-name-prefix": ["error", { prefixWithI: "always" }],
+    "@typescript-eslint/no-unused-vars": ["error", { ignoreRestSiblings: true }],
     "react/prop-types": "off",
     "react/display-name": "off",
     "import/no-extraneous-dependencies": [

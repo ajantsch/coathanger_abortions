@@ -5,6 +5,7 @@ import GameSocket from "../services/socket";
 import { IBaseAction } from "./index";
 import { AppState } from "../reducers";
 import { IGame, IPlayer, IRemotePlayer, IQuestionCard, IGivenAnswer } from "../interfaces";
+import { initialState } from "../reducers/game";
 
 export enum GameActionTypes {
   GET_GAME = "GET_GAME",
@@ -26,7 +27,7 @@ export interface IGetGameAction extends IBaseAction {
 
 export interface IStartGameAction extends IBaseAction {
   type: GameActionTypes.START_GAME;
-  payload: Pick<IGame, "id">;
+  payload: IGame;
 }
 
 export interface IJoinGameAction extends IBaseAction {
@@ -87,19 +88,25 @@ export function startGame(): ThunkAction<Promise<IStartGameAction>, AppState, un
 
     return dispatch({
       type: GameActionTypes.START_GAME,
-      payload: { id: game.id },
+      payload: game,
     });
   };
 }
 
 export function getGame(gameId: string): ThunkAction<Promise<IGetGameAction>, AppState, undefined, IGetGameAction> {
   return async (dispatch: ThunkDispatch<AppState, undefined, IGetGameAction>) => {
-    const game = await GameApi.getGame(gameId);
-    console.warn(game);
-    return dispatch({
-      type: GameActionTypes.GET_GAME,
-      payload: game,
-    });
+    try {
+      const game = await GameApi.getGame(gameId);
+      return dispatch({
+        type: GameActionTypes.GET_GAME,
+        payload: game,
+      });
+    } catch (e) {
+      return dispatch({
+        type: GameActionTypes.GET_GAME,
+        payload: initialState,
+      });
+    }
   };
 }
 
@@ -111,6 +118,8 @@ export function joinGame(
     const player = await GameApi.addGamePlayer(gameId as string, playerName);
 
     await GameSocket.connectToGame(gameId as string, playerName);
+
+    dispatch(getGame(gameId as string));
 
     return dispatch({
       type: GameActionTypes.JOIN_GAME,

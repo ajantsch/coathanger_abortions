@@ -39,21 +39,6 @@ const connectToGame = (gameId: string, playerName: string): Promise<SocketIOClie
       gameSocket.on("round_finished", (winner: IGivenAnswer) => {
         console.warn("Winner of the round:", winner);
         store.dispatch(actions.winnerReceived(winner));
-        /*
-        const playerIndex = this.state.players.map(player => player.id).indexOf(winner.player);
-        const players = [...this.state.players];
-        const updatedPlayer = this.state.players[playerIndex];
-        updatedPlayer.wonCards = [...updatedPlayer.wonCards, winner.card];
-        players[playerIndex] = updatedPlayer;
-        if (playerIndex >= 0) {
-          this.setState({ players });
-        }
-        if (this.state.player) {
-          if (winner.player === this.state.player.id) {
-            console.warn("YOU HAVE WON!");
-          }
-        }
-        */
       });
 
       resolve(gameSocket);
