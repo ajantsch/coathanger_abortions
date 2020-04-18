@@ -139,8 +139,6 @@ export function joinGame(
 
     await GameSocket.connectToGame(gameId as string, playerName);
 
-    dispatch(getGame(gameId as string));
-
     return dispatch({
       type: GameActionTypes.JOIN_GAME,
       payload: player,

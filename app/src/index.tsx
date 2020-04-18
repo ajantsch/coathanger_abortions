@@ -4,6 +4,9 @@ import "raf/polyfill";
 import React from "react";
 import ReactDOM from "react-dom";
 
+import "./styles/reset.css";
+import "./styles/base.css";
+
 import App from "./App";
 
 const target = document.getElementById("root");

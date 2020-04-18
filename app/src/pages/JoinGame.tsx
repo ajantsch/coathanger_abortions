@@ -6,6 +6,7 @@ import { withRouter, RouteComponentProps } from "react-router";
 import { AppState } from "../reducers";
 import actions from "../actions";
 
+import JoinLayout from "../components/JoinLayout";
 import JoinGameForm from "../components/JoinGameForm";
 
 const mapStateToProps = (state: AppState) => ({
@@ -13,7 +14,7 @@ const mapStateToProps = (state: AppState) => ({
 });
 
 const mapDispatchToProps = (dispatch: Dispatch<AnyAction>) =>
-  bindActionCreators({ joinGame: actions.joinGame }, dispatch);
+  bindActionCreators({ getGame: actions.getGame, joinGame: actions.joinGame }, dispatch);
 
 class JoinGame extends React.Component<
   ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps> & RouteComponentProps<{ game_id: string }>
@@ -22,7 +23,7 @@ class JoinGame extends React.Component<
     this.props.joinGame(name);
   };
 
-  routeGuard = () => {
+  componentDidUpdate = () => {
     if (!this.props.game.id) {
       return this.props.history.push("/");
     }
@@ -31,16 +32,18 @@ class JoinGame extends React.Component<
     }
   };
 
-  componentDidUpdate = () => {
-    this.routeGuard();
-  };
-
   componentDidMount = () => {
-    this.routeGuard();
+    if (this.props.match.params.game_id) {
+      this.props.getGame(this.props.match.params.game_id);
+    }
   };
 
   render = () => {
-    return <JoinGameForm onFormSubmit={this.handleJoinGame} />;
+    return (
+      <JoinLayout>
+        <JoinGameForm onFormSubmit={this.handleJoinGame} />
+      </JoinLayout>
+    );
   };
 }
 

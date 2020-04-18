@@ -6,6 +6,7 @@ import { withRouter, RouteComponentProps } from "react-router";
 import { AppState } from "../reducers";
 import actions from "../actions";
 
+import JoinLayout from "../components/JoinLayout";
 import CreateGameForm from "../components/CreateGameForm";
 
 const mapStateToProps = (state: AppState) => ({
@@ -40,7 +41,11 @@ class NewGame extends React.Component<
   };
 
   render = () => {
-    return <CreateGameForm onFormSubmit={this.handleCreateGame} />;
+    return (
+      <JoinLayout>
+        <CreateGameForm onFormSubmit={this.handleCreateGame} />
+      </JoinLayout>
+    );
   };
 }
 

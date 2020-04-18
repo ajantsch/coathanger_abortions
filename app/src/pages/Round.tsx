@@ -59,6 +59,7 @@ class Round extends React.Component<ReturnType<typeof mapStateToProps> & ReturnT
     const showRevealAnswersButton =
       this.props.game.currentRound.question &&
       this.props.game.czar === this.props.game.me?.id &&
+      !!this.props.game.currentRound.answers.length &&
       this.props.game.currentRound.answers.length === this.props.game.players.length - 1 &&
       !this.props.game.currentRound.answersRevealed;
     return (

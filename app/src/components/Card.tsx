@@ -63,16 +63,16 @@ const SharedCardStyles = css`
   backface-visibility: hidden;
 
   &.question {
-    background-color: #000000;
+    background-color: #1c1c1c;
     background-image: url(${CoathangerWhite});
-    color: #ffffff;
+    color: #f3f3f4;
   }
 
   &.answer {
     background-color: #ffffff;
     background-image: url(${CoathangerBlack});
     border: 1px solid #e3e6eb;
-    color: #000000;
+    color: #1c1c1c;
   }
 `;
 
