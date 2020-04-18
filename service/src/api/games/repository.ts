@@ -89,7 +89,6 @@ const selectAnswerCard = async (gameId: string, playerId: string, card: ICard) =
   }
 
   const playerIndex = game.players.map(player => player.id).indexOf(playerId);
-  console.warn(playerId, playerIndex);
   const selectedCardIndex = game.players[playerIndex].activeCards.map(card => card.id).indexOf(card.id);
 
   if (selectedCardIndex < 0) {
