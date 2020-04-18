@@ -9,6 +9,7 @@ export interface IGame {
 export interface IRound {
   question?: IQuestionCard;
   answers: IGivenAnswer[];
+  answersRevealed: boolean;
   winner?: IGivenAnswer;
 }
 

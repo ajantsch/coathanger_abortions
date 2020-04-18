@@ -11,6 +11,7 @@ import {
   findGamePlayer,
   drawQuestionCard,
   selectAnswerCard,
+  revealAnswers,
   selectWinningCard,
   startNewRound,
   setGameCzar,
@@ -180,6 +181,27 @@ const putAnswerCard = async (req: Request, res: Response) => {
   }
 };
 
+const patchRevealAnswers = async (req: Request, res: Response) => {
+  const gameId = req.params.game_id;
+
+  res.type("json");
+
+  try {
+    const revealed = await revealAnswers(gameId);
+
+    socket.of(`/${gameId}`).emit("answers_revealed", revealed);
+
+    res.status(200);
+    res.send(revealed);
+  } catch (err) {
+    logger.error(err);
+    res.status(404);
+    res.send(err.message);
+  } finally {
+    res.end();
+  }
+};
+
 const postWinningAnswer = async (req: Request, res: Response) => {
   const gameId = req.params.game_id;
   const { player: playerId, card } = req.body;
@@ -230,6 +252,7 @@ export {
   getGamePlayer,
   getQuestionCard,
   putAnswerCard,
+  patchRevealAnswers,
   postWinningAnswer,
   putNewRound,
 };

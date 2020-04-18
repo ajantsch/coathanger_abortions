@@ -2,7 +2,7 @@ import io from "socket.io-client";
 
 import actions from "../actions";
 import store from "../store";
-import { IRemotePlayer, IQuestionCard, IGivenAnswer } from "../interfaces";
+import { IRound, IRemotePlayer, IQuestionCard, IGivenAnswer } from "../interfaces";
 
 const { SOCKET_URL } = process.env;
 
@@ -24,16 +24,17 @@ const connectToGame = (gameId: string, playerName: string): Promise<SocketIOClie
 
       gameSocket.on("question_card_drawn", (card: IQuestionCard) => {
         console.warn("Question card drawn:", card);
-        /*
-        this.setState({
-          activeCards: { ...this.state.activeCards, question: card },
-        });
-        */
+        store.dispatch(actions.questionReceived(card));
       });
 
       gameSocket.on("answer_card_given", (answer: IGivenAnswer) => {
         console.warn("Answer card given:", answer);
         store.dispatch(actions.answerReceived(answer));
+      });
+
+      gameSocket.on("answers_revealed", (round: IRound) => {
+        console.warn("Answers revealed:", round);
+        store.dispatch(actions.answersRevealed(round));
       });
 
       gameSocket.on("round_finished", (winner: IGivenAnswer) => {

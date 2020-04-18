@@ -10,24 +10,22 @@ import actions from "../actions";
 import Card from "../components/Card";
 import CardStack from "../components/CardStack";
 
-interface IRoundProps {
-  answersVisible: boolean;
-}
-
 const mapStateToProps = (state: AppState) => ({
   game: state.game,
 });
 
 const mapDispatchToProps = (dispatch: Dispatch<AnyAction>) =>
   bindActionCreators(
-    { drawQuestion: actions.drawQuestion, giveAnswer: actions.giveAnswer, setWinner: actions.setWinner },
+    {
+      drawQuestion: actions.drawQuestion,
+      giveAnswer: actions.giveAnswer,
+      revealAnswers: actions.revealAnswers,
+      setWinner: actions.setWinner,
+    },
     dispatch,
   );
 
-class Round extends React.Component<
-  ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps> & IRoundProps,
-  {}
-> {
+class Round extends React.Component<ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps>, {}> {
   handleDrawQuestion = async () => {
     if (
       !this.props.game.id ||
@@ -49,10 +47,23 @@ class Round extends React.Component<
     }
   };
 
+  handleRevealAnswers = () => {
+    if (this.props.game.czar === this.props.game.me?.id) {
+      this.props.revealAnswers();
+    }
+  };
+
   render = () => {
+    const showDrawQuestionButton =
+      this.props.game.czar === this.props.game.me?.id && !this.props.game.currentRound.question;
+    const showRevealAnswersButton =
+      this.props.game.currentRound.question &&
+      this.props.game.czar === this.props.game.me?.id &&
+      this.props.game.currentRound.answers.length === this.props.game.players.length - 1 &&
+      !this.props.game.currentRound.answersRevealed;
     return (
       <>
-        {this.props.game.czar === this.props.game.me?.id && !this.props.game.currentRound.question && (
+        {showDrawQuestionButton && (
           <Button variant="contained" color="primary" onClick={this.handleDrawQuestion}>
             Draw question card
           </Button>
@@ -64,9 +75,14 @@ class Round extends React.Component<
           <Box flexGrow={1} flexShrink={0} flexBasis={250}>
             <CardStack
               cards={this.props.game.currentRound.answers.map(answer => answer.card)}
-              cardsHidden={!this.props.answersVisible}
+              cardsHidden={!this.props.game.currentRound.answersRevealed}
               onCardClick={this.handleCardClicked}
             />
+            {showRevealAnswersButton && (
+              <Button variant="contained" color="primary" onClick={this.handleRevealAnswers}>
+                Reveal answers
+              </Button>
+            )}
           </Box>
         </Box>
       </>

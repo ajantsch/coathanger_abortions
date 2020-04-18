@@ -1,12 +1,7 @@
-import React from "react";
 import { createMuiTheme, responsiveFontSizes } from "@material-ui/core/styles";
-import { ThemeProvider } from "@material-ui/styles";
+0;
 
-interface IThemeProps {
-  children: any;
-}
-
-const theme = responsiveFontSizes(
+export default responsiveFontSizes(
   createMuiTheme({
     typography: {
       fontFamily: ['"Open Sans"', "sans-serif"].join(","),
@@ -44,9 +39,3 @@ const theme = responsiveFontSizes(
     },
   }),
 );
-
-function Theme(props: IThemeProps) {
-  return <ThemeProvider theme={theme}>{props.children}</ThemeProvider>;
-}
-
-export default Theme;

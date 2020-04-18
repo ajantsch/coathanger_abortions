@@ -4,7 +4,7 @@ import GameApi from "../services/api";
 import GameSocket from "../services/socket";
 import { IBaseAction } from "./index";
 import { AppState } from "../reducers";
-import { IGame, IPlayer, IRemotePlayer, IQuestionCard, IGivenAnswer } from "../interfaces";
+import { IGame, IPlayer, IRemotePlayer, IQuestionCard, IGivenAnswer, IRound } from "../interfaces";
 import { initialState } from "../reducers/game";
 
 export enum GameActionTypes {
@@ -14,7 +14,10 @@ export enum GameActionTypes {
   REMOTE_PLAYER_JOINED = "REMOTE_PLAYER_JOINED",
   CZAR_SET = "CZAR_SET",
   DRAW_QUESTION = "DRAW_QUESTION",
+  REVEAL_ANSWERS = "REVEAL_ANSWERS",
+  RECEIVE_QUESTION = "RECEIVE_QUESTION",
   RECEIVE_ANSWER = "RECEIVE_ANSWER",
+  RECEIVE_ANSWERS_REVEALED = "RECEIVE_ANSWERS_REVEALED",
   RECEIVE_WINNER = "RECEIVE_WINNER",
   GIVE_ANSER = "GIVE_ANSWER",
   SET_WINNER = "SET_WINNER",
@@ -45,14 +48,28 @@ export interface ICzarSetAction extends IBaseAction {
   payload: string;
 }
 
+export interface IReceiveQuestionAction extends IBaseAction {
+  type: GameActionTypes.RECEIVE_QUESTION;
+  payload: IQuestionCard;
+}
+
 export interface IDrawQuestionAction extends IBaseAction {
   type: GameActionTypes.DRAW_QUESTION;
   payload: IQuestionCard;
 }
 
+export interface IRevealAnswersAction extends IBaseAction {
+  type: GameActionTypes.REVEAL_ANSWERS;
+}
+
 export interface IReceiveAnswerAction extends IBaseAction {
   type: GameActionTypes.RECEIVE_ANSWER;
   payload: IGivenAnswer;
+}
+
+export interface IReceiveReveiledAnswersAction extends IBaseAction {
+  type: GameActionTypes.RECEIVE_ANSWERS_REVEALED;
+  payload: IRound;
 }
 
 export interface IReceiveWinnerAction extends IBaseAction {
@@ -77,7 +94,10 @@ export type GameAction =
   | IRemotePlayerJoinedAction
   | ICzarSetAction
   | IDrawQuestionAction
+  | IReceiveQuestionAction
   | IReceiveAnswerAction
+  | IRevealAnswersAction
+  | IReceiveReveiledAnswersAction
   | IReceiveWinnerAction
   | IGiveAnswerAction
   | ISetWinnerAction;
@@ -142,9 +162,23 @@ export function czarSet(playerId: string): ICzarSetAction {
   };
 }
 
+export function questionReceived(question: IQuestionCard): IReceiveQuestionAction {
+  return {
+    type: GameActionTypes.RECEIVE_QUESTION,
+    payload: question,
+  };
+}
+
 export function answerReceived(answer: IGivenAnswer): IReceiveAnswerAction {
   return {
     type: GameActionTypes.RECEIVE_ANSWER,
+    payload: answer,
+  };
+}
+
+export function answersRevealed(answer: IRound): IReceiveReveiledAnswersAction {
+  return {
+    type: GameActionTypes.RECEIVE_ANSWERS_REVEALED,
     payload: answer,
   };
 }
@@ -164,6 +198,17 @@ export function drawQuestion(): ThunkAction<Promise<IDrawQuestionAction>, AppSta
     return dispatch({
       type: GameActionTypes.DRAW_QUESTION,
       payload: questionCard,
+    });
+  };
+}
+
+export function revealAnswers(): ThunkAction<Promise<IRevealAnswersAction>, AppState, undefined, IRevealAnswersAction> {
+  return async (dispatch: ThunkDispatch<AppState, undefined, IRevealAnswersAction>, getState) => {
+    const gameId = getState().game.id;
+    await GameApi.revealAnswers(gameId as string);
+
+    return dispatch({
+      type: GameActionTypes.REVEAL_ANSWERS,
     });
   };
 }

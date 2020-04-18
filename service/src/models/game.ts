@@ -12,6 +12,8 @@ interface IGame {
   currentRound: {
     question: ICard;
     answers: { player: string; card: ICard }[];
+    answersRevealed: boolean;
+    winner: { player: string; card: ICard };
   };
 }
 
@@ -27,6 +29,8 @@ const newGame = (): IGame => {
     currentRound: {
       question: undefined,
       answers: [],
+      answersRevealed: false,
+      winner: undefined,
     },
   };
 };

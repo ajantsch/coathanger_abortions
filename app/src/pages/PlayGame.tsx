@@ -41,7 +41,7 @@ class PlayGame extends React.Component<
         {!this.props.game.me && this.props.game.id && <JoinGame />}
         {this.props.game.me && this.props.game.id && (
           <>
-            <Round answersVisible={this.props.game.currentRound.answers.length >= this.props.game.players.length - 1} />
+            <Round />
             <MyCards />
             <Players />
           </>

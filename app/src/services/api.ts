@@ -35,6 +35,10 @@ const selectAnswerCard = async (gameId: string, playerId: string, card: ICard) =
     .then(res => res.data);
 };
 
+const revealAnswers = async (gameId: string) => {
+  return axios.patch(`${API_BASE_URL}/games/${gameId}/round/reveal`).then(res => res.data);
+};
+
 const selectRoundWinner = async (gameId: string, playerId: string, answer: IGivenAnswer) => {
   return axios
     .post(`${API_BASE_URL}/games/${gameId}/round/winner`, { player: playerId, card: answer.card })
@@ -52,6 +56,7 @@ export default {
   getGamePlayer,
   drawQuestionCard,
   selectAnswerCard,
+  revealAnswers,
   selectRoundWinner,
   startNewRound,
 };

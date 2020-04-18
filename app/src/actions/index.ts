@@ -8,8 +8,11 @@ import {
   czarSet,
   drawQuestion,
   giveAnswer,
+  revealAnswers,
   setWinner,
+  questionReceived,
   answerReceived,
+  answersRevealed,
   winnerReceived,
 } from "./game";
 
@@ -28,7 +31,10 @@ export default {
   czarSet,
   drawQuestion,
   giveAnswer,
+  revealAnswers,
   setWinner,
+  questionReceived,
   answerReceived,
+  answersRevealed,
   winnerReceived,
 };

@@ -9,6 +9,7 @@ export const initialState: IGame = {
   currentRound: {
     question: undefined,
     answers: [],
+    answersRevealed: false,
     winner: undefined,
   },
 };
@@ -50,13 +51,26 @@ export default function(state: IGame = initialState, action: GameAction) {
     case GameActionTypes.CZAR_SET:
       return { ...state, czar: action.payload };
     case GameActionTypes.DRAW_QUESTION:
-      return { ...state, currentRound: { ...state.currentRound, question: action.payload, answers: [] } };
+      return { ...state, currentRound: { ...state.currentRound, question: action.payload } };
+    case GameActionTypes.RECEIVE_QUESTION:
+      return { ...state, currentRound: { ...state.currentRound, question: action.payload } };
     case GameActionTypes.GIVE_ANSER:
       return giveAnswer(state, action.payload);
     case GameActionTypes.RECEIVE_ANSWER:
       return {
         ...state,
         currentRound: { ...state.currentRound, answers: [...state.currentRound.answers, action.payload] },
+      };
+    case GameActionTypes.REVEAL_ANSWERS: {
+      return {
+        ...state,
+        currentRound: { ...state.currentRound, answersRevealed: true },
+      };
+    }
+    case GameActionTypes.RECEIVE_ANSWERS_REVEALED:
+      return {
+        ...state,
+        currentRound: action.payload,
       };
     case GameActionTypes.RECEIVE_WINNER:
       return winnerReceived(state, action.payload);

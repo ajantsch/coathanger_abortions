@@ -5,6 +5,7 @@ import {
   getGamePlayer,
   getQuestionCard,
   putAnswerCard,
+  patchRevealAnswers,
   postWinningAnswer,
   putNewRound,
 } from "./controller";
@@ -16,6 +17,7 @@ export {
   getGamePlayer,
   getQuestionCard,
   putAnswerCard,
+  patchRevealAnswers,
   postWinningAnswer,
   putNewRound,
 };

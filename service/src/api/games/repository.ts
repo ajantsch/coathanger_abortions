@@ -58,6 +58,8 @@ const startNewRound = async (gameId: string) => {
   game.currentRound = {
     question: undefined,
     answers: [],
+    answersRevealed: false,
+    winner: undefined,
   };
   ACTIVE_GAMES.set(gameId, game);
 };
@@ -87,6 +89,7 @@ const selectAnswerCard = async (gameId: string, playerId: string, card: ICard) =
   }
 
   const playerIndex = game.players.map(player => player.id).indexOf(playerId);
+  console.warn(playerId, playerIndex);
   const selectedCardIndex = game.players[playerIndex].activeCards.map(card => card.id).indexOf(card.id);
 
   if (selectedCardIndex < 0) {
@@ -98,6 +101,17 @@ const selectAnswerCard = async (gameId: string, playerId: string, card: ICard) =
   game.currentRound.answers.push({ player: playerId, card });
   ACTIVE_GAMES.set(gameId, game);
   return card;
+};
+
+const revealAnswers = async (gameId: string) => {
+  const game = ACTIVE_GAMES.get(gameId);
+  if (!game) {
+    throw new Error(`Could not find game with id ${gameId}`);
+  }
+
+  game.currentRound.answersRevealed = true;
+  ACTIVE_GAMES.set(gameId, game);
+  return game.currentRound;
 };
 
 const selectWinningCard = async (gameId: string, playerId: string, cardId: string) => {
@@ -117,8 +131,10 @@ const selectWinningCard = async (gameId: string, playerId: string, cardId: strin
     throw new Error(`Card with id ${cardId} not found in set of answers`);
   }
 
+  game.currentRound.winner = winningAnswer;
   const playerIndex = game.players.map(player => player.id).indexOf(playerId);
   game.players[playerIndex].wonCards.push(winningAnswer.card);
+  ACTIVE_GAMES.set(gameId, game);
   return winningAnswer;
 };
 
@@ -140,6 +156,7 @@ export {
   findGamePlayer,
   drawQuestionCard,
   selectAnswerCard,
+  revealAnswers,
   selectWinningCard,
   startNewRound,
   setGameCzar,
