@@ -21,19 +21,29 @@ class CardStack extends React.PureComponent<ICardStackProps, {}> {
 
   render = () => {
     return (
-      <Box display="flex" flexDirection="row" flexWrap="wrap">
+      <CardBoxWrapper>
         {this.props.cards.map(card => (
-          <CardBox key={card.id} display="flex" className={this.props.condensed && "condensed"}>
+          <CardBox key={card.id} className={this.props.condensed && "condensed"}>
             <Card card={card} isHidden={this.props.cardsHidden} onCardClick={this.handleCardClicked} />
           </CardBox>
         ))}
-      </Box>
+      </CardBoxWrapper>
     );
   };
 }
 
+const CardBoxWrapper: AnyStyledComponent = styled(Box)`
+  && {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    overflow: hidden;
+  }
+`;
+
 const CardBox: AnyStyledComponent = styled(Box)`
   && {
+    display: flex;
     margin-bottom: -250px;
     transition: margin-right 1s;
 
