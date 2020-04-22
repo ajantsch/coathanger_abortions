@@ -3,6 +3,7 @@ import { GameActionTypes } from "./game";
 import {
   getGame,
   startGame,
+  getGamePlayer,
   joinGame,
   remotePlayerJoined,
   czarSet,
@@ -26,6 +27,7 @@ export interface IBaseAction {
 export default {
   getGame,
   startGame,
+  getGamePlayer,
   joinGame,
   remotePlayerJoined,
   czarSet,

@@ -29,8 +29,8 @@ class App extends React.Component {
           <Router>
             <Switch>
               <Route path="/" exact default component={NewGame} />
-              <Route path="/:game_id/join" component={JoinGame} />
-              <Route path="/:game_id/" component={PlayGame} />
+              <Route path="/:game_id/join" exact component={JoinGame} />
+              <Route path="/:game_id/" exact component={PlayGame} />
               <Redirect to="/" />
             </Switch>
           </Router>

@@ -40,6 +40,8 @@ export default function(state: IGame = initialState, action: GameAction) {
       return { ...state, ...action.payload };
     case GameActionTypes.START_GAME:
       return { ...state, ...action.payload };
+    case GameActionTypes.GET_PLAYER:
+      return { ...state, me: action.payload };
     case GameActionTypes.JOIN_GAME:
       return {
         ...state,

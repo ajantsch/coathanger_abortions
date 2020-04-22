@@ -1,11 +1,11 @@
 import React from "react";
 import { Typography } from "@material-ui/core";
-import { ControlPoint } from "@material-ui/icons";
 import styled, { AnyStyledComponent } from "styled-components";
 
 interface ICardPlaceholderProps {
   type: "answer" | "question";
   content?: string;
+  icon?: JSX.Element;
   onPlaceholderClick?: () => void;
 }
 
@@ -21,7 +21,7 @@ class CardPlaceholder extends React.PureComponent<ICardPlaceholderProps, {}> {
       <CardRoot className={this.props.type} onClick={this.handleClick}>
         <CardContent>
           {this.props.content && <Typography variant="h6">{this.props.content}</Typography>}
-          <ControlPoint fontSize="large" />
+          {this.props.icon}
         </CardContent>
       </CardRoot>
     );

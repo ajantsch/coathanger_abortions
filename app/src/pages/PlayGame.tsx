@@ -9,8 +9,8 @@ import { AppState } from "../reducers";
 import actions from "../actions";
 
 import Players from "../components/Players";
-import MyCards from "./MyCards";
-import Round from "./Round";
+import PlayerCards from "./PlayerCards";
+import Round from "./GameRound";
 
 import YSoSerious from "../images/y-so-serious-white.png";
 
@@ -27,10 +27,10 @@ class PlayGame extends React.Component<
 > {
   componentDidUpdate = () => {
     if (!this.props.game.id) {
-      this.props.history.push("/");
+      return this.props.history.push("/");
     }
     if (!this.props.game.me) {
-      this.props.history.push(`/${this.props.game.id}/join`);
+      return this.props.history.push(`/${this.props.game.id}/join`);
     }
   };
 
@@ -44,9 +44,15 @@ class PlayGame extends React.Component<
     return (
       <GameWrapper>
         <Container maxWidth="lg">
-          <Round />
-          <MyCards />
-          <Players />
+          {this.props.game.id && this.props.game.me ? (
+            <>
+              <Round />
+              <PlayerCards />
+              <Players />
+            </>
+          ) : (
+            <></>
+          )}
         </Container>
       </GameWrapper>
     );

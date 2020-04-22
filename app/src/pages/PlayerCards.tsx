@@ -15,7 +15,7 @@ const mapStateToProps = (state: AppState) => ({
 const mapDispatchToProps = (dispatch: Dispatch<AnyAction>) =>
   bindActionCreators({ giveAnswer: actions.giveAnswer }, dispatch);
 
-class MyCards extends React.PureComponent<
+class PlayerCards extends React.PureComponent<
   ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps>,
   {}
 > {
@@ -46,4 +46,4 @@ class MyCards extends React.PureComponent<
   };
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(MyCards);
+export default connect(mapStateToProps, mapDispatchToProps)(PlayerCards);

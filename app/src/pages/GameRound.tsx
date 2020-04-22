@@ -2,6 +2,7 @@ import React from "react";
 import { connect } from "react-redux";
 import { AnyAction, bindActionCreators, Dispatch } from "redux";
 import { Box, Button } from "@material-ui/core";
+import { ControlPoint } from "@material-ui/icons";
 import styled, { AnyStyledComponent } from "styled-components";
 
 import { ICard } from "../interfaces";
@@ -27,7 +28,10 @@ const mapDispatchToProps = (dispatch: Dispatch<AnyAction>) =>
     dispatch,
   );
 
-class Round extends React.Component<ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps>, {}> {
+class GameRound extends React.Component<
+  ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps>,
+  {}
+> {
   handleDrawQuestion = async () => {
     if (
       !this.props.game.id ||
@@ -73,6 +77,7 @@ class Round extends React.Component<ReturnType<typeof mapStateToProps> & ReturnT
             <CardPlaceholder
               type="question"
               content={showDrawQuestionButton ? "Click to draw question card" : "Question will come soon..."}
+              icon={showDrawQuestionButton ? <ControlPoint fontSize="large" /> : undefined}
               onPlaceholderClick={showDrawQuestionButton ? this.handleDrawQuestion : undefined}
             />
           )}
@@ -118,4 +123,4 @@ const AnswerCardsSpace: AnyStyledComponent = styled(Box)`
   }
 `;
 
-export default connect(mapStateToProps, mapDispatchToProps)(Round);
+export default connect(mapStateToProps, mapDispatchToProps)(GameRound);

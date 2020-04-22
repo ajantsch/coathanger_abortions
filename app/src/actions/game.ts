@@ -9,6 +9,8 @@ import { initialState } from "../reducers/game";
 
 export enum GameActionTypes {
   GET_GAME = "GET_GAME",
+  GET_PLAYER = "GET_PLAYER",
+  GET_GAME_AND_PLAYER = "GET_GAME_AND_PLAYER",
   START_GAME = "START_GAME",
   JOIN_GAME = "JOIN_GAME",
   REMOTE_PLAYER_JOINED = "REMOTE_PLAYER_JOINED",
@@ -35,6 +37,11 @@ export interface IStartGameAction extends IBaseAction {
 
 export interface IJoinGameAction extends IBaseAction {
   type: GameActionTypes.JOIN_GAME;
+  payload: IPlayer;
+}
+
+export interface IGetGamePlayerAction extends IBaseAction {
+  type: GameActionTypes.GET_PLAYER;
   payload: IPlayer;
 }
 
@@ -91,6 +98,7 @@ export type GameAction =
   | IGetGameAction
   | IStartGameAction
   | IJoinGameAction
+  | IGetGamePlayerAction
   | IRemotePlayerJoinedAction
   | ICzarSetAction
   | IDrawQuestionAction
@@ -113,15 +121,34 @@ export function startGame(): ThunkAction<Promise<IStartGameAction>, AppState, un
   };
 }
 
+export function getGamePlayer(
+  gameId: string,
+  playerId: string,
+): ThunkAction<Promise<IGetGamePlayerAction>, AppState, undefined, IGetGamePlayerAction> {
+  return async (dispatch: ThunkDispatch<AppState, undefined, IGetGamePlayerAction>) => {
+    const player = await GameApi.getGamePlayer(gameId, playerId);
+
+    sessionStorage.setItem(`cha_${gameId as string}_playerId`, player.id);
+    await GameSocket.connectToGame(gameId as string, player.name);
+
+    return dispatch({
+      type: GameActionTypes.GET_PLAYER,
+      payload: player,
+    });
+  };
+}
+
 export function getGame(gameId: string): ThunkAction<Promise<IGetGameAction>, AppState, undefined, IGetGameAction> {
   return async (dispatch: ThunkDispatch<AppState, undefined, IGetGameAction>) => {
     try {
       const game = await GameApi.getGame(gameId);
+
       return dispatch({
         type: GameActionTypes.GET_GAME,
         payload: game,
       });
     } catch (e) {
+      sessionStorage.removeItem(`cha_${gameId}_playerId`);
       return dispatch({
         type: GameActionTypes.GET_GAME,
         payload: initialState,
@@ -137,7 +164,8 @@ export function joinGame(
     const gameId = getState().game.id;
     const player = await GameApi.addGamePlayer(gameId as string, playerName);
 
-    await GameSocket.connectToGame(gameId as string, playerName);
+    sessionStorage.setItem(`cha_${gameId as string}_playerId`, player.id);
+    await GameSocket.connectToGame(gameId as string, player.name);
 
     return dispatch({
       type: GameActionTypes.JOIN_GAME,
