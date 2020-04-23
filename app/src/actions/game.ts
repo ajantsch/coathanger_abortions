@@ -8,6 +8,7 @@ import { IGame, IPlayer, IRemotePlayer, IQuestionCard, IGivenAnswer, IRound } fr
 import { initialState } from "../reducers/game";
 
 export enum GameActionTypes {
+  RESET_GAME = "RESET_GAME",
   GET_GAME = "GET_GAME",
   GET_PLAYER = "GET_PLAYER",
   GET_GAME_AND_PLAYER = "GET_GAME_AND_PLAYER",
@@ -23,6 +24,11 @@ export enum GameActionTypes {
   RECEIVE_WINNER = "RECEIVE_WINNER",
   GIVE_ANSER = "GIVE_ANSWER",
   SET_WINNER = "SET_WINNER",
+}
+
+export interface IResetGameAction extends IBaseAction {
+  type: GameActionTypes.RESET_GAME;
+  payload: IGame;
 }
 
 export interface IGetGameAction extends IBaseAction {
@@ -110,9 +116,21 @@ export type GameAction =
   | IGiveAnswerAction
   | ISetWinnerAction;
 
-export function startGame(): ThunkAction<Promise<IStartGameAction>, AppState, undefined, IStartGameAction> {
-  return async (dispatch: ThunkDispatch<AppState, undefined, IStartGameAction>) => {
+export function startGame(): ThunkAction<
+  Promise<IStartGameAction | IResetGameAction>,
+  AppState,
+  undefined,
+  IStartGameAction | IResetGameAction
+> {
+  return async (dispatch: ThunkDispatch<AppState, undefined, IStartGameAction | IResetGameAction>) => {
     const game = await GameApi.createGame();
+
+    if (!game) {
+      return dispatch({
+        type: GameActionTypes.RESET_GAME,
+        payload: initialState,
+      });
+    }
 
     return dispatch({
       type: GameActionTypes.START_GAME,
@@ -141,7 +159,19 @@ export function getGamePlayer(
 export function getGame(gameId: string): ThunkAction<Promise<IGetGameAction>, AppState, undefined, IGetGameAction> {
   return async (dispatch: ThunkDispatch<AppState, undefined, IGetGameAction>) => {
     try {
-      const game = await GameApi.getGame(gameId);
+      let game = await GameApi.getGame(gameId);
+      if (!game) {
+        return dispatch({
+          type: GameActionTypes.GET_GAME,
+          payload: initialState,
+        });
+      }
+
+      const playerId = sessionStorage.getItem(`cha_${game.id}_playerId`);
+      if (playerId) {
+        const player = await GameApi.getGamePlayer(game.id as string, playerId);
+        game = { ...game, me: player };
+      }
 
       return dispatch({
         type: GameActionTypes.GET_GAME,
