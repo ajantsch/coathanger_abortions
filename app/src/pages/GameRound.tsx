@@ -15,6 +15,7 @@ import CardStack from "../components/CardStack";
 
 const mapStateToProps = (state: AppState) => ({
   game: state.game,
+  player: state.player,
 });
 
 const mapDispatchToProps = (dispatch: Dispatch<AnyAction>) =>
@@ -35,8 +36,8 @@ class GameRound extends React.Component<
   handleDrawQuestion = async () => {
     if (
       !this.props.game.id ||
-      !this.props.game.me ||
-      this.props.game.czar !== this.props.game.me.id ||
+      !this.props.player ||
+      this.props.game.czar !== this.props.player.id ||
       this.props.game.currentRound.question
     ) {
       return;
@@ -45,7 +46,7 @@ class GameRound extends React.Component<
   };
 
   handleCardClicked = (card: ICard) => {
-    if (this.props.game.czar === this.props.game.me?.id) {
+    if (this.props.game.czar === this.props.player?.id) {
       const winner = this.props.game.currentRound.answers.find(answer => answer.card.id === card.id);
       if (winner) {
         this.props.setWinner(winner);
@@ -54,17 +55,17 @@ class GameRound extends React.Component<
   };
 
   handleRevealAnswers = () => {
-    if (this.props.game.czar === this.props.game.me?.id) {
+    if (this.props.game.czar === this.props.player?.id) {
       this.props.revealAnswers();
     }
   };
 
   render = () => {
     const showDrawQuestionButton =
-      this.props.game.czar === this.props.game.me?.id && !this.props.game.currentRound.question;
+      this.props.game.czar === this.props.player?.id && !this.props.game.currentRound.question;
     const showRevealAnswersButton =
       this.props.game.currentRound.question &&
-      this.props.game.czar === this.props.game.me?.id &&
+      this.props.game.czar === this.props.player?.id &&
       !!this.props.game.currentRound.answers.length &&
       this.props.game.currentRound.answers.length === this.props.game.players.length - 1 &&
       !this.props.game.currentRound.answersRevealed;

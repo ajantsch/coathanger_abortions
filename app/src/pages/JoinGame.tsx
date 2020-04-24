@@ -11,10 +11,11 @@ import JoinGameForm from "../components/JoinGameForm";
 
 const mapStateToProps = (state: AppState) => ({
   game: state.game,
+  player: state.player,
 });
 
 const mapDispatchToProps = (dispatch: Dispatch<AnyAction>) =>
-  bindActionCreators({ getGame: actions.getGame, joinGame: actions.joinGame }, dispatch);
+  bindActionCreators({ getGame: actions.getGame, getPlayer: actions.getPlayer, joinGame: actions.joinGame }, dispatch);
 
 class JoinGame extends React.Component<
   ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps> & RouteComponentProps<{ game_id: string }>
@@ -27,9 +28,10 @@ class JoinGame extends React.Component<
     if (!this.props.game.id) {
       return this.props.history.push("/");
     }
-    if (this.props.game.me) {
+    if (this.props.player) {
       return this.props.history.push(`/${this.props.game.id}`);
     }
+    this.props.getPlayer();
   };
 
   componentDidMount = () => {

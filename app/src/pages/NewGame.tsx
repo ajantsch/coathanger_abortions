@@ -11,6 +11,7 @@ import CreateGameForm from "../components/CreateGameForm";
 
 const mapStateToProps = (state: AppState) => ({
   game: state.game,
+  player: state.player,
 });
 
 const mapDispatchToProps = (dispatch: Dispatch<AnyAction>) =>
@@ -25,7 +26,7 @@ class NewGame extends React.Component<
 
   routeGuard = () => {
     if (this.props.game.id) {
-      if (!this.props.game.me) {
+      if (!this.props.player) {
         return this.props.history.push(`/${this.props.game.id}/join`);
       }
       return this.props.history.push(`/${this.props.game.id}`);

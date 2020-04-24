@@ -1,6 +1,5 @@
 export interface IGame {
   id?: string;
-  me?: IPlayer;
   players: IRemotePlayer[];
   czar?: string;
   currentRound: IRound;

@@ -1,14 +1,12 @@
 import { GameActionTypes } from "./game";
+import { PlayerActionTypes } from "./player";
 
 import {
   getGame,
   startGame,
-  getGamePlayer,
-  joinGame,
   remotePlayerJoined,
   czarSet,
   drawQuestion,
-  giveAnswer,
   revealAnswers,
   setWinner,
   questionReceived,
@@ -17,7 +15,9 @@ import {
   winnerReceived,
 } from "./game";
 
-export type ActionTypes = GameActionTypes;
+import { getPlayer, joinGame, giveAnswer } from "./player";
+
+export type ActionTypes = GameActionTypes | PlayerActionTypes;
 
 export interface IBaseAction {
   type: ActionTypes;
@@ -27,7 +27,7 @@ export interface IBaseAction {
 export default {
   getGame,
   startGame,
-  getGamePlayer,
+  getPlayer,
   joinGame,
   remotePlayerJoined,
   czarSet,

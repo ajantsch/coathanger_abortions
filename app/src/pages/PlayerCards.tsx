@@ -10,6 +10,7 @@ import { ICard } from "../interfaces";
 
 const mapStateToProps = (state: AppState) => ({
   game: state.game,
+  player: state.player,
 });
 
 const mapDispatchToProps = (dispatch: Dispatch<AnyAction>) =>
@@ -22,23 +23,23 @@ class PlayerCards extends React.PureComponent<
   handleAnswerCardClicked = (card: ICard) => {
     if (
       !this.props.game ||
-      !this.props.game.me ||
+      !this.props.player ||
       !this.props.game.currentRound ||
-      this.props.game.czar === this.props.game.me.id
+      this.props.game.czar === this.props.player.id
     ) {
       return;
     }
-    this.props.giveAnswer({ player: this.props.game.me.id, card });
+    this.props.giveAnswer({ player: this.props.player.id, card });
   };
 
   render = () => {
     return (
       <>
-        {this.props.game.me && (
+        {this.props.player && (
           <>
             <Typography variant="h5">Your cards</Typography>
-            <CardStack cards={this.props.game.me.activeCards} onCardClick={this.handleAnswerCardClicked} />
-            <CardStack cards={this.props.game.me.wonCards} />
+            <CardStack cards={this.props.player.activeCards} onCardClick={this.handleAnswerCardClicked} />
+            <CardStack cards={this.props.player.wonCards} />
           </>
         )}
       </>

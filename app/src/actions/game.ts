@@ -1,19 +1,15 @@
 import { ThunkAction, ThunkDispatch } from "redux-thunk";
 
 import GameApi from "../services/api";
-import GameSocket from "../services/socket";
 import { IBaseAction } from "./index";
 import { AppState } from "../reducers";
-import { IGame, IPlayer, IRemotePlayer, IQuestionCard, IGivenAnswer, IRound } from "../interfaces";
+import { IGame, IRemotePlayer, IQuestionCard, IGivenAnswer, IRound } from "../interfaces";
 import { initialState } from "../reducers/game";
 
 export enum GameActionTypes {
   RESET_GAME = "RESET_GAME",
   GET_GAME = "GET_GAME",
-  GET_PLAYER = "GET_PLAYER",
-  GET_GAME_AND_PLAYER = "GET_GAME_AND_PLAYER",
   START_GAME = "START_GAME",
-  JOIN_GAME = "JOIN_GAME",
   REMOTE_PLAYER_JOINED = "REMOTE_PLAYER_JOINED",
   CZAR_SET = "CZAR_SET",
   DRAW_QUESTION = "DRAW_QUESTION",
@@ -22,7 +18,6 @@ export enum GameActionTypes {
   RECEIVE_ANSWER = "RECEIVE_ANSWER",
   RECEIVE_ANSWERS_REVEALED = "RECEIVE_ANSWERS_REVEALED",
   RECEIVE_WINNER = "RECEIVE_WINNER",
-  GIVE_ANSER = "GIVE_ANSWER",
   SET_WINNER = "SET_WINNER",
 }
 
@@ -39,16 +34,6 @@ export interface IGetGameAction extends IBaseAction {
 export interface IStartGameAction extends IBaseAction {
   type: GameActionTypes.START_GAME;
   payload: IGame;
-}
-
-export interface IJoinGameAction extends IBaseAction {
-  type: GameActionTypes.JOIN_GAME;
-  payload: IPlayer;
-}
-
-export interface IGetGamePlayerAction extends IBaseAction {
-  type: GameActionTypes.GET_PLAYER;
-  payload: IPlayer;
 }
 
 export interface IRemotePlayerJoinedAction extends IBaseAction {
@@ -90,11 +75,6 @@ export interface IReceiveWinnerAction extends IBaseAction {
   payload: IGivenAnswer;
 }
 
-export interface IGiveAnswerAction extends IBaseAction {
-  type: GameActionTypes.GIVE_ANSER;
-  payload: IGivenAnswer;
-}
-
 export interface ISetWinnerAction extends IBaseAction {
   type: GameActionTypes.SET_WINNER;
   payload: IGivenAnswer;
@@ -103,8 +83,6 @@ export interface ISetWinnerAction extends IBaseAction {
 export type GameAction =
   | IGetGameAction
   | IStartGameAction
-  | IJoinGameAction
-  | IGetGamePlayerAction
   | IRemotePlayerJoinedAction
   | ICzarSetAction
   | IDrawQuestionAction
@@ -113,7 +91,6 @@ export type GameAction =
   | IRevealAnswersAction
   | IReceiveReveiledAnswersAction
   | IReceiveWinnerAction
-  | IGiveAnswerAction
   | ISetWinnerAction;
 
 export function startGame(): ThunkAction<
@@ -139,38 +116,15 @@ export function startGame(): ThunkAction<
   };
 }
 
-export function getGamePlayer(
-  gameId: string,
-  playerId: string,
-): ThunkAction<Promise<IGetGamePlayerAction>, AppState, undefined, IGetGamePlayerAction> {
-  return async (dispatch: ThunkDispatch<AppState, undefined, IGetGamePlayerAction>) => {
-    const player = await GameApi.getGamePlayer(gameId, playerId);
-
-    sessionStorage.setItem(`cha_${gameId as string}_playerId`, player.id);
-    await GameSocket.connectToGame(gameId as string, player.name);
-
-    return dispatch({
-      type: GameActionTypes.GET_PLAYER,
-      payload: player,
-    });
-  };
-}
-
 export function getGame(gameId: string): ThunkAction<Promise<IGetGameAction>, AppState, undefined, IGetGameAction> {
   return async (dispatch: ThunkDispatch<AppState, undefined, IGetGameAction>) => {
     try {
-      let game = await GameApi.getGame(gameId);
+      const game = await GameApi.getGame(gameId);
       if (!game) {
         return dispatch({
           type: GameActionTypes.GET_GAME,
           payload: initialState,
         });
-      }
-
-      const playerId = sessionStorage.getItem(`cha_${game.id}_playerId`);
-      if (playerId) {
-        const player = await GameApi.getGamePlayer(game.id as string, playerId);
-        game = { ...game, me: player };
       }
 
       return dispatch({
@@ -184,23 +138,6 @@ export function getGame(gameId: string): ThunkAction<Promise<IGetGameAction>, Ap
         payload: initialState,
       });
     }
-  };
-}
-
-export function joinGame(
-  playerName: string,
-): ThunkAction<Promise<IJoinGameAction>, AppState, undefined, IJoinGameAction> {
-  return async (dispatch: ThunkDispatch<AppState, undefined, IJoinGameAction>, getState) => {
-    const gameId = getState().game.id;
-    const player = await GameApi.addGamePlayer(gameId as string, playerName);
-
-    sessionStorage.setItem(`cha_${gameId as string}_playerId`, player.id);
-    await GameSocket.connectToGame(gameId as string, player.name);
-
-    return dispatch({
-      type: GameActionTypes.JOIN_GAME,
-      payload: player,
-    });
   };
 }
 
@@ -269,29 +206,14 @@ export function revealAnswers(): ThunkAction<Promise<IRevealAnswersAction>, AppS
   };
 }
 
-export function giveAnswer(
-  answer: IGivenAnswer,
-): ThunkAction<Promise<IGiveAnswerAction>, AppState, undefined, IGiveAnswerAction> {
-  return async (dispatch: ThunkDispatch<AppState, undefined, IGiveAnswerAction>, getState) => {
-    const gameId = getState().game.id;
-    const player = getState().game.me;
-    await GameApi.selectAnswerCard(gameId as string, player?.id as string, answer.card);
-
-    return dispatch({
-      type: GameActionTypes.GIVE_ANSER,
-      payload: answer,
-    });
-  };
-}
-
 export function setWinner(
   answer: IGivenAnswer,
 ): ThunkAction<Promise<ISetWinnerAction>, AppState, undefined, ISetWinnerAction> {
   return async (dispatch: ThunkDispatch<AppState, undefined, ISetWinnerAction>, getState) => {
-    const gameId = getState().game.id;
-    const player = getState().game.me;
+    const gameId = getState().game.id as string;
+    const playerId = getState().player?.id as string;
 
-    await GameApi.selectRoundWinner(gameId as string, player?.id as string, answer);
+    await GameApi.selectRoundWinner(gameId, playerId, answer);
     return dispatch({
       type: GameActionTypes.SET_WINNER,
       payload: answer,

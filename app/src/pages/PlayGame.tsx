@@ -16,6 +16,7 @@ import YSoSerious from "../images/y-so-serious-white.png";
 
 const mapStateToProps = (state: AppState) => ({
   game: state.game,
+  player: state.player,
 });
 
 const mapDispatchToProps = (dispatch: Dispatch<AnyAction>) =>
@@ -29,7 +30,7 @@ class PlayGame extends React.Component<
     if (!this.props.game.id) {
       return this.props.history.push("/");
     }
-    if (!this.props.game.me) {
+    if (!this.props.player) {
       return this.props.history.push(`/${this.props.game.id}/join`);
     }
   };
@@ -44,7 +45,7 @@ class PlayGame extends React.Component<
     return (
       <GameWrapper>
         <Container maxWidth="lg">
-          {this.props.game.id && this.props.game.me ? (
+          {this.props.game.id && this.props.player?.id ? (
             <>
               <Round />
               <PlayerCards />
