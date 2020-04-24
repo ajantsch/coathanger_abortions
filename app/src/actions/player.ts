@@ -36,7 +36,7 @@ export type PlayerAction = IVoidAction | IJoinGameAction | IGetPlayerAction | IG
 
 export function getPlayer(): ThunkAction<Promise<IBaseAction>, AppState, undefined, IJoinGameAction> {
   return async (dispatch: ThunkDispatch<AppState, undefined, IBaseAction>, getState) => {
-    const gameId = getState().game.id;
+    const gameId = getState().game?.id;
     if (!gameId) {
       return dispatch({ type: PlayerActionTypes.VOID });
     }
@@ -63,7 +63,7 @@ export function getPlayer(): ThunkAction<Promise<IBaseAction>, AppState, undefin
 
 export function joinGame(playerName: string): ThunkAction<Promise<IBaseAction>, AppState, undefined, IJoinGameAction> {
   return async (dispatch: ThunkDispatch<AppState, undefined, IBaseAction>, getState) => {
-    const gameId = getState().game.id;
+    const gameId = getState().game?.id;
     if (!gameId) {
       return dispatch({ type: PlayerActionTypes.VOID });
     }
@@ -88,7 +88,7 @@ export function giveAnswer(
   answer: IGivenAnswer,
 ): ThunkAction<Promise<IBaseAction>, AppState, undefined, IGiveAnswerAction> {
   return async (dispatch: ThunkDispatch<AppState, undefined, IBaseAction>, getState) => {
-    const gameId = getState().game.id;
+    const gameId = getState().game?.id;
     if (!gameId) {
       return dispatch({ type: PlayerActionTypes.VOID });
     }

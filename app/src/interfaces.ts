@@ -1,5 +1,5 @@
 export interface IGame {
-  id?: string;
+  id: string;
   players: IRemotePlayer[];
   czar?: string;
   currentRound: IRound;
@@ -15,7 +15,6 @@ export interface IRound {
 export interface ICard {
   id: string;
   content: string;
-  type: "answer" | "question";
 }
 
 export interface IAnswerCard extends ICard {

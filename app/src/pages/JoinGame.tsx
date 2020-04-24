@@ -25,7 +25,7 @@ class JoinGame extends React.Component<
   };
 
   componentDidUpdate = () => {
-    if (!this.props.game.id) {
+    if (!this.props.game) {
       return this.props.history.push("/");
     }
     if (this.props.player) {

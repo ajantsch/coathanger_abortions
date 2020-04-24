@@ -7,6 +7,7 @@ import styled, { AnyStyledComponent } from "styled-components";
 
 import { AppState } from "../reducers";
 import actions from "../actions";
+import store from "../store";
 
 import Players from "../components/Players";
 import PlayerCards from "./PlayerCards";
@@ -26,26 +27,27 @@ class PlayGame extends React.Component<
   ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps> & RouteComponentProps<{ game_id: string }>,
   {}
 > {
-  componentDidUpdate = () => {
-    if (!this.props.game.id) {
-      return this.props.history.push("/");
-    }
-    if (!this.props.player) {
-      return this.props.history.push(`/${this.props.game.id}/join`);
-    }
-  };
-
   componentDidMount = async () => {
     if (this.props.match.params.game_id) {
       this.props.getGame(this.props.match.params.game_id);
     }
+
+    store.subscribe(() => {
+      const game = store.getState().game;
+      if (!game) {
+        return this.props.history.push("/");
+      }
+      if (!store.getState().player) {
+        return this.props.history.push(`/${game.id}/join`);
+      }
+    });
   };
 
   render = () => {
     return (
       <GameWrapper>
         <Container maxWidth="lg">
-          {this.props.game.id && this.props.player?.id ? (
+          {this.props.game?.id && this.props.player?.id ? (
             <>
               <Round />
               <PlayerCards />

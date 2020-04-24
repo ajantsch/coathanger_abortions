@@ -25,7 +25,7 @@ class NewGame extends React.Component<
   };
 
   routeGuard = () => {
-    if (this.props.game.id) {
+    if (this.props.game) {
       if (!this.props.player) {
         return this.props.history.push(`/${this.props.game.id}/join`);
       }
@@ -38,7 +38,12 @@ class NewGame extends React.Component<
   };
 
   componentDidMount = () => {
-    this.routeGuard();
+    if (this.props.game) {
+      if (!this.props.player) {
+        return this.props.history.push(`/${this.props.game.id}/join`);
+      }
+      return this.props.history.push(`/${this.props.game.id}`);
+    }
   };
 
   render = () => {

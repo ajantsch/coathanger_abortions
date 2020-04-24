@@ -4,7 +4,6 @@ import GameApi from "../services/api";
 import { IBaseAction } from "./index";
 import { AppState } from "../reducers";
 import { IGame, IRemotePlayer, IQuestionCard, IGivenAnswer, IRound } from "../interfaces";
-import { initialState } from "../reducers/game";
 
 export enum GameActionTypes {
   RESET_GAME = "RESET_GAME",
@@ -23,7 +22,6 @@ export enum GameActionTypes {
 
 export interface IResetGameAction extends IBaseAction {
   type: GameActionTypes.RESET_GAME;
-  payload: IGame;
 }
 
 export interface IGetGameAction extends IBaseAction {
@@ -81,6 +79,7 @@ export interface ISetWinnerAction extends IBaseAction {
 }
 
 export type GameAction =
+  | IResetGameAction
   | IGetGameAction
   | IStartGameAction
   | IRemotePlayerJoinedAction
@@ -105,7 +104,6 @@ export function startGame(): ThunkAction<
     if (!game) {
       return dispatch({
         type: GameActionTypes.RESET_GAME,
-        payload: initialState,
       });
     }
 
@@ -116,14 +114,13 @@ export function startGame(): ThunkAction<
   };
 }
 
-export function getGame(gameId: string): ThunkAction<Promise<IGetGameAction>, AppState, undefined, IGetGameAction> {
-  return async (dispatch: ThunkDispatch<AppState, undefined, IGetGameAction>) => {
+export function getGame(gameId: string): ThunkAction<Promise<IBaseAction>, AppState, undefined, IGetGameAction> {
+  return async (dispatch: ThunkDispatch<AppState, undefined, IBaseAction>) => {
     try {
       const game = await GameApi.getGame(gameId);
       if (!game) {
         return dispatch({
-          type: GameActionTypes.GET_GAME,
-          payload: initialState,
+          type: GameActionTypes.RESET_GAME,
         });
       }
 
@@ -134,8 +131,7 @@ export function getGame(gameId: string): ThunkAction<Promise<IGetGameAction>, Ap
     } catch (e) {
       sessionStorage.removeItem(`cha_${gameId}_playerId`);
       return dispatch({
-        type: GameActionTypes.GET_GAME,
-        payload: initialState,
+        type: GameActionTypes.RESET_GAME,
       });
     }
   };
@@ -185,7 +181,7 @@ export function winnerReceived(winner: IGivenAnswer): IReceiveWinnerAction {
 
 export function drawQuestion(): ThunkAction<Promise<IDrawQuestionAction>, AppState, undefined, IDrawQuestionAction> {
   return async (dispatch: ThunkDispatch<AppState, undefined, IDrawQuestionAction>, getState) => {
-    const gameId = getState().game.id;
+    const gameId = getState().game?.id;
     const questionCard = await GameApi.drawQuestionCard(gameId as string);
 
     return dispatch({
@@ -197,7 +193,7 @@ export function drawQuestion(): ThunkAction<Promise<IDrawQuestionAction>, AppSta
 
 export function revealAnswers(): ThunkAction<Promise<IRevealAnswersAction>, AppState, undefined, IRevealAnswersAction> {
   return async (dispatch: ThunkDispatch<AppState, undefined, IRevealAnswersAction>, getState) => {
-    const gameId = getState().game.id;
+    const gameId = getState().game?.id;
     await GameApi.revealAnswers(gameId as string);
 
     return dispatch({
@@ -210,7 +206,7 @@ export function setWinner(
   answer: IGivenAnswer,
 ): ThunkAction<Promise<ISetWinnerAction>, AppState, undefined, ISetWinnerAction> {
   return async (dispatch: ThunkDispatch<AppState, undefined, ISetWinnerAction>, getState) => {
-    const gameId = getState().game.id as string;
+    const gameId = getState().game?.id as string;
     const playerId = getState().player?.id as string;
 
     await GameApi.selectRoundWinner(gameId, playerId, answer);

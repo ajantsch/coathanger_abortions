@@ -1,9 +1,7 @@
 import { IPlayer } from "../interfaces";
 import { PlayerAction, PlayerActionTypes } from "../actions/player";
 
-export const initialState: IPlayer | null = null;
-
-export default function(state: IPlayer | null = initialState, action: PlayerAction) {
+export default function(state: IPlayer | null = null, action: PlayerAction) {
   switch (action.type) {
     case PlayerActionTypes.VOID:
       return state;
