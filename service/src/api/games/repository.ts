@@ -1,4 +1,5 @@
-import { IGame, IPlayer, ICard } from "../../models";
+import { IGame, IPlayer, ICard, IRound, IAnswer } from "../../models";
+import { newRound } from "../../models/round";
 import { logger } from "../../util";
 
 const ACTIVE_GAMES: Map<string, IGame> = new Map();
@@ -49,39 +50,46 @@ const findGamePlayer = async (gameId: string, playerId: string) => {
   return player;
 };
 
-const startNewRound = async (gameId: string) => {
+const startNewRound = async (gameId: string): Promise<IRound> => {
   const game = ACTIVE_GAMES.get(gameId);
   if (!game) {
     throw new Error(`Could not find game with id ${gameId}`);
   }
 
-  game.currentRound = {
-    question: undefined,
-    answers: [],
-    answersRevealed: false,
-    winner: undefined,
-  };
+  if (!game.players.length) {
+    throw new Error(`Cannot start round without players in the game`);
+  }
+
+  const round = newRound();
+  round.question = game.availableQuestions.splice(0, 1)[0];
+  if (game.currentRound && game.currentRound.winner) {
+    round.czar = game.currentRound.winner.player;
+  } else {
+    const randomPlayerIndex = Math.floor(Math.random() * (game.players.length + 1));
+    round.czar = game.players[randomPlayerIndex].id;
+  }
+  game.currentRound = round;
   ACTIVE_GAMES.set(gameId, game);
+  return game.currentRound;
 };
 
-const drawQuestionCard = async (gameId: string): Promise<ICard> => {
+const revealQuestion = async (gameId: string): Promise<IRound> => {
   const game = ACTIVE_GAMES.get(gameId);
   if (!game) {
     throw new Error(`Could not find game with id ${gameId}`);
   }
 
-  const card = game.availableCards.questions.splice(0, 1)[0];
-  game.currentRound.question = card;
+  game.currentRound.questionRevealed = true;
   ACTIVE_GAMES.set(gameId, game);
-  return card;
+  return game.currentRound;
 };
 
-const selectAnswerCard = async (gameId: string, playerId: string, card: ICard) => {
+const selectAnswer = async (gameId: string, playerId: string, card: ICard): Promise<ICard> => {
   const game = ACTIVE_GAMES.get(gameId);
   if (!game) {
     throw new Error(`Could not find game with id ${gameId}`);
   }
-  if (game.czar === playerId) {
+  if (game.currentRound.czar === playerId) {
     throw new Error(`Cannot select answer card as czar`);
   }
   if (game.currentRound.answers.find(entry => entry.player === playerId)) {
@@ -102,7 +110,7 @@ const selectAnswerCard = async (gameId: string, playerId: string, card: ICard) =
   return card;
 };
 
-const revealAnswers = async (gameId: string) => {
+const revealAnswers = async (gameId: string): Promise<IRound> => {
   const game = ACTIVE_GAMES.get(gameId);
   if (!game) {
     throw new Error(`Could not find game with id ${gameId}`);
@@ -113,22 +121,22 @@ const revealAnswers = async (gameId: string) => {
   return game.currentRound;
 };
 
-const selectWinningCard = async (gameId: string, playerId: string, cardId: string) => {
+const selectWinningCard = async (gameId: string, playerId: string, cardId: string): Promise<IAnswer> => {
   const game = ACTIVE_GAMES.get(gameId);
   if (!game) {
     throw new Error(`Could not find game with id ${gameId}`);
   }
 
-  if (game.czar !== playerId) {
+  if (game.currentRound.czar !== playerId) {
     throw new Error(`Cannot select winning card if you are not the czar`);
   }
 
   const winningAnswer = game.currentRound.answers.find(answer => answer.card.id === cardId);
-  logger.info(`winning answer selected, player is ${winningAnswer.player}`);
-
   if (!winningAnswer) {
     throw new Error(`Card with id ${cardId} not found in set of answers`);
   }
+
+  logger.info(`winning answer selected, player is ${winningAnswer.player}`);
 
   game.currentRound.winner = winningAnswer;
   const playerIndex = game.players.map(player => player.id).indexOf(playerId);
@@ -137,26 +145,14 @@ const selectWinningCard = async (gameId: string, playerId: string, cardId: strin
   return winningAnswer;
 };
 
-const setGameCzar = async (gameId: string, playerId: string): Promise<IGame> => {
-  const game = ACTIVE_GAMES.get(gameId);
-  if (game) {
-    game.czar = playerId;
-    ACTIVE_GAMES.set(gameId, game);
-    return game;
-  }
-
-  throw new Error(`Could not find game with id ${gameId}`);
-};
-
 export {
   findGame,
   insertGame,
   insertGamePlayer,
   findGamePlayer,
-  drawQuestionCard,
-  selectAnswerCard,
+  revealQuestion,
+  selectAnswer,
   revealAnswers,
   selectWinningCard,
   startNewRound,
-  setGameCzar,
 };

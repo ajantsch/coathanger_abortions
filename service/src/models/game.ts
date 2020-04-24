@@ -1,37 +1,22 @@
 import { IPlayer } from "./player";
 import { ICard } from "./card";
+import { IRound } from "./round";
 
 interface IGame {
   id: string;
   players: IPlayer[];
-  czar: IPlayer["id"];
-  availableCards: {
-    questions: ICard[];
-    answers: ICard[];
-  };
-  currentRound: {
-    question: ICard;
-    answers: { player: string; card: ICard }[];
-    answersRevealed: boolean;
-    winner: { player: string; card: ICard };
-  };
+  availableQuestions: ICard[];
+  availableAnswers: ICard[];
+  currentRound: IRound;
 }
 
 const newGame = (): IGame => {
   return {
     id: undefined,
     players: [],
-    czar: undefined,
-    availableCards: {
-      questions: [],
-      answers: [],
-    },
-    currentRound: {
-      question: undefined,
-      answers: [],
-      answersRevealed: false,
-      winner: undefined,
-    },
+    availableQuestions: [],
+    availableAnswers: [],
+    currentRound: undefined,
   };
 };
 

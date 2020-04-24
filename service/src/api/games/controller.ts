@@ -9,12 +9,11 @@ import {
   insertGame,
   insertGamePlayer,
   findGamePlayer,
-  drawQuestionCard,
-  selectAnswerCard,
+  selectAnswer,
+  revealQuestion,
   revealAnswers,
   selectWinningCard,
   startNewRound,
-  setGameCzar,
 } from "./repository";
 import { logger, randomString, genUuid, shuffle } from "../../util";
 import { socket } from "../../server";
@@ -22,7 +21,7 @@ import { socket } from "../../server";
 const PLAYER_ANSWER_CARD_COUNT = 10;
 
 function gameOutputSanitization(game: IGame) {
-  const { availableCards, ...sanitized } = {
+  const { availableQuestions, availableAnswers, ...sanitized } = {
     ...game,
     players: game.players.map(player => {
       const { activeCards, ...sanitized } = player;
@@ -58,10 +57,8 @@ const postGame = async (_req: Request, res: Response) => {
   const game: IGame = {
     ...newGame(),
     id: randomString(6, "aA#"),
-    availableCards: {
-      questions: shuffle(questionCards),
-      answers: shuffle(answerCards),
-    },
+    availableQuestions: shuffle(questionCards),
+    availableAnswers: shuffle(answerCards),
   };
 
   try {
@@ -92,20 +89,11 @@ const putGamePlayer = async (req: Request, res: Response) => {
 
   try {
     const game = await findGame(gameId);
-    player.activeCards = game.availableCards.answers.splice(0, PLAYER_ANSWER_CARD_COUNT);
+    player.activeCards = game.availableAnswers.splice(0, PLAYER_ANSWER_CARD_COUNT);
 
     const inserted = await insertGamePlayer(gameId, player);
 
     socket.of(`/${gameId}`).emit("player_joined", inserted);
-
-    const updatedGame = await findGame(gameId);
-
-    // if the first player was added to the game, elect him czar
-    // TODO: doesn't work as player only registers socket after response
-    if (updatedGame && updatedGame.players.length === 1) {
-      setGameCzar(updatedGame.id, updatedGame.players[0].id);
-      socket.of(`/${gameId}`).emit("czar_set", updatedGame.players[0].id);
-    }
 
     res.status(201);
     res.send(inserted);
@@ -138,13 +126,13 @@ const getGamePlayer = async (req: Request, res: Response) => {
   }
 };
 
-const getQuestionCard = async (req: Request, res: Response) => {
+const patchRevealQuestion = async (req: Request, res: Response) => {
   const gameId = req.params.game_id;
 
   res.type("json");
 
   try {
-    const card = await drawQuestionCard(gameId);
+    const card = await revealQuestion(gameId);
 
     socket.of(`/${gameId}`).emit("question_card_drawn", card);
 
@@ -159,14 +147,14 @@ const getQuestionCard = async (req: Request, res: Response) => {
   }
 };
 
-const putAnswerCard = async (req: Request, res: Response) => {
+const putAnswer = async (req: Request, res: Response) => {
   const gameId = req.params.game_id;
   const { player: playerId, card } = req.body;
 
   res.type("json");
 
   try {
-    const answer = await selectAnswerCard(gameId, playerId, card);
+    const answer = await selectAnswer(gameId, playerId, card);
 
     socket.of(`/${gameId}`).emit("answer_card_given", { player: playerId, card });
 
@@ -224,7 +212,7 @@ const postWinningAnswer = async (req: Request, res: Response) => {
   }
 };
 
-const putNewRound = async (req: Request, res: Response) => {
+const getNewRound = async (req: Request, res: Response) => {
   const gameId = req.params.game_id;
 
   res.type("json");
@@ -250,9 +238,9 @@ export {
   postGame,
   putGamePlayer,
   getGamePlayer,
-  getQuestionCard,
-  putAnswerCard,
+  patchRevealQuestion,
+  putAnswer,
   patchRevealAnswers,
   postWinningAnswer,
-  putNewRound,
+  getNewRound,
 };

@@ -3,11 +3,11 @@ import {
   postGame,
   putGamePlayer,
   getGamePlayer,
-  getQuestionCard,
-  putAnswerCard,
+  putAnswer,
+  patchRevealQuestion,
   patchRevealAnswers,
   postWinningAnswer,
-  putNewRound,
+  getNewRound,
 } from "./controller";
 
 export {
@@ -15,9 +15,9 @@ export {
   postGame,
   putGamePlayer,
   getGamePlayer,
-  getQuestionCard,
-  putAnswerCard,
+  putAnswer,
+  patchRevealQuestion,
   patchRevealAnswers,
   postWinningAnswer,
-  putNewRound,
+  getNewRound,
 };
