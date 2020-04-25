@@ -5,6 +5,8 @@ export default function(state: IRound | null = null, action: RoundAction) {
   switch (action.type) {
     case RoundActionTypes.START_ROUND:
       return action.payload;
+    case RoundActionTypes.GET_CURRENT_ROUND:
+      return action.payload;
     case RoundActionTypes.RECEIVE_ROUND:
       return action.payload;
     case RoundActionTypes.REVEAL_QUESTION:
