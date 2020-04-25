@@ -13,6 +13,7 @@ import {
   revealQuestion,
   revealAnswers,
   selectWinningCard,
+  findCurrentRound,
   startNewRound,
 } from "./repository";
 import { logger, randomString, genUuid, shuffle } from "../../util";
@@ -20,8 +21,22 @@ import { socket } from "../../server";
 
 const PLAYER_ANSWER_CARD_COUNT = 10;
 
+function replaceErrors(key: string, value: unknown) {
+  if (value instanceof Error) {
+    const error = {};
+
+    Object.getOwnPropertyNames(value).forEach(function(key) {
+      error[key] = value[key];
+    });
+
+    return error;
+  }
+
+  return value;
+}
+
 function gameOutputSanitization(game: IGame) {
-  const { availableQuestions, availableAnswers, ...sanitized } = {
+  const { availableQuestions, availableAnswers, currentRound, ...sanitized } = {
     ...game,
     players: game.players.map(player => {
       const { activeCards, ...sanitized } = player;
@@ -42,7 +57,7 @@ const getGame = async (req: Request, res: Response) => {
   } catch (err) {
     logger.error(err);
     res.status(404);
-    res.send(err);
+    res.send(JSON.stringify(err, replaceErrors));
   } finally {
     res.end();
   }
@@ -69,7 +84,7 @@ const postGame = async (_req: Request, res: Response) => {
   } catch (err) {
     logger.error(err);
     res.status(500);
-    res.send(err);
+    res.send(JSON.stringify(err, replaceErrors));
   } finally {
     res.end();
   }
@@ -92,7 +107,6 @@ const putGamePlayer = async (req: Request, res: Response) => {
     player.activeCards = game.availableAnswers.splice(0, PLAYER_ANSWER_CARD_COUNT);
 
     const inserted = await insertGamePlayer(gameId, player);
-
     socket.of(`/${gameId}`).emit("player_joined", inserted);
 
     res.status(201);
@@ -101,7 +115,7 @@ const putGamePlayer = async (req: Request, res: Response) => {
   } catch (err) {
     logger.error(err);
     res.status(500);
-    res.send(err.message);
+    res.send(JSON.stringify(err, replaceErrors));
   } finally {
     res.end();
   }
@@ -120,7 +134,7 @@ const getGamePlayer = async (req: Request, res: Response) => {
   } catch (err) {
     logger.error(err);
     res.status(404);
-    res.send(err.message);
+    res.send(JSON.stringify(err, replaceErrors));
   } finally {
     res.end();
   }
@@ -132,16 +146,16 @@ const patchRevealQuestion = async (req: Request, res: Response) => {
   res.type("json");
 
   try {
-    const card = await revealQuestion(gameId);
+    const round = await revealQuestion(gameId);
 
-    socket.of(`/${gameId}`).emit("question_card_drawn", card);
+    socket.of(`/${gameId}`).emit("question_card_revealed");
 
     res.status(200);
-    res.send(card);
+    res.send(round);
   } catch (err) {
     logger.error(err);
     res.status(404);
-    res.send(err.message);
+    res.send(JSON.stringify(err, replaceErrors));
   } finally {
     res.end();
   }
@@ -163,7 +177,7 @@ const putAnswer = async (req: Request, res: Response) => {
   } catch (err) {
     logger.error(err);
     res.status(404);
-    res.send(err.message);
+    res.send(JSON.stringify(err, replaceErrors));
   } finally {
     res.end();
   }
@@ -184,7 +198,7 @@ const patchRevealAnswers = async (req: Request, res: Response) => {
   } catch (err) {
     logger.error(err);
     res.status(404);
-    res.send(err.message);
+    res.send(JSON.stringify(err, replaceErrors));
   } finally {
     res.end();
   }
@@ -199,35 +213,54 @@ const postWinningAnswer = async (req: Request, res: Response) => {
   try {
     const answer = await selectWinningCard(gameId, playerId, card.id);
 
-    socket.of(`/${gameId}`).emit("round_finished", answer);
+    socket.of(`/${gameId}`).emit("round_winner_set", answer);
 
     res.status(200);
     res.send(answer);
   } catch (err) {
     logger.error(err);
     res.status(404);
-    res.send(err.message);
+    res.send(JSON.stringify(err, replaceErrors));
   } finally {
     res.end();
   }
 };
 
-const getNewRound = async (req: Request, res: Response) => {
+const getCurrentRound = async (req: Request, res: Response) => {
   const gameId = req.params.game_id;
 
   res.type("json");
 
   try {
-    const answer = await startNewRound(gameId);
-
-    socket.of(`/${gameId}`).emit("new_round");
+    const round = await findCurrentRound(gameId);
 
     res.status(200);
-    res.send(answer);
+    res.send(round);
   } catch (err) {
     logger.error(err);
     res.status(404);
-    res.send(err.message);
+    res.send(JSON.stringify(err, replaceErrors));
+  } finally {
+    res.end();
+  }
+};
+
+const putNewRound = async (req: Request, res: Response) => {
+  const gameId = req.params.game_id;
+
+  res.type("json");
+
+  try {
+    const round = await startNewRound(gameId);
+
+    socket.of(`/${gameId}`).emit("new_round_started", round);
+
+    res.status(200);
+    res.send(round);
+  } catch (err) {
+    logger.error(err);
+    res.status(404);
+    res.send(JSON.stringify(err, replaceErrors));
   } finally {
     res.end();
   }
@@ -242,5 +275,6 @@ export {
   putAnswer,
   patchRevealAnswers,
   postWinningAnswer,
-  getNewRound,
+  getCurrentRound,
+  putNewRound,
 };

@@ -2,7 +2,7 @@ import io from "socket.io-client";
 
 import actions from "../actions";
 import store from "../store";
-import { IRound, IRemotePlayer, IQuestionCard, IGivenAnswer } from "../interfaces";
+import { IRound, IRemotePlayer, IGivenAnswer } from "../interfaces";
 
 const { SOCKET_URL } = process.env;
 
@@ -17,14 +17,14 @@ const connectToGame = (gameId: string, playerName: string): Promise<SocketIOClie
         store.dispatch(actions.remotePlayerJoined(player));
       });
 
-      gameSocket.on("czar_set", (playerId: string) => {
-        console.warn("Czar set:", playerId);
-        store.dispatch(actions.czarSet(playerId));
+      gameSocket.on("new_round_started", (round: IRound) => {
+        console.warn("New round started:", round);
+        store.dispatch(actions.roundReceived(round));
       });
 
-      gameSocket.on("question_card_drawn", (card: IQuestionCard) => {
-        console.warn("Question card drawn:", card);
-        store.dispatch(actions.questionReceived(card));
+      gameSocket.on("question_card_revealed", () => {
+        console.warn("Question card revealed.");
+        store.dispatch(actions.questionRevealed());
       });
 
       gameSocket.on("answer_card_given", (answer: IGivenAnswer) => {
@@ -37,7 +37,7 @@ const connectToGame = (gameId: string, playerName: string): Promise<SocketIOClie
         store.dispatch(actions.answersRevealed(round));
       });
 
-      gameSocket.on("round_finished", (winner: IGivenAnswer) => {
+      gameSocket.on("round_winner_set", (winner: IGivenAnswer) => {
         console.warn("Winner of the round:", winner);
         store.dispatch(actions.winnerReceived(winner));
       });

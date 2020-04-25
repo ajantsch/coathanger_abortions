@@ -1,23 +1,25 @@
 import { GameActionTypes } from "./game";
 import { PlayerActionTypes } from "./player";
+import { RoundActionTypes } from "./round";
 
-import {
-  getGame,
-  startGame,
-  remotePlayerJoined,
-  czarSet,
-  drawQuestion,
-  revealAnswers,
-  setWinner,
-  questionReceived,
-  answerReceived,
-  answersRevealed,
-  winnerReceived,
-} from "./game";
+import { getGame, startGame, remotePlayerJoined } from "./game";
 
 import { getPlayer, joinGame, giveAnswer } from "./player";
 
-export type ActionTypes = GameActionTypes | PlayerActionTypes;
+import {
+  startNewRound,
+  getCurrentRound,
+  roundReceived,
+  revealQuestion,
+  revealAnswers,
+  setWinner,
+  questionRevealed,
+  answerReceived,
+  answersRevealed,
+  winnerReceived,
+} from "./round";
+
+export type ActionTypes = GameActionTypes | PlayerActionTypes | RoundActionTypes;
 
 export interface IBaseAction {
   type: ActionTypes;
@@ -29,13 +31,15 @@ export default {
   startGame,
   getPlayer,
   joinGame,
+  startNewRound,
+  getCurrentRound,
+  roundReceived,
   remotePlayerJoined,
-  czarSet,
-  drawQuestion,
+  revealQuestion,
   giveAnswer,
   revealAnswers,
   setWinner,
-  questionReceived,
+  questionRevealed,
   answerReceived,
   answersRevealed,
   winnerReceived,

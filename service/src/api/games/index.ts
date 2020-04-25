@@ -7,7 +7,8 @@ import {
   patchRevealQuestion,
   patchRevealAnswers,
   postWinningAnswer,
-  getNewRound,
+  getCurrentRound,
+  putNewRound,
 } from "./controller";
 
 export {
@@ -19,5 +20,6 @@ export {
   patchRevealQuestion,
   patchRevealAnswers,
   postWinningAnswer,
-  getNewRound,
+  getCurrentRound,
+  putNewRound,
 };

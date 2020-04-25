@@ -15,7 +15,7 @@ const mapStateToProps = (state: AppState) => ({
 });
 
 const mapDispatchToProps = (dispatch: Dispatch<AnyAction>) =>
-  bindActionCreators({ getGame: actions.getGame, getPlayer: actions.getPlayer, joinGame: actions.joinGame }, dispatch);
+  bindActionCreators({ getGame: actions.getGame, joinGame: actions.joinGame, getPlayer: actions.getPlayer }, dispatch);
 
 class JoinGame extends React.Component<
   ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps> & RouteComponentProps<{ game_id: string }>
@@ -30,8 +30,9 @@ class JoinGame extends React.Component<
     }
     if (this.props.player) {
       return this.props.history.push(`/${this.props.game.id}`);
+    } else {
+      return this.props.getPlayer();
     }
-    this.props.getPlayer();
   };
 
   componentDidMount = () => {

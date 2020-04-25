@@ -1,6 +1,6 @@
 import axios from "axios";
 
-import { IGame, IPlayer, IQuestionCard, ICard, IGivenAnswer } from "../interfaces";
+import { IGame, IPlayer, IRound, ICard, IGivenAnswer } from "../interfaces";
 
 const { API_BASE_URL } = process.env;
 
@@ -22,11 +22,25 @@ const getGamePlayer = async (gameId: string, playerId: string) => {
   return axios.get<IPlayer>(`${API_BASE_URL}/games/${gameId}/player/${playerId}`).then(res => res.data);
 };
 
-const drawQuestionCard = async (gameId: string) => {
-  return axios.get<IQuestionCard>(`${API_BASE_URL}/games/${gameId}/draw/question`).then(res => res.data);
+const selectRoundWinner = async (gameId: string, playerId: string, answer: IGivenAnswer) => {
+  return axios
+    .post(`${API_BASE_URL}/games/${gameId}/round/winner`, { player: playerId, card: answer.card })
+    .then(res => res.data);
 };
 
-const selectAnswerCard = async (gameId: string, playerId: string, card: ICard) => {
+const startNewRound = async (gameId: string): Promise<IRound> => {
+  return axios.put<IRound>(`${API_BASE_URL}/games/${gameId}/round`).then(res => res.data);
+};
+
+const getRound = async (gameId: string): Promise<IRound> => {
+  return axios.get(`${API_BASE_URL}/games/${gameId}/round`).then(res => res.data);
+};
+
+const revealQuestion = async (gameId: string) => {
+  return axios.patch<IRound>(`${API_BASE_URL}/games/${gameId}/round/question`).then(res => res.data);
+};
+
+const selectAnswer = async (gameId: string, playerId: string, card: ICard) => {
   return axios
     .put<IGivenAnswer>(`${API_BASE_URL}/games/${gameId}/answer`, {
       player: playerId,
@@ -35,27 +49,18 @@ const selectAnswerCard = async (gameId: string, playerId: string, card: ICard) =
     .then(res => res.data);
 };
 
-const revealAnswers = async (gameId: string) => {
-  return axios.patch(`${API_BASE_URL}/games/${gameId}/round/reveal`).then(res => res.data);
-};
-
-const selectRoundWinner = async (gameId: string, playerId: string, answer: IGivenAnswer) => {
-  return axios
-    .post(`${API_BASE_URL}/games/${gameId}/round/winner`, { player: playerId, card: answer.card })
-    .then(res => res.data);
-};
-
-const startNewRound = async (gameId: string) => {
-  return axios.put(`${API_BASE_URL}/games/${gameId}/round/start`).then(res => res.data);
+const revealAnswers = async (gameId: string): Promise<IRound> => {
+  return axios.patch<IRound>(`${API_BASE_URL}/games/${gameId}/round/answers`).then(res => res.data);
 };
 
 export default {
   createGame,
   getGame,
+  getRound,
   addGamePlayer,
   getGamePlayer,
-  drawQuestionCard,
-  selectAnswerCard,
+  revealQuestion,
+  selectAnswer,
   revealAnswers,
   selectRoundWinner,
   startNewRound,

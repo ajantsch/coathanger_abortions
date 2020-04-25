@@ -7,9 +7,9 @@ interface IAnswer {
 }
 
 interface IRound {
+  czar: IPlayer["id"];
   question: ICard;
   questionRevealed: boolean;
-  czar: IPlayer["id"];
   answers: IAnswer[];
   answersRevealed: boolean;
   winner: IAnswer | undefined;

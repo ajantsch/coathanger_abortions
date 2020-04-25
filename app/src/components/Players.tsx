@@ -6,6 +6,7 @@ import { AppState } from "../reducers";
 
 const mapStateToProps = (state: AppState) => ({
   game: state.game,
+  round: state.round,
 });
 
 class Players extends React.PureComponent<ReturnType<typeof mapStateToProps>, {}> {
@@ -13,10 +14,10 @@ class Players extends React.PureComponent<ReturnType<typeof mapStateToProps>, {}
     return (
       <>
         <Typography variant="h4">Players</Typography>
-        {this.props.game.players.map(player => (
+        {this.props.game?.players.map(player => (
           <Typography variant="body1" key={player.id}>
             {`${player.name} (${player.wonCards.length} won cards)`}
-            {this.props.game.czar === player.id && " (czar)"}
+            {this.props.round?.czar === player.id && " (czar)"}
           </Typography>
         ))}
       </>

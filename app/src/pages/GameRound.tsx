@@ -2,7 +2,6 @@ import React from "react";
 import { connect } from "react-redux";
 import { AnyAction, bindActionCreators, Dispatch } from "redux";
 import { Box, Button } from "@material-ui/core";
-import { ControlPoint } from "@material-ui/icons";
 import styled, { AnyStyledComponent } from "styled-components";
 
 import { ICard } from "../interfaces";
@@ -10,18 +9,18 @@ import { AppState } from "../reducers";
 import actions from "../actions";
 
 import Card from "../components/Card";
-import CardPlaceholder from "../components/CardPlaceholder";
 import CardStack from "../components/CardStack";
 
 const mapStateToProps = (state: AppState) => ({
   game: state.game,
   player: state.player,
+  round: state.round,
 });
 
 const mapDispatchToProps = (dispatch: Dispatch<AnyAction>) =>
   bindActionCreators(
     {
-      drawQuestion: actions.drawQuestion,
+      revealQuestion: actions.revealQuestion,
       giveAnswer: actions.giveAnswer,
       revealAnswers: actions.revealAnswers,
       setWinner: actions.setWinner,
@@ -33,21 +32,13 @@ class GameRound extends React.Component<
   ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps>,
   {}
 > {
-  handleDrawQuestion = async () => {
-    if (
-      !this.props.game.id ||
-      !this.props.player ||
-      this.props.game.czar !== this.props.player.id ||
-      this.props.game.currentRound.question
-    ) {
-      return;
-    }
-    this.props.drawQuestion();
+  handleRevealQuestion = async () => {
+    this.props.revealQuestion();
   };
 
   handleCardClicked = (card: ICard) => {
-    if (this.props.game.czar === this.props.player?.id) {
-      const winner = this.props.game.currentRound.answers.find(answer => answer.card.id === card.id);
+    if (this.props.round?.czar === this.props.player?.id) {
+      const winner = this.props.round?.answers.find(answer => answer.card.id === card.id);
       if (winner) {
         this.props.setWinner(winner);
       }
@@ -55,38 +46,34 @@ class GameRound extends React.Component<
   };
 
   handleRevealAnswers = () => {
-    if (this.props.game.czar === this.props.player?.id) {
+    if (this.props.round?.czar === this.props.player?.id) {
       this.props.revealAnswers();
     }
   };
 
   render = () => {
-    const showDrawQuestionButton =
-      this.props.game.czar === this.props.player?.id && !this.props.game.currentRound.question;
     const showRevealAnswersButton =
-      this.props.game.currentRound.question &&
-      this.props.game.czar === this.props.player?.id &&
-      !!this.props.game.currentRound.answers.length &&
-      this.props.game.currentRound.answers.length === this.props.game.players.length - 1 &&
-      !this.props.game.currentRound.answersRevealed;
+      this.props.round?.question &&
+      this.props.round?.czar === this.props.player?.id &&
+      !!this.props.round.answers.length &&
+      this.props.game?.players &&
+      this.props.round.answers.length === this.props.game.players.length - 1 &&
+      !this.props.round.answersRevealed;
     return (
       <CurrentRound>
         <QuestionCardSpace>
-          {this.props.game.currentRound.question ? (
-            <Card card={this.props.game.currentRound.question} />
-          ) : (
-            <CardPlaceholder
-              type="question"
-              content={showDrawQuestionButton ? "Click to draw question card" : "Question will come soon..."}
-              icon={showDrawQuestionButton ? <ControlPoint fontSize="large" /> : undefined}
-              onPlaceholderClick={showDrawQuestionButton ? this.handleDrawQuestion : undefined}
+          {this.props.round?.question && (
+            <Card
+              card={this.props.round.question}
+              isHidden={!this.props.round.questionRevealed}
+              onCardClick={this.handleRevealQuestion}
             />
           )}
         </QuestionCardSpace>
         <AnswerCardsSpace>
           <CardStack
-            cards={this.props.game.currentRound.answers.map(answer => answer.card)}
-            cardsHidden={!this.props.game.currentRound.answersRevealed}
+            cards={this.props.round?.answers.map(answer => answer.card) || []}
+            cardsHidden={!this.props.round?.answersRevealed}
             onCardClick={this.handleCardClicked}
           />
           {showRevealAnswersButton && (

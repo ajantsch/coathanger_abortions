@@ -50,13 +50,27 @@ const findGamePlayer = async (gameId: string, playerId: string) => {
   return player;
 };
 
-const startNewRound = async (gameId: string): Promise<IRound> => {
+const findCurrentRound = async (gameId: string): Promise<IRound> => {
   const game = ACTIVE_GAMES.get(gameId);
   if (!game) {
     throw new Error(`Could not find game with id ${gameId}`);
   }
 
-  if (!game.players.length) {
+  if (!game.currentRound) {
+    throw new Error(`No active round in game with id ${gameId}`);
+  }
+
+  return game.currentRound;
+};
+
+const startNewRound = async (gameId: string): Promise<IRound> => {
+  logger.info("starting new round");
+  const game = ACTIVE_GAMES.get(gameId);
+  if (!game) {
+    throw new Error(`Could not find game with id ${gameId}`);
+  }
+
+  if (!game.players?.length) {
     throw new Error(`Cannot start round without players in the game`);
   }
 
@@ -154,5 +168,6 @@ export {
   selectAnswer,
   revealAnswers,
   selectWinningCard,
+  findCurrentRound,
   startNewRound,
 };

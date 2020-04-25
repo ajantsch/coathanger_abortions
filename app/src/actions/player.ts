@@ -99,7 +99,7 @@ export function giveAnswer(
     }
 
     try {
-      await GameApi.selectAnswerCard(gameId, playerId, answer.card);
+      await GameApi.selectAnswer(gameId, playerId, answer.card);
       return dispatch({
         type: PlayerActionTypes.GIVE_ANSER,
         payload: answer,

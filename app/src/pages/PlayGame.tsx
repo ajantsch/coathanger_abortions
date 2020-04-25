@@ -2,45 +2,54 @@ import React from "react";
 import { connect } from "react-redux";
 import { AnyAction, bindActionCreators, Dispatch } from "redux";
 import { withRouter, RouteComponentProps } from "react-router";
-import { Box, Container } from "@material-ui/core";
+import { Box, Container, Button } from "@material-ui/core";
 import styled, { AnyStyledComponent } from "styled-components";
 
 import { AppState } from "../reducers";
 import actions from "../actions";
-import store from "../store";
 
 import Players from "../components/Players";
 import PlayerCards from "./PlayerCards";
-import Round from "./GameRound";
+import GameRound from "./GameRound";
 
 import YSoSerious from "../images/y-so-serious-white.png";
 
 const mapStateToProps = (state: AppState) => ({
   game: state.game,
+  round: state.round,
   player: state.player,
 });
 
 const mapDispatchToProps = (dispatch: Dispatch<AnyAction>) =>
-  bindActionCreators({ getGame: actions.getGame }, dispatch);
+  bindActionCreators(
+    { getGame: actions.getGame, startRound: actions.startNewRound, getCurrentRound: actions.getCurrentRound },
+    dispatch,
+  );
 
 class PlayGame extends React.Component<
   ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps> & RouteComponentProps<{ game_id: string }>,
   {}
 > {
+  handleStartRound = () => {
+    this.props.startRound();
+  };
+
+  componentDidUpdate = () => {
+    if (!this.props.game) {
+      return this.props.history.push("/");
+    }
+    if (!this.props.player) {
+      return this.props.history.push(`/${this.props.game.id}/join`);
+    }
+    if (!this.props.round) {
+      this.props.getCurrentRound();
+    }
+  };
+
   componentDidMount = async () => {
     if (this.props.match.params.game_id) {
       this.props.getGame(this.props.match.params.game_id);
     }
-
-    store.subscribe(() => {
-      const game = store.getState().game;
-      if (!game) {
-        return this.props.history.push("/");
-      }
-      if (!store.getState().player) {
-        return this.props.history.push(`/${game.id}/join`);
-      }
-    });
   };
 
   render = () => {
@@ -49,7 +58,13 @@ class PlayGame extends React.Component<
         <Container maxWidth="lg">
           {this.props.game?.id && this.props.player?.id ? (
             <>
-              <Round />
+              {this.props.round ? (
+                <GameRound />
+              ) : (
+                <Button variant="contained" color="primary" onClick={this.handleStartRound}>
+                  Start Round
+                </Button>
+              )}
               <PlayerCards />
               <Players />
             </>
