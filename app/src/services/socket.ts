@@ -19,7 +19,7 @@ const connectToGame = (gameId: string, playerName: string): Promise<SocketIOClie
 
       gameSocket.on("new_round_started", (round: IRound) => {
         console.warn("New round started:", round);
-        store.dispatch(actions.roundReceived(round));
+        actions.roundReceived(round)(store.dispatch, store.getState, undefined);
       });
 
       gameSocket.on("question_card_revealed", () => {

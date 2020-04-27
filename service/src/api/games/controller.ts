@@ -20,8 +20,6 @@ import {
 import { logger, randomString, genUuid, shuffle } from "../../util";
 import { socket } from "../../server";
 
-const PLAYER_ANSWER_CARD_COUNT = 10;
-
 function replaceErrors(_key: string, value: unknown) {
   if (value instanceof Error) {
     const error = {};
@@ -106,9 +104,6 @@ const putGamePlayer = async (req: Request, res: Response) => {
   };
 
   try {
-    const game = await findGame(gameId);
-    player.activeCards = game.availableAnswers.splice(0, PLAYER_ANSWER_CARD_COUNT);
-
     const inserted = await insertGamePlayer(gameId, player);
     socket.of(`/${gameId}`).emit("player_joined", inserted);
 

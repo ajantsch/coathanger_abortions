@@ -3,6 +3,7 @@ import { newRound } from "../../models/round";
 import { logger } from "../../util";
 
 const ACTIVE_GAMES: Map<string, IGame> = new Map();
+const PLAYER_ANSWER_CARD_COUNT = 10;
 
 const findGame = async (id: string) => {
   const game = ACTIVE_GAMES.get(id);
@@ -28,6 +29,8 @@ const insertGamePlayer = async (gameId: string, player: IPlayer): Promise<IPlaye
   if (!game) {
     throw new Error(`Could not find game with id ${gameId}`);
   }
+
+  player.activeCards = game.availableAnswers.splice(0, PLAYER_ANSWER_CARD_COUNT);
 
   game.players.push(player);
   ACTIVE_GAMES.set(game.id, game);
@@ -169,8 +172,12 @@ const drawAnswer = async (gameId: string, playerId: string): Promise<ICard> => {
     throw new Error(`Could not find player ${playerId} in game ${gameId}`);
   }
 
-  const card = game.availableAnswers.splice(0, 1)[0];
   const playerIndex = game.players.map(player => player.id).indexOf(playerId);
+  if (game.players[playerIndex].activeCards.length >= PLAYER_ANSWER_CARD_COUNT) {
+    throw new Error(`Player ${playerId} cannot draw answer, already has ${PLAYER_ANSWER_CARD_COUNT} answers available`);
+  }
+
+  const card = game.availableAnswers.splice(0, 1)[0];
   game.players[playerIndex].activeCards.push(card);
   ACTIVE_GAMES.set(gameId, game);
   return card;

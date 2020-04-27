@@ -5,9 +5,10 @@ import { IBaseAction } from "./index";
 import { AppState } from "../reducers";
 import { IGivenAnswer, IRound } from "../interfaces";
 
-import { receiveWonQuestion } from "./player";
+import { receiveWonQuestion, drawAnswer } from "./player";
 
 export enum RoundActionTypes {
+  VOID = "VOID",
   START_ROUND = "START_ROUND",
   GET_CURRENT_ROUND = "GET_CURRENT_ROUND",
   RECEIVE_ROUND = "RECEIVE_ROUND",
@@ -19,6 +20,10 @@ export enum RoundActionTypes {
   RECEIVE_ANSWERS_REVEALED = "RECEIVE_ANSWERS_REVEALED",
   SET_WINNER = "SET_WINNER",
   RECEIVE_WINNER = "RECEIVE_WINNER",
+}
+
+export interface IVoidRoundAction extends IBaseAction {
+  type: RoundActionTypes.VOID;
 }
 
 export interface IStartRoundAction extends IBaseAction {
@@ -73,6 +78,7 @@ export interface IReceiveWinnerAction extends IBaseAction {
 }
 
 export type RoundAction =
+  | IVoidRoundAction
   | IStartRoundAction
   | IGetCurrentRoundAction
   | IReceiveRoundAction
@@ -85,10 +91,18 @@ export type RoundAction =
   | ISetWinnerAction
   | IReceiveWinnerAction;
 
-export function roundReceived(round: IRound): IReceiveRoundAction {
-  return {
-    type: RoundActionTypes.RECEIVE_ROUND,
-    payload: round,
+export function roundReceived(
+  round: IRound,
+): ThunkAction<IReceiveRoundAction, AppState, undefined, IReceiveRoundAction> {
+  return (dispatch: ThunkDispatch<AppState, undefined, IReceiveRoundAction>, getState) => {
+    const player = getState().player;
+    if (player && player.activeCards.length < 10) {
+      dispatch(drawAnswer());
+    }
+    return dispatch({
+      type: RoundActionTypes.RECEIVE_ROUND,
+      payload: round,
+    });
   };
 }
 
