@@ -1,5 +1,7 @@
 on:
   push:
+    paths:
+      - "service/**"
     branches:
       - master
 
