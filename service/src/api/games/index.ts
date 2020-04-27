@@ -9,6 +9,7 @@ import {
   postWinningAnswer,
   getCurrentRound,
   putNewRound,
+  getAnswer,
 } from "./controller";
 
 export {
@@ -22,4 +23,5 @@ export {
   postWinningAnswer,
   getCurrentRound,
   putNewRound,
+  getAnswer,
 };

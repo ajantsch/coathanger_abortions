@@ -3,6 +3,8 @@ import { GameAction, GameActionTypes } from "../actions/game";
 
 export default function(state: IGame | null = null, action: GameAction) {
   switch (action.type) {
+    case GameActionTypes.VOID:
+      return state;
     case GameActionTypes.RESET_GAME:
       return null;
     case GameActionTypes.GET_GAME:
@@ -11,6 +13,20 @@ export default function(state: IGame | null = null, action: GameAction) {
       return action.payload;
     case GameActionTypes.REMOTE_PLAYER_JOINED:
       return state ? { ...state, players: [...state.players, action.payload] } : null;
+    case GameActionTypes.ASSIGN_WINNING_CARD:
+      return state
+        ? {
+            ...state,
+            players: [
+              ...state.players.map(player => {
+                if (player.id === action.payload.playerId) {
+                  return { ...player, wonCards: [...player.wonCards, action.payload.question] };
+                }
+                return player;
+              }),
+            ],
+          }
+        : null;
     default:
       return state;
   }

@@ -33,11 +33,17 @@ class GameRound extends React.Component<
   {}
 > {
   handleRevealQuestion = async () => {
-    this.props.revealQuestion();
+    if (this.props.round?.czar === this.props.player?.id) {
+      this.props.revealQuestion();
+    }
   };
 
   handleCardClicked = (card: ICard) => {
-    if (this.props.round?.czar === this.props.player?.id) {
+    if (
+      this.props.round?.answersRevealed &&
+      !this.props.round?.winner &&
+      this.props.round?.czar === this.props.player?.id
+    ) {
       const winner = this.props.round?.answers.find(answer => answer.card.id === card.id);
       if (winner) {
         this.props.setWinner(winner);
@@ -92,6 +98,7 @@ const CurrentRound: AnyStyledComponent = styled(Box)`
     display: flex;
     flex-direction: row;
     flex-wrap: wrap;
+    margin: 0 -25px;
   }
 `;
 

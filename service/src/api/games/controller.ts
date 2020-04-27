@@ -15,18 +15,21 @@ import {
   selectWinningCard,
   findCurrentRound,
   startNewRound,
+  drawAnswer,
 } from "./repository";
 import { logger, randomString, genUuid, shuffle } from "../../util";
 import { socket } from "../../server";
 
 const PLAYER_ANSWER_CARD_COUNT = 10;
 
-function replaceErrors(key: string, value: unknown) {
+function replaceErrors(_key: string, value: unknown) {
   if (value instanceof Error) {
     const error = {};
 
     Object.getOwnPropertyNames(value).forEach(function(key) {
-      error[key] = value[key];
+      if (key !== "stack") {
+        error[key] = value[key];
+      }
     });
 
     return error;
@@ -266,6 +269,26 @@ const putNewRound = async (req: Request, res: Response) => {
   }
 };
 
+const getAnswer = async (req: Request, res: Response) => {
+  const gameId = req.params.game_id;
+  const playerId = req.params.player_id;
+
+  res.type("json");
+
+  try {
+    const card = await drawAnswer(gameId, playerId);
+
+    res.status(200);
+    res.send(card);
+  } catch (err) {
+    logger.error(err);
+    res.status(500);
+    res.send(JSON.stringify(err, replaceErrors));
+  } finally {
+    res.end();
+  }
+};
+
 export {
   getGame,
   postGame,
@@ -277,4 +300,5 @@ export {
   postWinningAnswer,
   getCurrentRound,
   putNewRound,
+  getAnswer,
 };

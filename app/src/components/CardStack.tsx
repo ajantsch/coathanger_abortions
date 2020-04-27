@@ -38,6 +38,7 @@ const CardBoxWrapper: AnyStyledComponent = styled(Box)`
     flex-direction: row;
     flex-wrap: wrap;
     overflow: hidden;
+    margin: 0 -25px;
   }
 `;
 

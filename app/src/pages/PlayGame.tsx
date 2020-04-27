@@ -22,7 +22,12 @@ const mapStateToProps = (state: AppState) => ({
 
 const mapDispatchToProps = (dispatch: Dispatch<AnyAction>) =>
   bindActionCreators(
-    { getGame: actions.getGame, startRound: actions.startNewRound, getCurrentRound: actions.getCurrentRound },
+    {
+      getGame: actions.getGame,
+      getPlayer: actions.getPlayer,
+      startRound: actions.startNewRound,
+      getCurrentRound: actions.getCurrentRound,
+    },
     dispatch,
   );
 
@@ -38,17 +43,21 @@ class PlayGame extends React.Component<
     if (!this.props.game) {
       return this.props.history.push("/");
     }
-    if (!this.props.player) {
+    if (this.props.game && !this.props.player) {
       return this.props.history.push(`/${this.props.game.id}/join`);
-    }
-    if (!this.props.round) {
-      this.props.getCurrentRound();
     }
   };
 
   componentDidMount = async () => {
-    if (this.props.match.params.game_id) {
-      this.props.getGame(this.props.match.params.game_id);
+    this.props.getGame(this.props.match.params.game_id);
+    if (!this.props.game) {
+      return this.props.history.push("/");
+    }
+    if (this.props.game && !this.props.player) {
+      this.props.getPlayer();
+    }
+    if (this.props.game && !this.props.round) {
+      this.props.getCurrentRound();
     }
   };
 
@@ -58,11 +67,15 @@ class PlayGame extends React.Component<
         <Container maxWidth="lg">
           {this.props.game?.id && this.props.player?.id ? (
             <>
-              {this.props.round ? (
-                <GameRound />
-              ) : (
+              {this.props.round && <GameRound />}
+              {!this.props.round && (
                 <Button variant="contained" color="primary" onClick={this.handleStartRound}>
-                  Start Round
+                  Start playing
+                </Button>
+              )}
+              {this.props.round?.winner?.player === this.props.player.id && (
+                <Button variant="contained" color="primary" onClick={this.handleStartRound}>
+                  Start next round
                 </Button>
               )}
               <PlayerCards />

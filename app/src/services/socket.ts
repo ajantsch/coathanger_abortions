@@ -39,7 +39,8 @@ const connectToGame = (gameId: string, playerName: string): Promise<SocketIOClie
 
       gameSocket.on("round_winner_set", (winner: IGivenAnswer) => {
         console.warn("Winner of the round:", winner);
-        store.dispatch(actions.winnerReceived(winner));
+        actions.winnerReceived(winner)(store.dispatch, store.getState, undefined);
+        actions.assignWinningCard(winner)(store.dispatch, store.getState, undefined);
       });
 
       resolve(gameSocket);

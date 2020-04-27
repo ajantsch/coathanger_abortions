@@ -64,7 +64,6 @@ const findCurrentRound = async (gameId: string): Promise<IRound> => {
 };
 
 const startNewRound = async (gameId: string): Promise<IRound> => {
-  logger.info("starting new round");
   const game = ACTIVE_GAMES.get(gameId);
   if (!game) {
     throw new Error(`Could not find game with id ${gameId}`);
@@ -79,7 +78,8 @@ const startNewRound = async (gameId: string): Promise<IRound> => {
   if (game.currentRound && game.currentRound.winner) {
     round.czar = game.currentRound.winner.player;
   } else {
-    const randomPlayerIndex = Math.floor(Math.random() * (game.players.length + 1));
+    const randomPlayerIndex = Math.floor(Math.random() * game.players.length - 1) + 1;
+    logger.warn(`random player index: ${randomPlayerIndex}`);
     round.czar = game.players[randomPlayerIndex].id;
   }
   game.currentRound = round;
@@ -153,10 +153,27 @@ const selectWinningCard = async (gameId: string, playerId: string, cardId: strin
   logger.info(`winning answer selected, player is ${winningAnswer.player}`);
 
   game.currentRound.winner = winningAnswer;
-  const playerIndex = game.players.map(player => player.id).indexOf(playerId);
-  game.players[playerIndex].wonCards.push(winningAnswer.card);
+  const playerIndex = game.players.map(player => player.id).indexOf(winningAnswer.player);
+  game.players[playerIndex].wonCards.push(game.currentRound.question);
   ACTIVE_GAMES.set(gameId, game);
   return winningAnswer;
+};
+
+const drawAnswer = async (gameId: string, playerId: string): Promise<ICard> => {
+  const game = ACTIVE_GAMES.get(gameId);
+  if (!game) {
+    throw new Error(`Could not find game with id ${gameId}`);
+  }
+
+  if (!game.players.find(player => player.id === playerId)) {
+    throw new Error(`Could not find player ${playerId} in game ${gameId}`);
+  }
+
+  const card = game.availableAnswers.splice(0, 1)[0];
+  const playerIndex = game.players.map(player => player.id).indexOf(playerId);
+  game.players[playerIndex].activeCards.push(card);
+  ACTIVE_GAMES.set(gameId, game);
+  return card;
 };
 
 export {
@@ -168,6 +185,7 @@ export {
   selectAnswer,
   revealAnswers,
   selectWinningCard,
+  drawAnswer,
   findCurrentRound,
   startNewRound,
 };

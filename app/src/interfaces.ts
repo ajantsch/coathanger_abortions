@@ -15,7 +15,7 @@ export interface IRound {
 export interface ICard {
   id: string;
   content: string;
-  type: string;
+  type: "answer" | "question";
 }
 
 export interface IAnswerCard extends ICard {
@@ -38,5 +38,5 @@ export interface IPlayer extends IRemotePlayer {
 
 export interface IGivenAnswer {
   player: string;
-  card: ICard;
+  card: IAnswerCard;
 }

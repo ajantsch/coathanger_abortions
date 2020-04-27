@@ -49,6 +49,10 @@ const selectAnswer = async (gameId: string, playerId: string, card: ICard) => {
     .then(res => res.data);
 };
 
+const drawAnswer = async (gameId: string, playerId: string) => {
+  return axios.get<ICard>(`${API_BASE_URL}/games/${gameId}/player/${playerId}/card`).then(res => res.data);
+};
+
 const revealAnswers = async (gameId: string): Promise<IRound> => {
   return axios.patch<IRound>(`${API_BASE_URL}/games/${gameId}/round/answers`).then(res => res.data);
 };
@@ -61,6 +65,7 @@ export default {
   getGamePlayer,
   revealQuestion,
   selectAnswer,
+  drawAnswer,
   revealAnswers,
   selectRoundWinner,
   startNewRound,

@@ -6,7 +6,7 @@ import { Typography } from "@material-ui/core";
 import CardStack from "../components/CardStack";
 import { AppState } from "../reducers";
 import actions from "../actions";
-import { ICard } from "../interfaces";
+import { ICard, IAnswerCard } from "../interfaces";
 
 const mapStateToProps = (state: AppState) => ({
   game: state.game,
@@ -25,7 +25,7 @@ class PlayerCards extends React.PureComponent<
     if (!this.props.game || !this.props.player || !this.props.round || this.props.round.czar === this.props.player.id) {
       return;
     }
-    this.props.giveAnswer({ player: this.props.player.id, card });
+    this.props.giveAnswer({ player: this.props.player.id, card: card as IAnswerCard });
   };
 
   render = () => {
@@ -33,8 +33,9 @@ class PlayerCards extends React.PureComponent<
       <>
         {this.props.player && (
           <>
-            <Typography variant="h5">Your cards</Typography>
+            <Typography variant="h5">Your answer cards</Typography>
             <CardStack cards={this.props.player.activeCards} onCardClick={this.handleAnswerCardClicked} />
+            <Typography variant="h5">Your won cards</Typography>
             <CardStack cards={this.props.player.wonCards} />
           </>
         )}

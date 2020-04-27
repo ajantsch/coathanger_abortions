@@ -2,7 +2,7 @@ import { GameActionTypes } from "./game";
 import { PlayerActionTypes } from "./player";
 import { RoundActionTypes } from "./round";
 
-import { getGame, startGame, remotePlayerJoined } from "./game";
+import { getGame, startGame, remotePlayerJoined, assignWinningCard } from "./game";
 
 import { getPlayer, joinGame, giveAnswer } from "./player";
 
@@ -43,4 +43,5 @@ export default {
   answerReceived,
   answersRevealed,
   winnerReceived,
+  assignWinningCard,
 };

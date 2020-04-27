@@ -28,17 +28,15 @@ class JoinGame extends React.Component<
     if (!this.props.game) {
       return this.props.history.push("/");
     }
-    if (this.props.player) {
+    if (this.props.game && this.props.player) {
       return this.props.history.push(`/${this.props.game.id}`);
     } else {
-      return this.props.getPlayer();
+      this.props.getPlayer();
     }
   };
 
   componentDidMount = () => {
-    if (this.props.match.params.game_id) {
-      this.props.getGame(this.props.match.params.game_id);
-    }
+    this.props.getGame(this.props.match.params.game_id);
   };
 
   render = () => {

@@ -24,20 +24,7 @@ class NewGame extends React.Component<
     this.props.startGame();
   };
 
-  routeGuard = () => {
-    if (this.props.game) {
-      if (!this.props.player) {
-        return this.props.history.push(`/${this.props.game.id}/join`);
-      }
-      return this.props.history.push(`/${this.props.game.id}`);
-    }
-  };
-
   componentDidUpdate = () => {
-    this.routeGuard();
-  };
-
-  componentDidMount = () => {
     if (this.props.game) {
       if (!this.props.player) {
         return this.props.history.push(`/${this.props.game.id}/join`);

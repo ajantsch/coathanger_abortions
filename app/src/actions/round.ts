@@ -5,6 +5,8 @@ import { IBaseAction } from "./index";
 import { AppState } from "../reducers";
 import { IGivenAnswer, IRound } from "../interfaces";
 
+import { receiveWonQuestion } from "./player";
+
 export enum RoundActionTypes {
   START_ROUND = "START_ROUND",
   GET_CURRENT_ROUND = "GET_CURRENT_ROUND",
@@ -110,10 +112,21 @@ export function answersRevealed(answer: IRound): IReceiveAnswersRevealedAction {
   };
 }
 
-export function winnerReceived(winner: IGivenAnswer): IReceiveWinnerAction {
-  return {
-    type: RoundActionTypes.RECEIVE_WINNER,
-    payload: winner,
+export function winnerReceived(
+  winner: IGivenAnswer,
+): ThunkAction<IReceiveWinnerAction, AppState, undefined, IReceiveWinnerAction> {
+  return (dispatch: ThunkDispatch<AppState, undefined, IReceiveWinnerAction>, getState) => {
+    const round = getState().round;
+    const player = getState().player;
+    if (round) {
+      if (player?.id === winner.player) {
+        dispatch(receiveWonQuestion(round.question));
+      }
+    }
+    return dispatch({
+      type: RoundActionTypes.RECEIVE_WINNER,
+      payload: winner,
+    });
   };
 }
 
@@ -179,8 +192,8 @@ export function setWinner(
   return async (dispatch: ThunkDispatch<AppState, undefined, ISetWinnerAction>, getState) => {
     const gameId = getState().game?.id as string;
     const playerId = getState().player?.id as string;
-
     await GameApi.selectRoundWinner(gameId, playerId, answer);
+
     return dispatch({
       type: RoundActionTypes.SET_WINNER,
       payload: answer,
