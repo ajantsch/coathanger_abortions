@@ -27,6 +27,9 @@ jobs:
       - name: Build application
         id: build-app
         working-directory: ./app
+        env:
+          NODE_ENV: production
+          OPTIMIZED_BUILD: true
         run: |
           yarn install
           yarn build
