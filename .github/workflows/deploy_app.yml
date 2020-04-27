@@ -1,0 +1,49 @@
+on:
+  push:
+    paths:
+      - "app/**"
+    branches:
+      - master
+
+name: Deploy app to AWS S3
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        id: checkout
+        uses: actions/checkout@v1
+
+      - name: Configure AWS credentials
+        id: configure-credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: eu-central-1
+
+      - name: Build application
+        id: build-app
+        working-directory: ./app
+        run: |
+          yarn install
+          yarn build
+
+      - name: Add version info
+        id: version-info
+        working-directory: ./app
+        run: |
+          node version-info-generator.js --branch=master --commit=$GITHUB_SHA --build=$GITHUB_RUN_NUMBER > build/version.json
+
+      - name: Upload to S3 bucket
+        id: upload-to-s3
+        working-directory: ./app
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_DEFAULT_REGION: eu-central-1
+          AWS_S3_BUCKET_NAME: ${{ secrets.AWS_S3_BUCKET_NAME }}
+        run: |
+          bash s3_sync.sh --bucket=$AWS_S3_BUCKET_NAME --source-folder=build
