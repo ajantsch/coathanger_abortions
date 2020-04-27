@@ -37,7 +37,7 @@ jobs:
           --build-arg OPTIMIZED_BUILD=true \
           --build-arg NODE_ENV=production \
           --build-arg AWS_REGION=eu-central-1 \
-          --build-arg PORT=80 \
+          --build-arg PORT=8080 \
           -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
           # push it to ECR so that it can
           # be deployed to ECS.
