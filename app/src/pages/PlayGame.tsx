@@ -2,7 +2,7 @@ import React from "react";
 import { connect } from "react-redux";
 import { AnyAction, bindActionCreators, Dispatch } from "redux";
 import { withRouter, RouteComponentProps } from "react-router";
-import { Box, Container, Button } from "@material-ui/core";
+import { AppBar, Toolbar, Box, Container, Button, Typography } from "@material-ui/core";
 import styled, { AnyStyledComponent } from "styled-components";
 
 import { AppState } from "../reducers";
@@ -64,6 +64,14 @@ class PlayGame extends React.Component<
   render = () => {
     return (
       <GameWrapper>
+        <AppBar position="sticky">
+          <Toolbar>
+            <Typography variant="h6">
+              {this.props.player?.name}
+              {this.props.player?.id === this.props.round?.czar && " (Your are the CZAR of this round)"}
+            </Typography>
+          </Toolbar>
+        </AppBar>
         <Container maxWidth="lg">
           {this.props.game?.id && this.props.player?.id ? (
             <>
