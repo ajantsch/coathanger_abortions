@@ -2,7 +2,7 @@ import React from "react";
 import { Box, Container, Grid, Typography } from "@material-ui/core";
 import styled, { AnyStyledComponent } from "styled-components";
 
-import CoathangerWhite from "../images/coathanger_white.png";
+import CoathangerLight from "../images/coathanger_light.svg";
 import YSoSerious from "../images/y-so-serious-white.png";
 
 class JoinLayout extends React.Component {
@@ -43,7 +43,7 @@ const PageGrid: AnyStyledComponent = styled(Grid)`
 
 const LeftGrid: AnyStyledComponent = styled(Grid)`
   background-color: #1c1c1c;
-  background-image: url(${CoathangerWhite});
+  background-image: url(${CoathangerLight});
   background-position: bottom 32px right 32px;
   background-repeat: no-repeat;
   background-size: 50% auto;

@@ -4,8 +4,8 @@ import styled, { css, AnyStyledComponent } from "styled-components";
 
 import { ICard } from "../interfaces";
 
-import CoathangerBlack from "../images/coathanger_black.png";
-import CoathangerWhite from "../images/coathanger_white.png";
+import CoathangerDark from "../images/coathanger_dark.svg";
+import CoathangerLight from "../images/coathanger_light.svg";
 
 interface ICardProps {
   card: ICard;
@@ -64,13 +64,13 @@ const SharedCardStyles = css`
 
   &.question {
     background-color: #1c1c1c;
-    background-image: url(${CoathangerWhite});
+    background-image: url(${CoathangerLight});
     color: #f3f3f4;
   }
 
   &.answer {
     background-color: #ffffff;
-    background-image: url(${CoathangerBlack});
+    background-image: url(${CoathangerDark});
     border: 1px solid #e3e6eb;
     color: #1c1c1c;
   }
