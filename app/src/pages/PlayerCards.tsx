@@ -35,8 +35,12 @@ class PlayerCards extends React.PureComponent<
           <>
             <Typography variant="h5">Your answer cards</Typography>
             <CardStack cards={this.props.player.activeCards} onCardClick={this.handleAnswerCardClicked} />
-            <Typography variant="h5">Your won cards</Typography>
-            <CardStack cards={this.props.player.wonCards} />
+            {!!this.props.player.wonCards.length && (
+              <>
+                <Typography variant="h5">Your won cards</Typography>
+                <CardStack cards={this.props.player.wonCards} />
+              </>
+            )}
           </>
         )}
       </>

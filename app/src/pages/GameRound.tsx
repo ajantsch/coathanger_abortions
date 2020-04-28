@@ -24,6 +24,7 @@ const mapDispatchToProps = (dispatch: Dispatch<AnyAction>) =>
       giveAnswer: actions.giveAnswer,
       revealAnswers: actions.revealAnswers,
       setWinner: actions.setWinner,
+      startRound: actions.startNewRound,
     },
     dispatch,
   );
@@ -33,7 +34,7 @@ class GameRound extends React.Component<
   {}
 > {
   handleRevealQuestion = async () => {
-    if (this.props.round?.czar === this.props.player?.id) {
+    if (this.props.round?.czar === this.props.player?.id && !this.props.round?.questionRevealed) {
       this.props.revealQuestion();
     }
   };
@@ -57,6 +58,12 @@ class GameRound extends React.Component<
     }
   };
 
+  handleStartRound = () => {
+    if (this.props.round?.winner?.player === this.props.player?.id) {
+      this.props.startRound();
+    }
+  };
+
   render = () => {
     const showRevealAnswersButton =
       this.props.round?.question &&
@@ -74,6 +81,11 @@ class GameRound extends React.Component<
               isHidden={!this.props.round.questionRevealed}
               onCardClick={this.handleRevealQuestion}
             />
+          )}
+          {this.props.round?.winner?.player === this.props.player?.id && (
+            <Button variant="contained" color="primary" onClick={this.handleStartRound}>
+              Start next round
+            </Button>
           )}
         </QuestionCardSpace>
         <AnswerCardsSpace>

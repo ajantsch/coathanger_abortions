@@ -9,7 +9,7 @@ export default responsiveFontSizes(
         contrastText: "#f3f3f4",
       },
       secondary: {
-        main: "#cecece",
+        main: "#f3f3f4",
         contrastText: "#1c1c1c",
       },
     },
