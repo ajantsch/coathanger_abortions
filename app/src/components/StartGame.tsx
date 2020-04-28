@@ -1,32 +1,14 @@
 import React from "react";
-import { connect } from "react-redux";
-import { AnyAction, bindActionCreators, Dispatch } from "redux";
 import { Button, Box } from "@material-ui/core";
 import styled, { AnyStyledComponent } from "styled-components";
 
-import { AppState } from "../reducers";
-import actions from "../actions";
+interface IStartGameProps {
+  onClickStart: () => void;
+}
 
-const mapStateToProps = (state: AppState) => ({
-  game: state.game,
-  round: state.round,
-  player: state.player,
-});
-
-const mapDispatchToProps = (dispatch: Dispatch<AnyAction>) =>
-  bindActionCreators(
-    {
-      startRound: actions.startNewRound,
-    },
-    dispatch,
-  );
-
-class StartGame extends React.PureComponent<
-  ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps>,
-  {}
-> {
+class StartGame extends React.PureComponent<IStartGameProps, {}> {
   handleStartPlaying = () => {
-    this.props.startRound();
+    this.props.onClickStart();
   };
 
   render = () => {
@@ -60,4 +42,4 @@ const StartGameButton: AnyStyledComponent = styled(Button)`
   }
 `;
 
-export default connect(mapStateToProps, mapDispatchToProps)(StartGame);
+export default StartGame;

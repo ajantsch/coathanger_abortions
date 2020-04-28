@@ -28,6 +28,7 @@ const mapDispatchToProps = (dispatch: Dispatch<AnyAction>) =>
       getGame: actions.getGame,
       getPlayer: actions.getPlayer,
       getCurrentRound: actions.getCurrentRound,
+      startRound: actions.startNewRound,
     },
     dispatch,
   );
@@ -36,6 +37,10 @@ class PlayGame extends React.Component<
   ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps> & RouteComponentProps<{ game_id: string }>,
   {}
 > {
+  handleStartPlaying = () => {
+    this.props.startRound();
+  };
+
   handleAppBarClick = (_event: React.ChangeEvent<{}>, navItem: string) => {
     switch (navItem) {
       case "share":
@@ -83,7 +88,7 @@ class PlayGame extends React.Component<
         <Container maxWidth="lg">
           {!!this.props.game?.id && !!this.props.player?.id && (
             <>
-              {this.props.round ? <GameRound /> : <StartGame />}
+              {this.props.round ? <GameRound /> : <StartGame onClickStart={this.handleStartPlaying} />}
               <PlayerCards />
             </>
           )}
