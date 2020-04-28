@@ -92,6 +92,11 @@ class GameRound extends React.Component<
           <CardStack
             cards={this.props.round?.answers.map(answer => answer.card) || []}
             cardsHidden={!this.props.round?.answersRevealed}
+            cardsClickable={
+              !this.props.round?.winner &&
+              !!this.props.round?.answersRevealed &&
+              this.props.round?.czar === this.props.player?.id
+            }
             onCardClick={this.handleCardClicked}
           />
           {showRevealAnswersButton && (

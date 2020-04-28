@@ -85,8 +85,8 @@ class PlayGame extends React.Component<
 
   render = () => {
     return (
-      <GameWrapper>
-        <Container maxWidth="lg">
+      <GameRoot>
+        <GameContainer maxWidth="lg">
           {!!this.props.game?.id && !!this.props.player?.id && (
             <>
               {this.props.round ? <GameRound /> : <StartGame onClickStart={this.handleStartPlaying} />}
@@ -94,8 +94,8 @@ class PlayGame extends React.Component<
               <PlayerCards />
             </>
           )}
-        </Container>
-        <GameBottomAppBar position="sticky" color="secondary">
+        </GameContainer>
+        <GameBottomAppBar position="fixed" color="secondary" component="footer">
           <GameBottomNavigation showLabels onChange={this.handleAppBarClick}>
             <GameBottomNavigationAction
               label="Players"
@@ -109,20 +109,28 @@ class PlayGame extends React.Component<
             <GameBottomNavigationAction label="Share" value="share" icon={<ShareIcon />} />
           </GameBottomNavigation>
         </GameBottomAppBar>
-      </GameWrapper>
+      </GameRoot>
     );
   };
 }
 
-const GameWrapper: AnyStyledComponent = styled(Box)`
+const GameRoot: AnyStyledComponent = styled(Box)`
   background-image: url(${YSoSerious});
   background-repeat: repeat;
   min-height: 100%;
 `;
 
+const GameContainer: AnyStyledComponent = styled(Container)`
+  && {
+    padding-bottom: 66px;
+  }
+`;
+
 const GameBottomAppBar: AnyStyledComponent = styled(AppBar)`
-  top: auto;
-  bottom: 0;
+  && {
+    top: auto;
+    bottom: 0;
+  }
 `;
 
 const GameBottomNavigation: AnyStyledComponent = styled(BottomNavigation)`

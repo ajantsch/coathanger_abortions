@@ -8,20 +8,21 @@ import Card from "./Card";
 interface ICardStackProps {
   cards: ICard[];
   cardsHidden?: boolean;
+  cardsClickable: boolean;
   condensed?: boolean;
   onCardClick?: (card: ICard) => void;
 }
 
 class CardStack extends React.PureComponent<ICardStackProps, {}> {
   handleCardClicked = (card: ICard) => {
-    if (this.props.onCardClick) {
+    if (this.props.cardsClickable && this.props.onCardClick) {
       this.props.onCardClick(card);
     }
   };
 
   render = () => {
     return (
-      <CardBoxWrapper>
+      <CardBoxWrapper className={this.props.condensed && "condensed"}>
         {this.props.cards.map(card => (
           <CardBox key={card.id} className={this.props.condensed && "condensed"}>
             <Card card={card} isHidden={this.props.cardsHidden} onCardClick={this.handleCardClicked} />
@@ -39,6 +40,11 @@ const CardBoxWrapper: AnyStyledComponent = styled(Box)`
     flex-wrap: wrap;
     justify-content: center;
     overflow: hidden;
+    transition: padding-right 1s ease-in-out;
+
+    &.condensed {
+      padding-right: 200px;
+    }
   }
 `;
 
@@ -46,7 +52,7 @@ const CardBox: AnyStyledComponent = styled(Box)`
   && {
     display: flex;
     margin-bottom: -250px;
-    transition: margin-right 1s;
+    transition: margin-right 1s ease-in-out;
 
     &.condensed {
       margin-right: -200px;
@@ -54,10 +60,6 @@ const CardBox: AnyStyledComponent = styled(Box)`
 
     &:last-of-type {
       margin-bottom: 0;
-
-      &.condensed {
-        margin-right: 0;
-      }
     }
   }
 `;

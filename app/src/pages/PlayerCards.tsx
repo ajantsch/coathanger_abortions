@@ -35,11 +35,15 @@ class PlayerCards extends React.PureComponent<
       <>
         {this.props.player && (
           <>
-            <CardStack cards={this.props.player.activeCards} onCardClick={this.handleAnswerCardClicked} />
+            <CardStack
+              cards={this.props.player.activeCards}
+              cardsClickable={this.props.round?.czar !== this.props.player.id}
+              onCardClick={this.handleAnswerCardClicked}
+            />
             {!!this.props.player.wonCards.length && (
               <>
                 <Separator text="Your Trophies" />
-                <CardStack cards={this.props.player.wonCards} />
+                <CardStack cards={this.props.player.wonCards} cardsClickable={false} condensed={true} />
               </>
             )}
           </>
