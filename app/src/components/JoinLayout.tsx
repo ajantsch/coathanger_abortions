@@ -19,7 +19,7 @@ class JoinLayout extends React.Component {
                   Abortions
                 </Typography>
                 <Typography variant="body1">
-                  A game that reveals how terrible people your friends really are.
+                  A game that reveals what terrible people your friends really are.
                 </Typography>
               </Box>
             </GridContentVerticalCenter>
