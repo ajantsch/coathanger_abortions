@@ -63,7 +63,7 @@ jobs:
           --aws-access-key $AWS_ACCESS_KEY_ID \
           --aws-secret-key $AWS_SECRET_ACCESS_KEY \
           --cluster coathanger-abortions-service  \
-          --service-name coathanger-abortions-service-service \
+          --service-name coathanger-abortions-cluster-service \
           --image $DOCKER_IMAGE_URL \
           --region $AWS_DEFAULT_REGION \
           --timeout 240 \
