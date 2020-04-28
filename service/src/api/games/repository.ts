@@ -82,7 +82,6 @@ const startNewRound = async (gameId: string): Promise<IRound> => {
     round.czar = game.currentRound.winner.player;
   } else {
     const randomPlayerIndex = Math.floor(Math.random() * game.players.length - 1) + 1;
-    logger.warn(`random player index: ${randomPlayerIndex}`);
     round.czar = game.players[randomPlayerIndex].id;
   }
   game.currentRound = round;

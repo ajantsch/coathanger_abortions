@@ -8,6 +8,7 @@ import styled, { AnyStyledComponent } from "styled-components";
 import { AppState } from "../reducers";
 import actions from "../actions";
 
+import StartGame from "../components/StartGame";
 import Players from "../components/Players";
 import PlayerCards from "./PlayerCards";
 import GameRound from "./GameRound";
@@ -75,12 +76,7 @@ class PlayGame extends React.Component<
         <Container maxWidth="lg">
           {this.props.game?.id && this.props.player?.id ? (
             <>
-              {this.props.round && <GameRound />}
-              {!this.props.round && (
-                <Button variant="contained" color="primary" onClick={this.handleStartRound}>
-                  Start playing
-                </Button>
-              )}
+              {this.props.round ? <GameRound /> : <StartGame />}
               {this.props.round?.winner?.player === this.props.player.id && (
                 <Button variant="contained" color="primary" onClick={this.handleStartRound}>
                   Start next round
