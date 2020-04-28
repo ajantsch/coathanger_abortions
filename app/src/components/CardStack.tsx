@@ -37,8 +37,8 @@ const CardBoxWrapper: AnyStyledComponent = styled(Box)`
     display: flex;
     flex-direction: row;
     flex-wrap: wrap;
+    justify-content: center;
     overflow: hidden;
-    margin: 0 -25px;
   }
 `;
 

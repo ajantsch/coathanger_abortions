@@ -11,6 +11,7 @@ import { AppState } from "../reducers";
 import actions from "../actions";
 
 import StartGame from "../components/StartGame";
+import Separator from "../components/Separator";
 import PlayerCards from "./PlayerCards";
 import GameRound from "./GameRound";
 
@@ -89,6 +90,7 @@ class PlayGame extends React.Component<
           {!!this.props.game?.id && !!this.props.player?.id && (
             <>
               {this.props.round ? <GameRound /> : <StartGame onClickStart={this.handleStartPlaying} />}
+              <Separator text="Your Cards" />
               <PlayerCards />
             </>
           )}

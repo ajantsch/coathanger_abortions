@@ -1,12 +1,14 @@
 import React from "react";
 import { connect } from "react-redux";
 import { AnyAction, bindActionCreators, Dispatch } from "redux";
-import { Typography } from "@material-ui/core";
 
+import { ICard, IAnswerCard } from "../interfaces";
+
+import Separator from "../components/Separator";
 import CardStack from "../components/CardStack";
+
 import { AppState } from "../reducers";
 import actions from "../actions";
-import { ICard, IAnswerCard } from "../interfaces";
 
 const mapStateToProps = (state: AppState) => ({
   game: state.game,
@@ -33,11 +35,10 @@ class PlayerCards extends React.PureComponent<
       <>
         {this.props.player && (
           <>
-            <Typography variant="h5">Your answer cards</Typography>
             <CardStack cards={this.props.player.activeCards} onCardClick={this.handleAnswerCardClicked} />
             {!!this.props.player.wonCards.length && (
               <>
-                <Typography variant="h5">Your won cards</Typography>
+                <Separator text="Your Trophies" />
                 <CardStack cards={this.props.player.wonCards} />
               </>
             )}

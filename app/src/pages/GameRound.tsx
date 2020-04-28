@@ -110,7 +110,7 @@ const CurrentRound: AnyStyledComponent = styled(Box)`
     display: flex;
     flex-direction: row;
     flex-wrap: wrap;
-    margin: 0 -25px;
+    justify-content: center;
   }
 `;
 
