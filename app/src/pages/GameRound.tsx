@@ -10,6 +10,7 @@ import actions from "../actions";
 
 import Card from "../components/Card";
 import CardStack from "../components/CardStack";
+import StartGame from "../components/StartGame";
 
 const mapStateToProps = (state: AppState) => ({
   game: state.game,
@@ -58,6 +59,10 @@ class GameRound extends React.Component<
     }
   };
 
+  handleStartPlaying = () => {
+    this.props.startRound();
+  };
+
   handleStartRound = () => {
     if (this.props.round?.winner?.player === this.props.player?.id) {
       this.props.startRound();
@@ -72,7 +77,7 @@ class GameRound extends React.Component<
       this.props.game?.players &&
       this.props.round.answers.length === this.props.game.players.length - 1 &&
       !this.props.round.answersRevealed;
-    return (
+    return this.props.round ? (
       <CurrentRound>
         <QuestionCardSpace>
           {this.props.round?.question && (
@@ -106,6 +111,8 @@ class GameRound extends React.Component<
           )}
         </AnswerCardsSpace>
       </CurrentRound>
+    ) : (
+      <StartGame onClickStart={this.handleStartPlaying} />
     );
   };
 }

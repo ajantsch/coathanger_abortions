@@ -35,6 +35,7 @@ class PlayerCards extends React.Component<
       <>
         {this.props.player && (
           <>
+            <Separator text="Your Cards" />
             <CardStack
               cards={this.props.player.activeCards}
               cardsClickable={this.props.round?.czar !== this.props.player.id}

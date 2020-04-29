@@ -13,8 +13,7 @@ import actions from "../actions";
 import BottomDrawer from "../components/BottomDrawer";
 import NavBar from "../components/NavBar";
 import Players from "../components/Players";
-import StartGame from "../components/StartGame";
-import Separator from "../components/Separator";
+
 import PlayerCards from "./PlayerCards";
 import GameRound from "./GameRound";
 
@@ -58,10 +57,6 @@ class PlayGame extends React.Component<PlayGameProps, IPlayGameState> {
     super(props);
     this.state = DEFAULT_STATE;
   }
-
-  handleStartPlaying = () => {
-    this.props.startRound();
-  };
 
   handleNavItemClick = (navItem: string) => {
     switch (navItem) {
@@ -131,13 +126,8 @@ class PlayGame extends React.Component<PlayGameProps, IPlayGameState> {
     return (
       <GameRoot>
         <GameContainer maxWidth="lg">
-          {!!this.props.game?.id && !!this.props.player?.id && (
-            <>
-              {this.props.round ? <GameRound /> : <StartGame onClickStart={this.handleStartPlaying} />}
-              <Separator text="Your Cards" />
-              <PlayerCards />
-            </>
-          )}
+          <GameRound />
+          <PlayerCards />
         </GameContainer>
 
         <StyledConfetti
