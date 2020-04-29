@@ -2,7 +2,7 @@ import React from "react";
 import { connect } from "react-redux";
 import { AnyAction, bindActionCreators, Dispatch } from "redux";
 import { withRouter, RouteComponentProps } from "react-router";
-import { Box, Drawer, Container, Snackbar, IconButton } from "@material-ui/core";
+import { Box, Container, Snackbar, IconButton } from "@material-ui/core";
 import CloseIcon from "@material-ui/icons/Close";
 import styled, { AnyStyledComponent } from "styled-components";
 import Confetti from "react-confetti";
@@ -10,6 +10,7 @@ import Confetti from "react-confetti";
 import { AppState } from "../reducers";
 import actions from "../actions";
 
+import BottomDrawer from "../components/BottomDrawer";
 import NavBar from "../components/NavBar";
 import Players from "../components/Players";
 import StartGame from "../components/StartGame";
@@ -88,14 +89,6 @@ class PlayGame extends React.Component<PlayGameProps, IPlayGameState> {
     this.setState({ playersDrawerOpen: !this.state.playersDrawerOpen });
   };
 
-  showPlayersDrawer = () => {
-    this.setState({ playersDrawerOpen: true });
-  };
-
-  hidePlayersDrawer = () => {
-    this.setState({ playersDrawerOpen: false });
-  };
-
   handleSnackbarOpen = (playerName: string) => {
     this.setState({ playerJoined: playerName });
   };
@@ -172,19 +165,9 @@ class PlayGame extends React.Component<PlayGameProps, IPlayGameState> {
         />
 
         <NavBar badgeContent={this.props.game?.players.length} onNavItemClick={this.handleNavItemClick} />
-
-        <Drawer
-          anchor="bottom"
-          variant="temporary"
-          open={this.state.playersDrawerOpen}
-          onClick={this.hidePlayersDrawer}
-          PaperProps={{ color: "secondary", style: { margin: "0 auto", padding: "25px", maxWidth: "600px" } }}
-          ModalProps={{ hideBackdrop: true }}
-        >
-          <DrawerContent>
-            <Players />
-          </DrawerContent>
-        </Drawer>
+        <BottomDrawer open={this.state.playersDrawerOpen} onClick={this.togglePlayersDrawer}>
+          <Players />
+        </BottomDrawer>
       </GameRoot>
     );
   };
@@ -207,12 +190,6 @@ const GameRoot: AnyStyledComponent = styled(Box)`
 `;
 
 const GameContainer: AnyStyledComponent = styled(Container)`
-  && {
-    padding-bottom: 66px;
-  }
-`;
-
-const DrawerContent: AnyStyledComponent = styled.div`
   && {
     padding-bottom: 66px;
   }
