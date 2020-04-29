@@ -2,9 +2,20 @@ import React from "react";
 import { connect } from "react-redux";
 import { AnyAction, bindActionCreators, Dispatch } from "redux";
 import { withRouter, RouteComponentProps } from "react-router";
-import { AppBar, BottomNavigation, BottomNavigationAction, Box, Drawer, Container, Badge } from "@material-ui/core";
+import {
+  AppBar,
+  BottomNavigation,
+  BottomNavigationAction,
+  Box,
+  Drawer,
+  Container,
+  Badge,
+  Snackbar,
+  IconButton,
+} from "@material-ui/core";
 import ShareIcon from "@material-ui/icons/Share";
 import PeopleIcon from "@material-ui/icons/People";
+import CloseIcon from "@material-ui/icons/Close";
 import styled, { AnyStyledComponent } from "styled-components";
 import Confetti from "react-confetti";
 
@@ -37,11 +48,13 @@ const mapDispatchToProps = (dispatch: Dispatch<AnyAction>) =>
   );
 
 interface IPlayGameState {
+  playerJoined: string | undefined;
   playersDrawerOpen: boolean;
   shareDrawerOpen: boolean;
 }
 
 const DEFAULT_STATE: IPlayGameState = {
+  playerJoined: undefined,
   playersDrawerOpen: false,
   shareDrawerOpen: false,
 };
@@ -96,12 +109,28 @@ class PlayGame extends React.Component<PlayGameProps, IPlayGameState> {
     this.setState({ playersDrawerOpen: false });
   };
 
-  componentDidUpdate = () => {
+  handleSnackbarOpen = (playerName: string) => {
+    this.setState({ playerJoined: playerName });
+  };
+
+  handleSnackbarClose = () => {
+    this.setState({ playerJoined: undefined });
+  };
+
+  componentDidUpdate = (prevProps: PlayGameProps) => {
     if (!this.props.game) {
       return this.props.history.push("/");
     }
     if (this.props.game && !this.props.player) {
       return this.props.history.push(`/${this.props.game.id}/join`);
+    }
+
+    // check if new player joined the game
+    const joinedPlayer = this.props.game.players.filter(
+      player => (prevProps.game?.players || []).map(prevPlayer => prevPlayer.id).indexOf(player.id) < 0,
+    );
+    if (joinedPlayer.length && joinedPlayer[0].id !== this.props.player?.id) {
+      this.setState({ playerJoined: joinedPlayer[0].name });
     }
   };
 
@@ -130,6 +159,7 @@ class PlayGame extends React.Component<PlayGameProps, IPlayGameState> {
             </>
           )}
         </GameContainer>
+
         <StyledConfetti
           recycle={false}
           colors={["#a864fd", "#29cdff", "#78ff44", "#ff718d", "#fdff6a"]}
@@ -137,6 +167,23 @@ class PlayGame extends React.Component<PlayGameProps, IPlayGameState> {
           initialVelocityX={0}
           run={this.props.round?.winner?.player === this.props.player?.id}
         />
+
+        <StyledSnackbar
+          anchorOrigin={{
+            vertical: "bottom",
+            horizontal: "left",
+          }}
+          open={!!this.state.playerJoined}
+          autoHideDuration={3000}
+          onClose={this.handleSnackbarClose}
+          message={`Player joined: ${this.state.playerJoined ? this.state.playerJoined : ""}`}
+          action={
+            <IconButton size="small" aria-label="close" color="inherit" onClick={this.handleSnackbarClose}>
+              <CloseIcon fontSize="small" />
+            </IconButton>
+          }
+        />
+
         <GameBottomAppBar position="fixed" color="secondary" component="footer">
           <GameBottomNavigation showLabels={true} onChange={this.handleAppBarClick}>
             <GameBottomNavigationAction
@@ -171,6 +218,12 @@ class PlayGame extends React.Component<PlayGameProps, IPlayGameState> {
 
 const StyledConfetti: AnyStyledComponent = styled(Confetti)`
   position: fixed !important;
+`;
+
+const StyledSnackbar: AnyStyledComponent = styled(Snackbar)`
+  && {
+    bottom: 90px;
+  }
 `;
 
 const GameRoot: AnyStyledComponent = styled(Box)`
