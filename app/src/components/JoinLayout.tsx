@@ -5,7 +5,7 @@ import styled, { AnyStyledComponent } from "styled-components";
 import CoathangerLight from "../images/coathanger_light.svg";
 import YSoSerious from "../images/y-so-serious-white.png";
 
-class JoinLayout extends React.Component {
+class JoinLayout extends React.PureComponent {
   render = () => {
     return (
       <PageGrid container>
