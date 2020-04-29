@@ -12,6 +12,10 @@ export default responsiveFontSizes(
         main: "#f3f3f4",
         contrastText: "#1c1c1c",
       },
+      background: {
+        paper: "#f3f3f4",
+        default: "#ffffff",
+      },
     },
     typography: {
       fontFamily: ['"Open Sans"', "sans-serif"].join(","),

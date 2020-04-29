@@ -2,7 +2,7 @@ import React from "react";
 import { connect } from "react-redux";
 import { AnyAction, bindActionCreators, Dispatch } from "redux";
 import { withRouter, RouteComponentProps } from "react-router";
-import { AppBar, BottomNavigation, BottomNavigationAction, Box, Container, Badge } from "@material-ui/core";
+import { AppBar, BottomNavigation, BottomNavigationAction, Box, Drawer, Container, Badge } from "@material-ui/core";
 import ShareIcon from "@material-ui/icons/Share";
 import PeopleIcon from "@material-ui/icons/People";
 import styled, { AnyStyledComponent } from "styled-components";
@@ -10,6 +10,7 @@ import styled, { AnyStyledComponent } from "styled-components";
 import { AppState } from "../reducers";
 import actions from "../actions";
 
+import Players from "../components/Players";
 import StartGame from "../components/StartGame";
 import Separator from "../components/Separator";
 import PlayerCards from "./PlayerCards";
@@ -34,10 +35,26 @@ const mapDispatchToProps = (dispatch: Dispatch<AnyAction>) =>
     dispatch,
   );
 
-class PlayGame extends React.Component<
-  ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps> & RouteComponentProps<{ game_id: string }>,
-  {}
-> {
+interface IPlayGameState {
+  playersDrawerOpen: boolean;
+  shareDrawerOpen: boolean;
+}
+
+const DEFAULT_STATE: IPlayGameState = {
+  playersDrawerOpen: false,
+  shareDrawerOpen: false,
+};
+
+type PlayGameProps = ReturnType<typeof mapStateToProps> &
+  ReturnType<typeof mapDispatchToProps> &
+  RouteComponentProps<{ game_id: string }>;
+
+class PlayGame extends React.Component<PlayGameProps, IPlayGameState> {
+  constructor(props: PlayGameProps) {
+    super(props);
+    this.state = DEFAULT_STATE;
+  }
+
   handleStartPlaying = () => {
     this.props.startRound();
   };
@@ -46,6 +63,9 @@ class PlayGame extends React.Component<
     switch (navItem) {
       case "share":
         this.showShareMenu();
+        break;
+      case "players":
+        this.togglePlayersDrawer();
     }
   };
 
@@ -59,6 +79,18 @@ class PlayGame extends React.Component<
         url: `${window.location.host}/${this.props.game?.id}`,
       });
     }
+  };
+
+  togglePlayersDrawer = () => {
+    this.setState({ playersDrawerOpen: !this.state.playersDrawerOpen });
+  };
+
+  showPlayersDrawer = () => {
+    this.setState({ playersDrawerOpen: true });
+  };
+
+  hidePlayersDrawer = () => {
+    this.setState({ playersDrawerOpen: false });
   };
 
   componentDidUpdate = () => {
@@ -96,12 +128,12 @@ class PlayGame extends React.Component<
           )}
         </GameContainer>
         <GameBottomAppBar position="fixed" color="secondary" component="footer">
-          <GameBottomNavigation showLabels onChange={this.handleAppBarClick}>
+          <GameBottomNavigation showLabels={true} onChange={this.handleAppBarClick}>
             <GameBottomNavigationAction
               label="Players"
               value="players"
               icon={
-                <Badge badgeContent={this.props.game?.players.length} color="primary">
+                <Badge color="primary" badgeContent={this.props.game?.players.length}>
                   <PeopleIcon />
                 </Badge>
               }
@@ -109,6 +141,18 @@ class PlayGame extends React.Component<
             <GameBottomNavigationAction label="Share" value="share" icon={<ShareIcon />} />
           </GameBottomNavigation>
         </GameBottomAppBar>
+        <Drawer
+          anchor="bottom"
+          variant="temporary"
+          open={this.state.playersDrawerOpen}
+          onClick={this.hidePlayersDrawer}
+          PaperProps={{ color: "secondary", style: { margin: "0 auto", padding: "25px", maxWidth: "600px" } }}
+          ModalProps={{ hideBackdrop: true }}
+        >
+          <DrawerContent>
+            <Players />
+          </DrawerContent>
+        </Drawer>
       </GameRoot>
     );
   };
@@ -130,18 +174,26 @@ const GameBottomAppBar: AnyStyledComponent = styled(AppBar)`
   && {
     top: auto;
     bottom: 0;
+    z-index: 1500;
   }
 `;
 
 const GameBottomNavigation: AnyStyledComponent = styled(BottomNavigation)`
   && {
     height: 66px;
+    background: #ffffff;
   }
 `;
 
 const GameBottomNavigationAction: AnyStyledComponent = styled(BottomNavigationAction)`
   && {
     padding-top: 16px;
+  }
+`;
+
+const DrawerContent: AnyStyledComponent = styled.div`
+  && {
+    padding-bottom: 66px;
   }
 `;
 
