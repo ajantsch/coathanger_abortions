@@ -6,6 +6,7 @@ import { AppBar, BottomNavigation, BottomNavigationAction, Box, Drawer, Containe
 import ShareIcon from "@material-ui/icons/Share";
 import PeopleIcon from "@material-ui/icons/People";
 import styled, { AnyStyledComponent } from "styled-components";
+import Confetti from "react-confetti";
 
 import { AppState } from "../reducers";
 import actions from "../actions";
@@ -50,6 +51,8 @@ type PlayGameProps = ReturnType<typeof mapStateToProps> &
   RouteComponentProps<{ game_id: string }>;
 
 class PlayGame extends React.Component<PlayGameProps, IPlayGameState> {
+  reward: unknown;
+
   constructor(props: PlayGameProps) {
     super(props);
     this.state = DEFAULT_STATE;
@@ -127,6 +130,13 @@ class PlayGame extends React.Component<PlayGameProps, IPlayGameState> {
             </>
           )}
         </GameContainer>
+        <StyledConfetti
+          recycle={false}
+          colors={["#a864fd", "#29cdff", "#78ff44", "#ff718d", "#fdff6a"]}
+          opacity={0.9}
+          initialVelocityX={0}
+          run={this.props.round?.winner?.player === this.props.player?.id}
+        />
         <GameBottomAppBar position="fixed" color="secondary" component="footer">
           <GameBottomNavigation showLabels={true} onChange={this.handleAppBarClick}>
             <GameBottomNavigationAction
@@ -141,6 +151,7 @@ class PlayGame extends React.Component<PlayGameProps, IPlayGameState> {
             <GameBottomNavigationAction label="Share" value="share" icon={<ShareIcon />} />
           </GameBottomNavigation>
         </GameBottomAppBar>
+
         <Drawer
           anchor="bottom"
           variant="temporary"
@@ -157,6 +168,10 @@ class PlayGame extends React.Component<PlayGameProps, IPlayGameState> {
     );
   };
 }
+
+const StyledConfetti: AnyStyledComponent = styled(Confetti)`
+  position: fixed !important;
+`;
 
 const GameRoot: AnyStyledComponent = styled(Box)`
   background-image: url(${YSoSerious});
