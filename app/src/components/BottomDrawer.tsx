@@ -1,5 +1,5 @@
 import React from "react";
-import { Drawer } from "@material-ui/core";
+import { Container, Drawer } from "@material-ui/core";
 import styled, { AnyStyledComponent } from "styled-components";
 
 interface IBottomDrawerProps {
@@ -7,7 +7,7 @@ interface IBottomDrawerProps {
   onClick: () => void;
 }
 
-class BottomDrawer extends React.Component<IBottomDrawerProps, {}> {
+class BottomDrawer extends React.PureComponent<IBottomDrawerProps, {}> {
   hideDrawer = () => {
     this.props.onClick();
   };
@@ -19,10 +19,12 @@ class BottomDrawer extends React.Component<IBottomDrawerProps, {}> {
         variant="temporary"
         open={this.props.open}
         onClick={this.hideDrawer}
-        PaperProps={{ color: "secondary", style: { margin: "0 auto", padding: "25px", maxWidth: "600px" } }}
+        PaperProps={{ color: "secondary", style: { padding: "25px" } }}
         ModalProps={{ hideBackdrop: true }}
       >
-        <DrawerContent>{this.props.children}</DrawerContent>
+        <DrawerContent>
+          <Container maxWidth="sm">{this.props.children}</Container>
+        </DrawerContent>
       </Drawer>
     );
   };
