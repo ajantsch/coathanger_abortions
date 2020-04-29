@@ -2,19 +2,7 @@ import React from "react";
 import { connect } from "react-redux";
 import { AnyAction, bindActionCreators, Dispatch } from "redux";
 import { withRouter, RouteComponentProps } from "react-router";
-import {
-  AppBar,
-  BottomNavigation,
-  BottomNavigationAction,
-  Box,
-  Drawer,
-  Container,
-  Badge,
-  Snackbar,
-  IconButton,
-} from "@material-ui/core";
-import ShareIcon from "@material-ui/icons/Share";
-import PeopleIcon from "@material-ui/icons/People";
+import { Box, Drawer, Container, Snackbar, IconButton } from "@material-ui/core";
 import CloseIcon from "@material-ui/icons/Close";
 import styled, { AnyStyledComponent } from "styled-components";
 import Confetti from "react-confetti";
@@ -22,6 +10,7 @@ import Confetti from "react-confetti";
 import { AppState } from "../reducers";
 import actions from "../actions";
 
+import NavBar from "../components/NavBar";
 import Players from "../components/Players";
 import StartGame from "../components/StartGame";
 import Separator from "../components/Separator";
@@ -64,8 +53,6 @@ type PlayGameProps = ReturnType<typeof mapStateToProps> &
   RouteComponentProps<{ game_id: string }>;
 
 class PlayGame extends React.Component<PlayGameProps, IPlayGameState> {
-  reward: unknown;
-
   constructor(props: PlayGameProps) {
     super(props);
     this.state = DEFAULT_STATE;
@@ -75,7 +62,7 @@ class PlayGame extends React.Component<PlayGameProps, IPlayGameState> {
     this.props.startRound();
   };
 
-  handleAppBarClick = (_event: React.ChangeEvent<{}>, navItem: string) => {
+  handleNavItemClick = (navItem: string) => {
     switch (navItem) {
       case "share":
         this.showShareMenu();
@@ -184,20 +171,7 @@ class PlayGame extends React.Component<PlayGameProps, IPlayGameState> {
           }
         />
 
-        <GameBottomAppBar position="fixed" color="secondary" component="footer">
-          <GameBottomNavigation showLabels={true} onChange={this.handleAppBarClick}>
-            <GameBottomNavigationAction
-              label="Players"
-              value="players"
-              icon={
-                <Badge color="primary" badgeContent={this.props.game?.players.length}>
-                  <PeopleIcon />
-                </Badge>
-              }
-            />
-            <GameBottomNavigationAction label="Share" value="share" icon={<ShareIcon />} />
-          </GameBottomNavigation>
-        </GameBottomAppBar>
+        <NavBar badgeContent={this.props.game?.players.length} onNavItemClick={this.handleNavItemClick} />
 
         <Drawer
           anchor="bottom"
@@ -235,27 +209,6 @@ const GameRoot: AnyStyledComponent = styled(Box)`
 const GameContainer: AnyStyledComponent = styled(Container)`
   && {
     padding-bottom: 66px;
-  }
-`;
-
-const GameBottomAppBar: AnyStyledComponent = styled(AppBar)`
-  && {
-    top: auto;
-    bottom: 0;
-    z-index: 1500;
-  }
-`;
-
-const GameBottomNavigation: AnyStyledComponent = styled(BottomNavigation)`
-  && {
-    height: 66px;
-    background: #ffffff;
-  }
-`;
-
-const GameBottomNavigationAction: AnyStyledComponent = styled(BottomNavigationAction)`
-  && {
-    padding-top: 16px;
   }
 `;
 
