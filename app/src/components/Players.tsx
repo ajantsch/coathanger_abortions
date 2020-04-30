@@ -18,7 +18,11 @@ class Players extends React.PureComponent<ReturnType<typeof mapStateToProps>, {}
         <PlayersGrid container>
           {this.props.game?.players.map(player => (
             <Grid item key={player.id} xs={6} sm={4}>
-              <Typography variant="body1" key={player.id}>
+              <Typography
+                variant="body1"
+                key={player.id}
+                color={player.id === this.props.round?.czar ? "error" : "primary"}
+              >
                 {`${player.name}`}
                 {player.wonCards.map(card => (
                   <WonCardIcon key={card.id} />
