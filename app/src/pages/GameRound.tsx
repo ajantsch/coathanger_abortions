@@ -103,6 +103,7 @@ class GameRound extends React.Component<
               this.props.round?.czar === this.props.player?.id
             }
             onCardClick={this.handleCardClicked}
+            winningCard={this.props.round?.winner?.card.id}
           />
           {showRevealAnswersButton && (
             <Button variant="contained" color="primary" onClick={this.handleRevealAnswers}>

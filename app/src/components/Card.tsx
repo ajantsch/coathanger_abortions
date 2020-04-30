@@ -6,11 +6,13 @@ import { ICard } from "../interfaces";
 
 import CoathangerDark from "../images/coathanger_dark.svg";
 import CoathangerLight from "../images/coathanger_light.svg";
+import WinnerCupIcon from "../images/winner_cup.svg";
 
 interface ICardProps {
   card: ICard;
   isHidden?: boolean;
   onCardClick?: (card: ICard) => void;
+  isWinningCard?: boolean;
 }
 
 class Card extends React.PureComponent<ICardProps, {}> {
@@ -27,6 +29,7 @@ class Card extends React.PureComponent<ICardProps, {}> {
           <CardBack className={`card ${this.props.card.type}`} />
           <CardFront className={`card ${this.props.card.type}`}>
             <Typography variant="h6">{this.props.card.content}</Typography>
+            {this.props.isWinningCard && <WinnerCup />}
           </CardFront>
         </CardAnimation>
       </CardRoot>
@@ -98,6 +101,19 @@ const CardBack: AnyStyledComponent = styled(Paper)`
 
     ${SharedCardStyles}
   }
+`;
+
+const WinnerCup: AnyStyledComponent = styled.div`
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  margin: -75px 0 0 -75px;
+  display: block;
+  width: 150px;
+  height: 150px;
+  background-image: url(${WinnerCupIcon});
+  background-size: contain;
+  background-repeat: no-repeat;
 `;
 
 export default Card;

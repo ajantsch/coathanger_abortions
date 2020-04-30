@@ -11,6 +11,7 @@ interface ICardStackProps {
   cardsClickable: boolean;
   condensed?: boolean;
   onCardClick?: (card: ICard) => void;
+  winningCard?: string;
 }
 
 class CardStack extends React.PureComponent<ICardStackProps, {}> {
@@ -25,7 +26,12 @@ class CardStack extends React.PureComponent<ICardStackProps, {}> {
       <CardBoxWrapper className={this.props.condensed && "condensed"}>
         {this.props.cards.map(card => (
           <CardBox key={card.id} className={this.props.condensed && "condensed"}>
-            <Card card={card} isHidden={this.props.cardsHidden} onCardClick={this.handleCardClicked} />
+            <Card
+              card={card}
+              isHidden={this.props.cardsHidden}
+              onCardClick={this.handleCardClicked}
+              isWinningCard={card.id === this.props.winningCard}
+            />
           </CardBox>
         ))}
       </CardBoxWrapper>
