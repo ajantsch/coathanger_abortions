@@ -2,10 +2,8 @@ import React from "react";
 import { connect } from "react-redux";
 import { AnyAction, bindActionCreators, Dispatch } from "redux";
 import { withRouter, RouteComponentProps } from "react-router";
-import { Box, Container, Snackbar, IconButton } from "@material-ui/core";
-import CloseIcon from "@material-ui/icons/Close";
+import { Box, Container } from "@material-ui/core";
 import styled, { AnyStyledComponent } from "styled-components";
-import Confetti from "react-confetti";
 
 import { AppState } from "../reducers";
 import actions from "../actions";
@@ -13,6 +11,8 @@ import actions from "../actions";
 import BottomDrawer from "../components/BottomDrawer";
 import NavBar from "../components/NavBar";
 import Players from "../components/Players";
+import Notification from "../components/Notification";
+import Konfetti from "../components/Konfetti";
 
 import PlayerCards from "./PlayerCards";
 import GameRound from "./GameRound";
@@ -129,31 +129,12 @@ class PlayGame extends React.Component<PlayGameProps, IPlayGameState> {
           <GameRound />
           <PlayerCards />
         </GameContainer>
-
-        <StyledConfetti
-          recycle={false}
-          colors={["#a864fd", "#29cdff", "#78ff44", "#ff718d", "#fdff6a"]}
-          opacity={0.9}
-          initialVelocityX={0}
-          run={this.props.round?.winner?.player === this.props.player?.id}
-        />
-
-        <StyledSnackbar
-          anchorOrigin={{
-            vertical: "bottom",
-            horizontal: "left",
-          }}
+        <Konfetti run={this.props.round?.winner?.player === this.props.player?.id} />
+        <Notification
           open={!!this.state.playerJoined}
-          autoHideDuration={3000}
-          onClose={this.handleSnackbarClose}
           message={`Player joined: ${this.state.playerJoined ? this.state.playerJoined : ""}`}
-          action={
-            <IconButton size="small" aria-label="close" color="inherit" onClick={this.handleSnackbarClose}>
-              <CloseIcon fontSize="small" />
-            </IconButton>
-          }
+          onClose={this.handleSnackbarClose}
         />
-
         <NavBar badgeContent={this.props.game?.players.length} onNavItemClick={this.handleNavItemClick} />
         <BottomDrawer open={this.state.playersDrawerOpen} onClick={this.togglePlayersDrawer}>
           <Players />
@@ -162,16 +143,6 @@ class PlayGame extends React.Component<PlayGameProps, IPlayGameState> {
     );
   };
 }
-
-const StyledConfetti: AnyStyledComponent = styled(Confetti)`
-  position: fixed !important;
-`;
-
-const StyledSnackbar: AnyStyledComponent = styled(Snackbar)`
-  && {
-    bottom: 90px;
-  }
-`;
 
 const GameRoot: AnyStyledComponent = styled(Box)`
   background-image: url(${YSoSerious});
