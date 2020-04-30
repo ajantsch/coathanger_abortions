@@ -20,3 +20,8 @@ Source for all cards: http://cah.frustratednerd.com/
 - http://cah.frustratednerd.com/food-pack/
 - http://cah.frustratednerd.com/retail-pack/
 - http://cah.frustratednerd.com/absurd-box-expansion/
+- http://cah.frustratednerd.com/hidden-compartment-pack/
+- http://cah.frustratednerd.com/ass-pack/
+- http://cah.frustratednerd.com/pride-pack/
+- http://cah.frustratednerd.com/period-pack/
+- http://cah.frustratednerd.com/fascism-pack/
