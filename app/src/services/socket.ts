@@ -6,11 +6,14 @@ import { IRound, IRemotePlayer, IGivenAnswer } from "../interfaces";
 
 const { SOCKET_URL } = process.env;
 
-const connectToGame = (gameId: string, playerName: string): Promise<SocketIOClient.Socket> => {
+const connectToGame = (gameId: string, playerId: string): Promise<SocketIOClient.Socket> => {
+  console.warn(gameId, playerId);
   return new Promise(resolve => {
-    const gameSocket: SocketIOClient.Socket = io.connect(`${SOCKET_URL}/${gameId}`);
+    const gameSocket: SocketIOClient.Socket = io.connect(`${SOCKET_URL}`, {
+      query: { gameId, playerId },
+    });
     gameSocket.on("connect", () => {
-      gameSocket.emit("player_connected", `Player ${playerName} now has a socket connection to game ${gameId}`);
+      gameSocket.emit("player_connected", `${playerId} now has a socket connection to game ${gameId}`);
 
       gameSocket.on("player_joined", (player: IRemotePlayer) => {
         console.warn("Player joined:", player);

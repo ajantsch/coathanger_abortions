@@ -59,14 +59,14 @@ export function getPlayer(): ThunkAction<Promise<IBaseAction>, AppState, undefin
       return dispatch({ type: PlayerActionTypes.VOID });
     }
 
-    const playerId = sessionStorage.getItem(`cha_${gameId}_playerId`);
+    const playerId = localStorage.getItem(`cha_${gameId}_playerId`);
     if (!playerId) {
       return dispatch({ type: PlayerActionTypes.VOID });
     }
 
     try {
       const player = await GameApi.getGamePlayer(gameId, playerId);
-      await GameSocket.connectToGame(gameId, player.name);
+      await GameSocket.connectToGame(gameId, player.id);
 
       return dispatch({
         type: PlayerActionTypes.GET_PLAYER,
@@ -87,8 +87,8 @@ export function joinGame(playerName: string): ThunkAction<Promise<IBaseAction>, 
 
     try {
       const player = await GameApi.addGamePlayer(gameId, playerName);
-      sessionStorage.setItem(`cha_${gameId as string}_playerId`, player.id);
-      await GameSocket.connectToGame(gameId as string, player.name);
+      localStorage.setItem(`cha_${gameId as string}_playerId`, player.id);
+      await GameSocket.connectToGame(gameId as string, player.id);
 
       return dispatch({
         type: PlayerActionTypes.JOIN_GAME,

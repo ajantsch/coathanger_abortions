@@ -105,7 +105,7 @@ const putGamePlayer = async (req: Request, res: Response) => {
 
   try {
     const inserted = await insertGamePlayer(gameId, player);
-    socket.of(`/${gameId}`).emit("player_joined", inserted);
+    socket.to(gameId).emit("player_joined", inserted);
 
     res.status(201);
     res.send(inserted);
@@ -146,7 +146,7 @@ const patchRevealQuestion = async (req: Request, res: Response) => {
   try {
     const round = await revealQuestion(gameId);
 
-    socket.of(`/${gameId}`).emit("question_card_revealed");
+    socket.to(gameId).emit("question_card_revealed");
 
     res.status(200);
     res.send(round);
@@ -168,7 +168,7 @@ const putAnswer = async (req: Request, res: Response) => {
   try {
     const answer = await selectAnswer(gameId, playerId, card);
 
-    socket.of(`/${gameId}`).emit("answer_card_given", { player: playerId, card });
+    socket.to(gameId).emit("answer_card_given", { player: playerId, card });
 
     res.status(200);
     res.send(answer);
@@ -189,7 +189,7 @@ const patchRevealAnswers = async (req: Request, res: Response) => {
   try {
     const revealed = await revealAnswers(gameId);
 
-    socket.of(`/${gameId}`).emit("answers_revealed", revealed);
+    socket.to(gameId).emit("answers_revealed", revealed);
 
     res.status(200);
     res.send(revealed);
@@ -211,7 +211,7 @@ const postWinningAnswer = async (req: Request, res: Response) => {
   try {
     const answer = await selectWinningCard(gameId, playerId, card.id);
 
-    socket.of(`/${gameId}`).emit("round_winner_set", answer);
+    socket.to(gameId).emit("round_winner_set", answer);
 
     res.status(200);
     res.send(answer);
@@ -251,7 +251,7 @@ const putNewRound = async (req: Request, res: Response) => {
   try {
     const round = await startNewRound(gameId);
 
-    socket.of(`/${gameId}`).emit("new_round_started", round);
+    socket.to(gameId).emit("new_round_started", round);
 
     res.status(200);
     res.send(round);

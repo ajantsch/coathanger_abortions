@@ -8,6 +8,15 @@ server.listen(port, function() {
   logger.info(`Server is running on http://localhost:${port} in ${NODE_ENV} mode`);
 });
 
-socket.on("connection", () => {
-  logger.info("Client socket connection established");
+socket.on("connection", socket => {
+  const gameId = socket.handshake.query.gameId;
+  const playerId = socket.handshake.query.playerId;
+
+  socket.join(gameId, () => {
+    logger.info(`Socket connection for player ${playerId} to game ${gameId} established.`);
+
+    socket.on("disconnect", () => {
+      logger.warn(`Socket connection for player ${playerId} to game ${gameId} closed.`);
+    });
+  });
 });
