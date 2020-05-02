@@ -93,10 +93,6 @@ class PlayGame extends React.Component<PlayGameProps, IPlayGameState> {
     this.setState(newState);
   };
 
-  handleSnackbarOpen = (playerName: string) => {
-    this.setState({ playerJoined: playerName });
-  };
-
   handleSnackbarClose = () => {
     this.setState({ playerJoined: undefined });
   };
