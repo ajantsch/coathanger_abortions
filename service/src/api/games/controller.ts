@@ -16,6 +16,7 @@ import {
   findCurrentRound,
   startNewRound,
   drawAnswer,
+  setPlayerActiveStatus,
 } from "./repository";
 import { logger, randomString, genUuid, shuffle } from "../../util";
 import { socket } from "../../server";
@@ -284,6 +285,46 @@ const getAnswer = async (req: Request, res: Response) => {
   }
 };
 
+const patchPlayerActive = async (req: Request, res: Response) => {
+  const gameId = req.params.game_id;
+  const playerId = req.params.player_id;
+
+  res.type("json");
+
+  try {
+    const player = await setPlayerActiveStatus(gameId, playerId, true);
+
+    res.status(200);
+    res.send(player);
+  } catch (err) {
+    logger.error(err);
+    res.status(500);
+    res.send(JSON.stringify(err, replaceErrors));
+  } finally {
+    res.end();
+  }
+};
+
+const patchPlayerInactive = async (req: Request, res: Response) => {
+  const gameId = req.params.game_id;
+  const playerId = req.params.player_id;
+
+  res.type("json");
+
+  try {
+    const player = await setPlayerActiveStatus(gameId, playerId, false);
+
+    res.status(200);
+    res.send(player);
+  } catch (err) {
+    logger.error(err);
+    res.status(500);
+    res.send(JSON.stringify(err, replaceErrors));
+  } finally {
+    res.end();
+  }
+};
+
 export {
   getGame,
   postGame,
@@ -296,4 +337,6 @@ export {
   getCurrentRound,
   putNewRound,
   getAnswer,
+  patchPlayerActive,
+  patchPlayerInactive,
 };

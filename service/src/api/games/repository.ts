@@ -182,6 +182,22 @@ const drawAnswer = async (gameId: string, playerId: string): Promise<ICard> => {
   return card;
 };
 
+const setPlayerActiveStatus = async (gameId: string, playerId: string, status: boolean): Promise<IPlayer> => {
+  const game = ACTIVE_GAMES.get(gameId);
+  if (!game) {
+    throw new Error(`Could not find game with id ${gameId}`);
+  }
+
+  const playerIndex = game.players.map(player => player.id).indexOf(playerId);
+  if (playerIndex < 0) {
+    throw new Error(`Could not find player with id ${playerId} in game ${gameId}`);
+  }
+
+  game.players[playerIndex].active = status;
+  ACTIVE_GAMES.set(gameId, game);
+  return game.players[playerIndex];
+};
+
 export {
   findGame,
   insertGame,
@@ -194,4 +210,5 @@ export {
   drawAnswer,
   findCurrentRound,
   startNewRound,
+  setPlayerActiveStatus,
 };

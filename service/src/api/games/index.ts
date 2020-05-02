@@ -10,6 +10,8 @@ import {
   getCurrentRound,
   putNewRound,
   getAnswer,
+  patchPlayerActive,
+  patchPlayerInactive,
 } from "./controller";
 
 export {
@@ -24,4 +26,6 @@ export {
   getCurrentRound,
   putNewRound,
   getAnswer,
+  patchPlayerActive,
+  patchPlayerInactive,
 };

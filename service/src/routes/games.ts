@@ -11,6 +11,8 @@ import {
   getCurrentRound,
   putNewRound,
   getAnswer,
+  patchPlayerActive,
+  patchPlayerInactive,
 } from "../api/games";
 
 const router = DefaultRouter();
@@ -25,5 +27,7 @@ router.put("/:game_id/answer", putAnswer);
 router.patch("/:game_id/round/answers", patchRevealAnswers);
 router.post("/:game_id/round/winner", postWinningAnswer);
 router.get("/:game_id/player/:player_id/card", getAnswer);
+router.patch("/:game_id/player/:player_id/active", patchPlayerActive);
+router.patch("/:game_id/player/:player_id/inactive", patchPlayerInactive);
 
 export default router;
