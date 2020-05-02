@@ -1,6 +1,6 @@
 import React from "react";
 import { connect } from "react-redux";
-import { Grid, Typography } from "@material-ui/core";
+import { Container, Grid, Typography } from "@material-ui/core";
 import styled, { AnyStyledComponent } from "styled-components";
 
 import { AppState } from "../reducers";
@@ -13,7 +13,7 @@ const mapStateToProps = (state: AppState) => ({
 class Players extends React.PureComponent<ReturnType<typeof mapStateToProps>, {}> {
   render = () => {
     return (
-      <>
+      <Container maxWidth="sm">
         <Typography variant="h6">Players in this game</Typography>
         <PlayersGrid container>
           {this.props.game?.players.map(player => (
@@ -31,7 +31,7 @@ class Players extends React.PureComponent<ReturnType<typeof mapStateToProps>, {}
             </Grid>
           ))}
         </PlayersGrid>
-      </>
+      </Container>
     );
   };
 }

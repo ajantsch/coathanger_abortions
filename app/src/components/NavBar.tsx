@@ -1,6 +1,7 @@
 import React from "react";
 import { AppBar, BottomNavigation, BottomNavigationAction, Badge } from "@material-ui/core";
-import ShareIcon from "@material-ui/icons/Share";
+import PersonAddIcon from "@material-ui/icons/PersonAdd";
+import EmojiEventsIcon from "@material-ui/icons/EmojiEvents";
 import PeopleIcon from "@material-ui/icons/People";
 import styled, { AnyStyledComponent } from "styled-components";
 
@@ -27,7 +28,8 @@ class NavBar extends React.PureComponent<INavBarProps, {}> {
               </Badge>
             }
           />
-          <GameBottomNavigationAction label="Share" value="share" icon={<ShareIcon />} />
+          <GameBottomNavigationAction label="Trophies" value="trophies" icon={<EmojiEventsIcon />} />
+          <GameBottomNavigationAction label="Invite" value="invite" icon={<PersonAddIcon />} />
         </GameBottomNavigation>
       </GameBottomAppBar>
     );

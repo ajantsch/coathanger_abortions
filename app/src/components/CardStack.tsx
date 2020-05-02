@@ -23,9 +23,9 @@ class CardStack extends React.PureComponent<ICardStackProps, {}> {
 
   render = () => {
     return (
-      <CardBoxWrapper className={this.props.condensed && "condensed"}>
+      <CardBoxWrapper className={this.props.condensed ? "condensed" : null}>
         {this.props.cards.map(card => (
-          <CardBox key={card.id} className={this.props.condensed && "condensed"}>
+          <CardBox key={card.id} className={this.props.condensed ? "condensed" : null}>
             <Card
               card={card}
               isHidden={this.props.cardsHidden}

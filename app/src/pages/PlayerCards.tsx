@@ -4,7 +4,6 @@ import { AnyAction, bindActionCreators, Dispatch } from "redux";
 
 import { ICard, IAnswerCard } from "../interfaces";
 
-import Separator from "../components/Separator";
 import CardStack from "../components/CardStack";
 
 import { AppState } from "../reducers";
@@ -31,25 +30,14 @@ class PlayerCards extends React.Component<
   };
 
   render = () => {
-    return (
-      <>
-        {this.props.player && (
-          <>
-            <Separator text="Your Cards" />
-            <CardStack
-              cards={this.props.player.activeCards}
-              cardsClickable={this.props.round?.czar !== this.props.player.id}
-              onCardClick={this.handleAnswerCardClicked}
-            />
-            {!!this.props.player.wonCards.length && (
-              <>
-                <Separator text="Your Trophies" />
-                <CardStack cards={this.props.player.wonCards} cardsClickable={false} condensed={true} />
-              </>
-            )}
-          </>
-        )}
-      </>
+    return this.props.player ? (
+      <CardStack
+        cards={this.props.player.activeCards}
+        cardsClickable={this.props.round?.czar !== this.props.player.id}
+        onCardClick={this.handleAnswerCardClicked}
+      />
+    ) : (
+      <></>
     );
   };
 }

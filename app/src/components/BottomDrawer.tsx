@@ -1,5 +1,5 @@
 import React from "react";
-import { Container, Drawer } from "@material-ui/core";
+import { Drawer } from "@material-ui/core";
 import styled, { AnyStyledComponent } from "styled-components";
 
 interface IBottomDrawerProps {
@@ -22,9 +22,7 @@ class BottomDrawer extends React.PureComponent<IBottomDrawerProps, {}> {
         PaperProps={{ color: "secondary", style: { padding: "25px" } }}
         ModalProps={{ hideBackdrop: true }}
       >
-        <DrawerContent>
-          <Container maxWidth="sm">{this.props.children}</Container>
-        </DrawerContent>
+        <DrawerContent>{this.props.children}</DrawerContent>
       </Drawer>
     );
   };

@@ -10,12 +10,14 @@ import actions from "../actions";
 
 import BottomDrawer from "../components/BottomDrawer";
 import NavBar from "../components/NavBar";
-import Players from "../components/Players";
 import Notification from "../components/Notification";
 import Konfetti from "../components/Konfetti";
+import Separator from "../components/Separator";
 
-import PlayerCards from "./PlayerCards";
 import GameRound from "./GameRound";
+import PlayerCards from "./PlayerCards";
+import PlayerTrophies from "./PlayerTrophies";
+import Players from "./Players";
 
 import YSoSerious from "../images/y-so-serious-white.png";
 
@@ -38,14 +40,14 @@ const mapDispatchToProps = (dispatch: Dispatch<AnyAction>) =>
 
 interface IPlayGameState {
   playerJoined: string | undefined;
-  playersDrawerOpen: boolean;
-  shareDrawerOpen: boolean;
+  drawerOpen: boolean;
+  drawerContent: string | undefined;
 }
 
 const DEFAULT_STATE: IPlayGameState = {
   playerJoined: undefined,
-  playersDrawerOpen: false,
-  shareDrawerOpen: false,
+  drawerOpen: false,
+  drawerContent: undefined,
 };
 
 type PlayGameProps = ReturnType<typeof mapStateToProps> &
@@ -60,11 +62,14 @@ class PlayGame extends React.Component<PlayGameProps, IPlayGameState> {
 
   handleNavItemClick = (navItem: string) => {
     switch (navItem) {
-      case "share":
+      case "invite":
         this.showShareMenu();
         break;
       case "players":
-        this.togglePlayersDrawer();
+        this.toggleDrawer("players");
+        break;
+      case "trophies":
+        this.toggleDrawer("trophies");
     }
   };
 
@@ -80,8 +85,12 @@ class PlayGame extends React.Component<PlayGameProps, IPlayGameState> {
     }
   };
 
-  togglePlayersDrawer = () => {
-    this.setState({ playersDrawerOpen: !this.state.playersDrawerOpen });
+  toggleDrawer = (content?: string) => {
+    const newState: IPlayGameState = { ...this.state, drawerOpen: !this.state.drawerOpen };
+    if (content) {
+      newState.drawerContent = content;
+    }
+    this.setState(newState);
   };
 
   handleSnackbarOpen = (playerName: string) => {
@@ -127,6 +136,7 @@ class PlayGame extends React.Component<PlayGameProps, IPlayGameState> {
       <GameRoot>
         <GameContainer maxWidth="lg">
           <GameRound />
+          <Separator text="Your Cards" />
           <PlayerCards />
         </GameContainer>
         <Konfetti run={this.props.round?.winner?.player === this.props.player?.id} />
@@ -136,8 +146,17 @@ class PlayGame extends React.Component<PlayGameProps, IPlayGameState> {
           onClose={this.handleSnackbarClose}
         />
         <NavBar badgeContent={this.props.game?.players.length} onNavItemClick={this.handleNavItemClick} />
-        <BottomDrawer open={this.state.playersDrawerOpen} onClick={this.togglePlayersDrawer}>
-          <Players />
+        <BottomDrawer open={this.state.drawerOpen} onClick={this.toggleDrawer}>
+          {(() => {
+            switch (this.state.drawerContent) {
+              case "players":
+                return <Players />;
+              case "trophies":
+                return <PlayerTrophies />;
+              default:
+                return <></>;
+            }
+          })()}
         </BottomDrawer>
       </GameRoot>
     );
