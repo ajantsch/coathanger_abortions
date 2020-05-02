@@ -8,14 +8,16 @@ interface IKonfettiProps {
 
 class Konfetti extends React.Component<IKonfettiProps, {}> {
   render = () => {
-    return (
+    return this.props.run ? (
       <StyledConfetti
         recycle={false}
         colors={["#a864fd", "#29cdff", "#78ff44", "#ff718d", "#fdff6a"]}
         opacity={0.9}
         initialVelocityX={0}
-        run={this.props.run}
+        run={true}
       />
+    ) : (
+      <></>
     );
   };
 }
