@@ -13,6 +13,7 @@ import {
   getAnswer,
   patchPlayerActive,
   patchPlayerInactive,
+  deleteGamePlayer,
 } from "../api/games";
 
 const router = DefaultRouter();
@@ -20,6 +21,7 @@ router.post("/", postGame);
 router.get("/:game_id", getGame);
 router.put("/:game_id/player", putGamePlayer);
 router.get("/:game_id/player/:player_id", getGamePlayer);
+router.delete("/:game_id/player", deleteGamePlayer);
 router.get("/:game_id/round/", getCurrentRound);
 router.put("/:game_id/round/", putNewRound);
 router.patch("/:game_id/round/question", patchRevealQuestion);

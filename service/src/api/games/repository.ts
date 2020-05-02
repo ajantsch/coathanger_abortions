@@ -53,6 +53,21 @@ const findGamePlayer = async (gameId: string, playerId: string) => {
   return player;
 };
 
+const removeGamePlayer = async (gameId: string, playerId: string): Promise<void> => {
+  const game = ACTIVE_GAMES.get(gameId);
+  if (!game) {
+    throw new Error(`Could not find game with id ${gameId}`);
+  }
+
+  const playerIndex = game.players.map(player => player.id).indexOf(playerId);
+  if (playerIndex < 0) {
+    throw new Error(`Could not find player with id ${playerId} in game ${gameId}`);
+  }
+
+  game.players = game.players.filter(player => player.id !== playerId);
+  ACTIVE_GAMES.set(gameId, game);
+};
+
 const findCurrentRound = async (gameId: string): Promise<IRound> => {
   const game = ACTIVE_GAMES.get(gameId);
   if (!game) {
@@ -203,6 +218,7 @@ export {
   insertGame,
   insertGamePlayer,
   findGamePlayer,
+  removeGamePlayer,
   revealQuestion,
   selectAnswer,
   revealAnswers,

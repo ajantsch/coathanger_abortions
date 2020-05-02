@@ -8,6 +8,7 @@ import {
   findGame,
   insertGame,
   insertGamePlayer,
+  removeGamePlayer,
   findGamePlayer,
   selectAnswer,
   revealQuestion,
@@ -130,6 +131,24 @@ const getGamePlayer = async (req: Request, res: Response) => {
     const player = await findGamePlayer(gameId, playerId);
     res.status(200);
     res.send(player);
+  } catch (err) {
+    logger.error(err);
+    res.status(404);
+    res.send(JSON.stringify(err, replaceErrors));
+  } finally {
+    res.end();
+  }
+};
+
+const deleteGamePlayer = async (req: Request, res: Response) => {
+  const gameId = req.params.game_id;
+  const { id } = req.body;
+
+  res.type("json");
+
+  try {
+    await removeGamePlayer(gameId, id);
+    res.sendStatus(200);
   } catch (err) {
     logger.error(err);
     res.status(404);
@@ -330,6 +349,7 @@ export {
   postGame,
   putGamePlayer,
   getGamePlayer,
+  deleteGamePlayer,
   patchRevealQuestion,
   putAnswer,
   patchRevealAnswers,

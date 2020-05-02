@@ -12,6 +12,7 @@ import {
   getAnswer,
   patchPlayerActive,
   patchPlayerInactive,
+  deleteGamePlayer,
 } from "./controller";
 
 export {
@@ -28,4 +29,5 @@ export {
   getAnswer,
   patchPlayerActive,
   patchPlayerInactive,
+  deleteGamePlayer,
 };
