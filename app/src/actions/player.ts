@@ -73,7 +73,6 @@ export function getPlayer(): ThunkAction<Promise<IBaseAction>, AppState, undefin
         payload: player,
       });
     } catch (e) {
-      sessionStorage.removeItem(`cha_${gameId}_playerId`);
       return dispatch({ type: PlayerActionTypes.VOID });
     }
   };
@@ -96,7 +95,6 @@ export function joinGame(playerName: string): ThunkAction<Promise<IBaseAction>, 
         payload: player,
       });
     } catch (e) {
-      sessionStorage.removeItem(`cha_${gameId}_playerId`);
       return dispatch({ type: PlayerActionTypes.VOID });
     }
   };
@@ -123,7 +121,6 @@ export function giveAnswer(
         payload: answer,
       });
     } catch (e) {
-      sessionStorage.removeItem(`cha_${gameId}_playerId`);
       return dispatch({ type: PlayerActionTypes.VOID });
     }
   };

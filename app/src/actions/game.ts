@@ -82,7 +82,6 @@ export function getGame(gameId: string): ThunkAction<Promise<IBaseAction>, AppSt
         payload: game,
       });
     } catch (e) {
-      sessionStorage.removeItem(`cha_${gameId}_playerId`);
       return dispatch({
         type: GameActionTypes.RESET_GAME,
       });
