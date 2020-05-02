@@ -20,6 +20,21 @@ const connectToGame = (gameId: string, playerId: string): Promise<SocketIOClient
         store.dispatch(actions.remotePlayerJoined(player));
       });
 
+      gameSocket.on("player_set_active", (player: IRemotePlayer) => {
+        console.warn("Player set active:", player);
+        store.dispatch(actions.remotePlayerActive(player));
+      });
+
+      gameSocket.on("player_set_inactive", (player: IRemotePlayer) => {
+        console.warn("Player set inactive:", player);
+        store.dispatch(actions.remotePlayerInactive(player));
+      });
+
+      gameSocket.on("player_removed", (playerId: string) => {
+        console.warn("Player removed:", playerId);
+        store.dispatch(actions.remotePlayerRemoved(playerId));
+      });
+
       gameSocket.on("new_round_started", (round: IRound) => {
         console.warn("New round started:", round);
         actions.roundReceived(round)(store.dispatch, store.getState, undefined);

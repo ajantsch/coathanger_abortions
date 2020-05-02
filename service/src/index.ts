@@ -1,4 +1,5 @@
 import { server, socket } from "./server";
+import { playerConnected, playerDisconnected } from "./services/game";
 import { logger } from "./util";
 
 const { NODE_ENV, PORT } = process.env;
@@ -13,9 +14,11 @@ socket.on("connection", socket => {
   const playerId = socket.handshake.query.playerId;
 
   socket.join(gameId, () => {
+    playerConnected(gameId, playerId);
     logger.info(`Socket connection for player ${playerId} to game ${gameId} established.`);
 
     socket.on("disconnect", () => {
+      playerDisconnected(gameId, playerId);
       logger.warn(`Socket connection for player ${playerId} to game ${gameId} closed.`);
     });
   });

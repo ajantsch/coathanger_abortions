@@ -11,6 +11,9 @@ export enum GameActionTypes {
   GET_GAME = "GET_GAME",
   START_GAME = "START_GAME",
   REMOTE_PLAYER_JOINED = "REMOTE_PLAYER_JOINED",
+  REMOTE_PLAYER_INACTIVE = "REMOTE_PLAYER_INACTIVE",
+  REMOTE_PLAYER_ACTIVE = "REMOTE_PLAYER_ACTIVE",
+  REMOTE_PLAYER_REMOVED = "REMOTE_PLAYER_REMOVED",
   ASSIGN_WINNING_CARD = "ASSIGN_WINNING_CARD",
 }
 
@@ -36,6 +39,20 @@ export interface IRemotePlayerJoinedAction extends IBaseAction {
   type: GameActionTypes.REMOTE_PLAYER_JOINED;
   payload: IRemotePlayer;
 }
+export interface IRemotePlayerInactiveAction extends IBaseAction {
+  type: GameActionTypes.REMOTE_PLAYER_INACTIVE;
+  payload: IRemotePlayer;
+}
+
+export interface IRemotePlayerActiveAction extends IBaseAction {
+  type: GameActionTypes.REMOTE_PLAYER_ACTIVE;
+  payload: IRemotePlayer;
+}
+
+export interface IRemotePlayerRemovedAction extends IBaseAction {
+  type: GameActionTypes.REMOTE_PLAYER_REMOVED;
+  payload: string;
+}
 
 export interface IAssignWinningCard extends IBaseAction {
   type: GameActionTypes.ASSIGN_WINNING_CARD;
@@ -48,6 +65,9 @@ export type GameAction =
   | IGetGameAction
   | IStartGameAction
   | IRemotePlayerJoinedAction
+  | IRemotePlayerInactiveAction
+  | IRemotePlayerActiveAction
+  | IRemotePlayerRemovedAction
   | IAssignWinningCard;
 
 export function startGame(): ThunkAction<Promise<IBaseAction>, AppState, undefined, IStartGameAction> {
@@ -93,6 +113,27 @@ export function remotePlayerJoined(player: IRemotePlayer): IRemotePlayerJoinedAc
   return {
     type: GameActionTypes.REMOTE_PLAYER_JOINED,
     payload: player,
+  };
+}
+
+export function remotePlayerInactive(player: IRemotePlayer): IRemotePlayerInactiveAction {
+  return {
+    type: GameActionTypes.REMOTE_PLAYER_INACTIVE,
+    payload: player,
+  };
+}
+
+export function remotePlayerActive(player: IRemotePlayer): IRemotePlayerActiveAction {
+  return {
+    type: GameActionTypes.REMOTE_PLAYER_ACTIVE,
+    payload: player,
+  };
+}
+
+export function remotePlayerRemoved(playerId: string): IRemotePlayerRemovedAction {
+  return {
+    type: GameActionTypes.REMOTE_PLAYER_REMOVED,
+    payload: playerId,
   };
 }
 

@@ -75,7 +75,7 @@ class GameRound extends React.Component<
       this.props.round?.czar === this.props.player?.id &&
       !!this.props.round.answers.length &&
       this.props.game?.players &&
-      this.props.round.answers.length === this.props.game.players.length - 1 &&
+      this.props.round.answers.length === this.props.game.players.filter(player => player.active).length - 1 &&
       !this.props.round.answersRevealed;
     return this.props.round ? (
       <CurrentRound>

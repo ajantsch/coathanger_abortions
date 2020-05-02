@@ -18,16 +18,17 @@ class Players extends React.PureComponent<ReturnType<typeof mapStateToProps>, {}
         <PlayersGrid container>
           {this.props.game?.players.map(player => (
             <Grid item key={player.id} xs={6} sm={4}>
-              <Typography
+              <PlayerEntry
                 variant="body1"
                 key={player.id}
+                className={player.active ? "active" : "inactive"}
                 color={player.id === this.props.round?.czar ? "error" : "primary"}
               >
                 {`${player.name}`}
                 {player.wonCards.map(card => (
                   <WonCardIcon key={card.id} />
                 ))}
-              </Typography>
+              </PlayerEntry>
             </Grid>
           ))}
         </PlayersGrid>
@@ -49,6 +50,14 @@ const WonCardIcon: AnyStyledComponent = styled.span`
   width: 0.7rem;
   background: #1c1c1c;
   border-radius: 2px;
+`;
+
+const PlayerEntry: AnyStyledComponent = styled(Typography)`
+  && {
+    &.inactive {
+      opacity: 0.3;
+    }
+  }
 `;
 
 export default connect(mapStateToProps)(Players);

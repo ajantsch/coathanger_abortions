@@ -19,7 +19,7 @@ import {
   drawAnswer,
   setPlayerActiveStatus,
 } from "./repository";
-import { logger, randomString, genUuid, shuffle } from "../../util";
+import { logger, randomString, genUuid, shuffle, playerOutputSanitization, gameOutputSanitization } from "../../util";
 import { socket } from "../../server";
 
 function replaceErrors(_key: string, value: unknown) {
@@ -36,17 +36,6 @@ function replaceErrors(_key: string, value: unknown) {
   }
 
   return value;
-}
-
-function gameOutputSanitization(game: IGame) {
-  const { availableQuestions, availableAnswers, currentRound, ...sanitized } = {
-    ...game,
-    players: game.players.map(player => {
-      const { activeCards, ...sanitized } = player;
-      return sanitized;
-    }),
-  };
-  return sanitized;
 }
 
 const getGame = async (req: Request, res: Response) => {
@@ -148,6 +137,9 @@ const deleteGamePlayer = async (req: Request, res: Response) => {
 
   try {
     await removeGamePlayer(gameId, id);
+
+    socket.to(gameId).emit("player_removed", id);
+
     res.sendStatus(200);
   } catch (err) {
     logger.error(err);
@@ -313,6 +305,8 @@ const patchPlayerActive = async (req: Request, res: Response) => {
   try {
     const player = await setPlayerActiveStatus(gameId, playerId, true);
 
+    socket.to(gameId).emit("player_set_active", playerOutputSanitization(player));
+
     res.status(200);
     res.send(player);
   } catch (err) {
@@ -332,6 +326,8 @@ const patchPlayerInactive = async (req: Request, res: Response) => {
 
   try {
     const player = await setPlayerActiveStatus(gameId, playerId, false);
+
+    socket.to(gameId).emit("player_set_inactive", playerOutputSanitization(player));
 
     res.status(200);
     res.send(player);

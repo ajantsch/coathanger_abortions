@@ -145,7 +145,10 @@ class PlayGame extends React.Component<PlayGameProps, IPlayGameState> {
           message={`Player joined: ${this.state.playerJoined ? this.state.playerJoined : ""}`}
           onClose={this.handleSnackbarClose}
         />
-        <NavBar badgeContent={this.props.game?.players.length} onNavItemClick={this.handleNavItemClick} />
+        <NavBar
+          badgeContent={this.props.game?.players.filter(player => player.active).length}
+          onNavItemClick={this.handleNavItemClick}
+        />
         <BottomDrawer open={this.state.drawerOpen} onClick={this.toggleDrawer}>
           {(() => {
             switch (this.state.drawerContent) {

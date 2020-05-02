@@ -29,6 +29,7 @@ export interface IQuestionCard extends ICard {
 export interface IRemotePlayer {
   id: string;
   name: string;
+  active: boolean;
   wonCards: ICard[];
 }
 
