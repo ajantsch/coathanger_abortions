@@ -26,11 +26,16 @@ export interface IQuestionCard extends ICard {
   type: "question";
 }
 
+export interface ICardCombo {
+  question: IQuestionCard;
+  answer: IAnswerCard;
+}
+
 export interface IRemotePlayer {
   id: string;
   name: string;
   active: boolean;
-  wonCards: ICard[];
+  wonCards: ICardCombo[];
 }
 
 export interface IPlayer extends IRemotePlayer {

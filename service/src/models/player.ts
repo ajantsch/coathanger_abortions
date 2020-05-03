@@ -1,11 +1,16 @@
 import { ICard } from "./card";
 
+interface ICardCombo {
+  question: ICard;
+  answer: ICard;
+}
+
 interface IPlayer {
   id: string;
   name: string;
   active: boolean;
   activeCards: ICard[];
-  wonCards: ICard[];
+  wonCards: ICardCombo[];
 }
 
 const newPlayer = (): IPlayer => {

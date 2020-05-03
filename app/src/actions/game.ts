@@ -3,7 +3,7 @@ import { ThunkAction, ThunkDispatch } from "redux-thunk";
 import GameApi from "../services/api";
 import { IBaseAction } from "./index";
 import { AppState } from "../reducers";
-import { IGame, IRemotePlayer, IGivenAnswer, IQuestionCard } from "../interfaces";
+import { IGame, IRemotePlayer, IGivenAnswer, ICardCombo } from "../interfaces";
 
 export enum GameActionTypes {
   VOID = "VOID",
@@ -56,7 +56,7 @@ export interface IRemotePlayerRemovedAction extends IBaseAction {
 
 export interface IAssignWinningCard extends IBaseAction {
   type: GameActionTypes.ASSIGN_WINNING_CARD;
-  payload: { playerId: string; question: IQuestionCard };
+  payload: { playerId: string; combo: ICardCombo };
 }
 
 export type GameAction =
@@ -157,7 +157,7 @@ export function assignWinningCard(
 
     return dispatch({
       type: GameActionTypes.ASSIGN_WINNING_CARD,
-      payload: { playerId: winner.player, question: round.question },
+      payload: { playerId: winner.player, combo: { question: round.question, answer: winner.card } },
     });
   };
 }

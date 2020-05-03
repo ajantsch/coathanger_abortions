@@ -13,7 +13,7 @@ const mapStateToProps = (state: AppState) => ({
 class Players extends React.PureComponent<ReturnType<typeof mapStateToProps>, {}> {
   render = () => {
     return (
-      <Container maxWidth="sm">
+      <PlayersContainer maxWidth="sm">
         <Typography variant="h6">Players in this game</Typography>
         <PlayersGrid container>
           {this.props.game?.players.map(player => (
@@ -25,17 +25,23 @@ class Players extends React.PureComponent<ReturnType<typeof mapStateToProps>, {}
                 color={player.id === this.props.round?.czar ? "error" : "primary"}
               >
                 {`${player.name}`}
-                {player.wonCards.map(card => (
-                  <WonCardIcon key={card.id} />
+                {player.wonCards.map(combo => (
+                  <WonCardIcon key={combo.question.id} />
                 ))}
               </PlayerEntry>
             </Grid>
           ))}
         </PlayersGrid>
-      </Container>
+      </PlayersContainer>
     );
   };
 }
+
+const PlayersContainer: AnyStyledComponent = styled(Container)`
+  && {
+    padding: 25px;
+  }
+`;
 
 const PlayersGrid: AnyStyledComponent = styled(Grid)`
   && {

@@ -171,7 +171,7 @@ const selectWinningCard = async (gameId: string, playerId: string, cardId: strin
 
   game.currentRound.winner = winningAnswer;
   const playerIndex = game.players.map(player => player.id).indexOf(winningAnswer.player);
-  game.players[playerIndex].wonCards.push(game.currentRound.question);
+  game.players[playerIndex].wonCards.push({ question: game.currentRound.question, answer: winningAnswer.card });
   ACTIVE_GAMES.set(gameId, game);
   return winningAnswer;
 };

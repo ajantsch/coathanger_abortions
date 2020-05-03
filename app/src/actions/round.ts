@@ -134,7 +134,7 @@ export function winnerReceived(
     const player = getState().player;
     if (round) {
       if (player?.id === winner.player) {
-        dispatch(receiveWonQuestion(round.question));
+        dispatch(receiveWonQuestion(round.question, winner.card));
       }
     }
     return dispatch({

@@ -19,7 +19,7 @@ class BottomDrawer extends React.PureComponent<IBottomDrawerProps, {}> {
         variant="temporary"
         open={this.props.open}
         onClick={this.hideDrawer}
-        PaperProps={{ color: "secondary", style: { padding: "25px" } }}
+        PaperProps={{ color: "secondary" }}
         ModalProps={{ hideBackdrop: true }}
       >
         <DrawerContent>{this.props.children}</DrawerContent>

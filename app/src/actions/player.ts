@@ -4,7 +4,7 @@ import GameApi from "../services/api";
 import GameSocket from "../services/socket";
 import { IBaseAction } from "./index";
 import { AppState } from "../reducers";
-import { IPlayer, IGivenAnswer, IAnswerCard, IQuestionCard } from "../interfaces";
+import { IPlayer, IGivenAnswer, IAnswerCard, IQuestionCard, ICardCombo } from "../interfaces";
 
 export enum PlayerActionTypes {
   VOID = "VOID",
@@ -41,7 +41,7 @@ export interface IDrawAnswerAction extends IBaseAction {
 
 export interface IReceiveWonQuestion extends IBaseAction {
   type: PlayerActionTypes.RECEIVE_WON_QUESTION;
-  payload: IQuestionCard;
+  payload: ICardCombo;
 }
 
 export type PlayerAction =
@@ -152,11 +152,12 @@ export function drawAnswer(): ThunkAction<Promise<IBaseAction>, AppState, undefi
 
 export function receiveWonQuestion(
   question: IQuestionCard,
+  answer: IAnswerCard,
 ): ThunkAction<IBaseAction, AppState, undefined, IReceiveWonQuestion> {
   return (dispatch: ThunkDispatch<AppState, undefined, IBaseAction>) => {
     return dispatch({
       type: PlayerActionTypes.RECEIVE_WON_QUESTION,
-      payload: question,
+      payload: { question, answer },
     });
   };
 }

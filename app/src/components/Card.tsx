@@ -64,6 +64,8 @@ const SharedCardStyles = css`
   border-radius: 20px;
   padding: 20px;
   backface-visibility: hidden;
+  white-space: normal;
+  text-align: left;
 
   &.question {
     background-color: #1c1c1c;

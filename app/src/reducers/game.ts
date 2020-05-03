@@ -40,7 +40,7 @@ export default function(state: IGame | null = null, action: GameAction) {
             players: [
               ...state.players.map(player => {
                 if (player.id === action.payload.playerId) {
-                  return { ...player, wonCards: [...player.wonCards, action.payload.question] };
+                  return { ...player, wonCards: [...player.wonCards, action.payload.combo] };
                 }
                 return player;
               }),
