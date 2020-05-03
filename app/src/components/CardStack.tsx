@@ -57,7 +57,7 @@ const CardBoxWrapper: AnyStyledComponent = styled(Box)`
 const CardBox: AnyStyledComponent = styled(Box)`
   && {
     display: flex;
-    margin-bottom: -250px;
+    margin-bottom: -200px;
     transition: margin-right 1s ease-in-out;
 
     &.condensed {
