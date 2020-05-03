@@ -1,16 +1,22 @@
 import React from "react";
+import { connect } from "react-redux";
 import { AppBar, BottomNavigation, BottomNavigationAction, Badge } from "@material-ui/core";
 import PersonAddIcon from "@material-ui/icons/PersonAdd";
 import EmojiEventsIcon from "@material-ui/icons/EmojiEvents";
 import PeopleIcon from "@material-ui/icons/People";
 import styled, { AnyStyledComponent } from "styled-components";
 
+import { AppState } from "../reducers";
+
 interface INavBarProps {
   onNavItemClick: (item: string) => void;
-  badgeContent?: number;
 }
 
-class NavBar extends React.PureComponent<INavBarProps, {}> {
+const mapStateToProps = (state: AppState) => ({
+  game: state.game,
+});
+
+class NavBar extends React.PureComponent<ReturnType<typeof mapStateToProps> & INavBarProps, {}> {
   handleAppBarClick = (_event: React.ChangeEvent<{}>, navItem: string) => {
     this.props.onNavItemClick(navItem);
   };
@@ -18,12 +24,12 @@ class NavBar extends React.PureComponent<INavBarProps, {}> {
   render = () => {
     return (
       <GameBottomAppBar position="fixed" color="secondary" component="footer">
-        <GameBottomNavigation showLabels={true} onChange={this.handleAppBarClick}>
+        <GameBottomNavigation onChange={this.handleAppBarClick}>
           <GameBottomNavigationAction
             label="Players"
             value="players"
             icon={
-              <Badge color="primary" badgeContent={this.props.badgeContent}>
+              <Badge color="primary" badgeContent={this.props.game?.players.filter(player => player.active).length}>
                 <PeopleIcon />
               </Badge>
             }
@@ -57,4 +63,4 @@ const GameBottomNavigationAction: AnyStyledComponent = styled(BottomNavigationAc
   }
 `;
 
-export default NavBar;
+export default connect(mapStateToProps)(NavBar);

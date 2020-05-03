@@ -9,7 +9,7 @@ import { AppState } from "../reducers";
 import actions from "../actions";
 
 import BottomDrawer from "../components/BottomDrawer";
-import NavBar from "../components/NavBar";
+import BottomNav from "./BottomNav";
 import Notification from "../components/Notification";
 import Konfetti from "../components/Konfetti";
 import Separator from "../components/Separator";
@@ -141,10 +141,7 @@ class PlayGame extends React.Component<PlayGameProps, IPlayGameState> {
           message={`Player joined: ${this.state.playerJoined ? this.state.playerJoined : ""}`}
           onClose={this.handleSnackbarClose}
         />
-        <NavBar
-          badgeContent={this.props.game?.players.filter(player => player.active).length}
-          onNavItemClick={this.handleNavItemClick}
-        />
+        <BottomNav onNavItemClick={this.handleNavItemClick} />
         <BottomDrawer open={this.state.drawerOpen} onClick={this.toggleDrawer}>
           {(() => {
             switch (this.state.drawerContent) {
