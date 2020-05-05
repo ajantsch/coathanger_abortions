@@ -2,7 +2,7 @@ import React from "react";
 import { connect } from "react-redux";
 import { AnyAction, bindActionCreators, Dispatch } from "redux";
 import { withRouter, RouteComponentProps } from "react-router";
-import { Box, Container } from "@material-ui/core";
+import { AppBar, Box, Container, Toolbar, Typography } from "@material-ui/core";
 import styled, { AnyStyledComponent } from "styled-components";
 
 import { AppState } from "../reducers";
@@ -19,6 +19,7 @@ import PlayerCards from "./PlayerCards";
 import PlayerTrophies from "./PlayerTrophies";
 import Players from "./Players";
 
+import LetteringLight from "../images/lettering_light.svg";
 import YSoSerious from "../images/y-so-serious-white.png";
 
 const mapStateToProps = (state: AppState) => ({
@@ -130,6 +131,14 @@ class PlayGame extends React.Component<PlayGameProps, IPlayGameState> {
   render = () => {
     return (
       <GameRoot>
+        <AppBar position="static">
+          <Toolbar variant="dense">
+            <ToolbarLogo src={LetteringLight} alt="Coathanger Abortions" />
+            <ToolbarTypography variant="body1">
+              Game ID: <span className="bold">{this.props.game?.id}</span>
+            </ToolbarTypography>
+          </Toolbar>
+        </AppBar>
         <GameContainer maxWidth="lg">
           <GameRound />
           <Separator text="Your Cards" />
@@ -168,6 +177,21 @@ const GameRoot: AnyStyledComponent = styled(Box)`
 const GameContainer: AnyStyledComponent = styled(Container)`
   && {
     padding-bottom: 66px;
+  }
+`;
+
+const ToolbarLogo: AnyStyledComponent = styled.img`
+  height: 24px;
+`;
+
+const ToolbarTypography: AnyStyledComponent = styled(Typography)`
+  && {
+    width: 100%;
+    text-align: right;
+
+    & > .bold {
+      font-weight: 700;
+    }
   }
 `;
 

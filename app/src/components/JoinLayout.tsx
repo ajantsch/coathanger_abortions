@@ -2,6 +2,7 @@ import React from "react";
 import { Box, Container, Grid, Typography } from "@material-ui/core";
 import styled, { AnyStyledComponent } from "styled-components";
 
+import LetteringLight from "../images/lettering_light.svg";
 import CoathangerLight from "../images/coathanger_light.svg";
 import YSoSerious from "../images/y-so-serious-white.png";
 
@@ -13,11 +14,7 @@ class JoinLayout extends React.PureComponent {
           <GridContentContainer maxWidth="xs">
             <GridContentVerticalCenter>
               <Box>
-                <Typography variant="h1">
-                  Coathanger
-                  <br />
-                  Abortions
-                </Typography>
+                <Lettering src={LetteringLight} />
                 <Typography variant="body1">
                   A game that reveals what terrible people your friends really are.
                 </Typography>
@@ -73,6 +70,11 @@ const GridContentVerticalCenter: AnyStyledComponent = styled(Box)`
   @media (min-width: 600px) {
     justify-content: center;
   }
+`;
+
+const Lettering: AnyStyledComponent = styled.img`
+  width: 100%;
+  margin: 0 0 1rem 0;
 `;
 
 const FormBox: AnyStyledComponent = styled(Box)`

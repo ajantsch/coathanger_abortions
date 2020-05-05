@@ -39,7 +39,13 @@ class Players extends React.PureComponent<ReturnType<typeof mapStateToProps>, {}
 
 const PlayersContainer: AnyStyledComponent = styled(Container)`
   && {
-    padding: 25px;
+    padding-top: 20px;
+    padding-bottom: 20px;
+
+    @media (min-width: 600px) {
+      padding-top: 25px;
+      padding-bottom: 25px;
+    }
   }
 `;
 
