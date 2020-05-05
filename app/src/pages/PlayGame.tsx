@@ -22,6 +22,7 @@ import Players from "./Players";
 import ActionDrawer from "./ActionDrawer";
 
 import LetteringLight from "../images/lettering_light.svg";
+import LetteringDark from "../images/lettering_dark.svg";
 import YSoSerious from "../images/y-so-serious-white.png";
 
 const mapStateToProps = (state: AppState) => ({
@@ -141,14 +142,17 @@ class PlayGame extends React.Component<PlayGameProps, IPlayGameState> {
   render = () => {
     return (
       <GameRoot>
-        <AppBar position="static">
+        <GameAppBar position="static" className={this.props.playerIsRoundCzar && "czar"}>
           <Toolbar variant="dense">
-            <ToolbarLogo src={LetteringLight} alt="Coathanger Abortions" />
+            <ToolbarLogo
+              src={this.props.playerIsRoundCzar ? LetteringDark : LetteringLight}
+              alt="Coathanger Abortions"
+            />
             <ToolbarTypography variant="body1">
               Game ID: <span className="bold">{this.props.game?.id}</span>
             </ToolbarTypography>
           </Toolbar>
-        </AppBar>
+        </GameAppBar>
         <GameContainer maxWidth="lg">
           <GameRound />
           <Separator text="Your Cards" />
@@ -183,6 +187,15 @@ const GameRoot: AnyStyledComponent = styled(Box)`
   background-image: url(${YSoSerious});
   background-repeat: repeat;
   min-height: 100%;
+`;
+
+const GameAppBar: AnyStyledComponent = styled(AppBar)`
+  && {
+    &.czar {
+      background: linear-gradient(to right, #bf953f, #fcf6ba, #b38728);
+      color: #1c1c1c;
+    }
+  }
 `;
 
 const GameContainer: AnyStyledComponent = styled(Container)`
