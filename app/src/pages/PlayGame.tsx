@@ -2,13 +2,15 @@ import React from "react";
 import { connect } from "react-redux";
 import { AnyAction, bindActionCreators, Dispatch } from "redux";
 import { withRouter, RouteComponentProps } from "react-router";
-import { AppBar, Box, Container, Toolbar, Typography } from "@material-ui/core";
+import { AppBar, Box, Button, Container, Toolbar, Typography } from "@material-ui/core";
 import styled, { AnyStyledComponent } from "styled-components";
 
 import { AppState } from "../reducers";
 import actions from "../actions";
+import { playerIsRoundCzar, playerIsRoundWinner, allAnswersAreIn } from "../selectors";
 
-import BottomDrawer from "../components/BottomDrawer";
+import ActionDrawer from "../components/ActionDrawer";
+import NavDrawer from "../components/BottomDrawer";
 import BottomNav from "./BottomNav";
 import Notification from "../components/Notification";
 import Konfetti from "../components/Konfetti";
@@ -26,6 +28,9 @@ const mapStateToProps = (state: AppState) => ({
   game: state.game,
   round: state.round,
   player: state.player,
+  playerIsRoundCzar: playerIsRoundCzar(state),
+  playerIsRoundWinner: playerIsRoundWinner(state),
+  allAnswersAreIn: allAnswersAreIn(state),
 });
 
 const mapDispatchToProps = (dispatch: Dispatch<AnyAction>) =>
@@ -35,20 +40,21 @@ const mapDispatchToProps = (dispatch: Dispatch<AnyAction>) =>
       getPlayer: actions.getPlayer,
       getCurrentRound: actions.getCurrentRound,
       startRound: actions.startNewRound,
+      revealAnswers: actions.revealAnswers,
     },
     dispatch,
   );
 
 interface IPlayGameState {
   playerJoined: string | undefined;
-  drawerOpen: boolean;
-  drawerContent: string | undefined;
+  navDrawerOpen: boolean;
+  navDrawerContent: string | undefined;
 }
 
 const DEFAULT_STATE: IPlayGameState = {
   playerJoined: undefined,
-  drawerOpen: false,
-  drawerContent: undefined,
+  navDrawerOpen: false,
+  navDrawerContent: undefined,
 };
 
 type PlayGameProps = ReturnType<typeof mapStateToProps> &
@@ -67,10 +73,10 @@ class PlayGame extends React.Component<PlayGameProps, IPlayGameState> {
         this.showShareMenu();
         break;
       case "players":
-        this.toggleDrawer("players");
+        this.toggleNavDrawer("players");
         break;
       case "trophies":
-        this.toggleDrawer("trophies");
+        this.toggleNavDrawer("trophies");
     }
   };
 
@@ -86,16 +92,20 @@ class PlayGame extends React.Component<PlayGameProps, IPlayGameState> {
     }
   };
 
-  toggleDrawer = (content?: string) => {
-    const newState: IPlayGameState = { ...this.state, drawerOpen: !this.state.drawerOpen };
+  toggleNavDrawer = (content?: string) => {
+    const newState: IPlayGameState = { ...this.state, navDrawerOpen: !this.state.navDrawerOpen };
     if (content) {
-      newState.drawerContent = content;
+      newState.navDrawerContent = content;
     }
     this.setState(newState);
   };
 
   handleSnackbarClose = () => {
     this.setState({ playerJoined: undefined });
+  };
+
+  handleRevealAnswers = () => {
+    this.props.revealAnswers();
   };
 
   componentDidUpdate = (prevProps: PlayGameProps) => {
@@ -151,9 +161,9 @@ class PlayGame extends React.Component<PlayGameProps, IPlayGameState> {
           onClose={this.handleSnackbarClose}
         />
         <BottomNav onNavItemClick={this.handleNavItemClick} />
-        <BottomDrawer open={this.state.drawerOpen} onClick={this.toggleDrawer}>
+        <NavDrawer open={this.state.navDrawerOpen} onClick={this.toggleNavDrawer}>
           {(() => {
-            switch (this.state.drawerContent) {
+            switch (this.state.navDrawerContent) {
               case "players":
                 return <Players />;
               case "trophies":
@@ -162,7 +172,20 @@ class PlayGame extends React.Component<PlayGameProps, IPlayGameState> {
                 return <></>;
             }
           })()}
-        </BottomDrawer>
+        </NavDrawer>
+        <ActionDrawer
+          open={this.props.playerIsRoundCzar && this.props.allAnswersAreIn && !this.props.round?.answersRevealed}
+        >
+          <ActionContainer maxWidth="sm">
+            <Typography variant="body1">
+              All the players have placed their answers, now it&apos;s time to reveal what terrible choices they made!
+            </Typography>
+            <br />
+            <Button variant="contained" color="primary" onClick={this.handleRevealAnswers}>
+              Reveal answers
+            </Button>
+          </ActionContainer>
+        </ActionDrawer>
       </GameRoot>
     );
   };
@@ -177,6 +200,18 @@ const GameRoot: AnyStyledComponent = styled(Box)`
 const GameContainer: AnyStyledComponent = styled(Container)`
   && {
     padding-bottom: 66px;
+  }
+`;
+
+const ActionContainer: AnyStyledComponent = styled(Container)`
+  && {
+    padding-top: 20px;
+    padding-bottom: 20px;
+
+    @media (min-width: 600px) {
+      padding-top: 25px;
+      padding-bottom: 25px;
+    }
   }
 `;
 

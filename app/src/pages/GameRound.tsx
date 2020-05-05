@@ -70,13 +70,6 @@ class GameRound extends React.Component<
   };
 
   render = () => {
-    const showRevealAnswersButton =
-      this.props.round?.question &&
-      this.props.round?.czar === this.props.player?.id &&
-      !!this.props.round.answers.length &&
-      this.props.game?.players &&
-      this.props.round.answers.length === this.props.game.players.filter(player => player.active).length - 1 &&
-      !this.props.round.answersRevealed;
     return this.props.round ? (
       <CurrentRound>
         <QuestionCardSpace>
@@ -105,11 +98,6 @@ class GameRound extends React.Component<
             onCardClick={this.handleCardClicked}
             winningCard={this.props.round?.winner?.card.id}
           />
-          {showRevealAnswersButton && (
-            <Button variant="contained" color="primary" onClick={this.handleRevealAnswers}>
-              Reveal answers
-            </Button>
-          )}
         </AnswerCardsSpace>
       </CurrentRound>
     ) : (
