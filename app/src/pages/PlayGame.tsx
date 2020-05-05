@@ -2,14 +2,13 @@ import React from "react";
 import { connect } from "react-redux";
 import { AnyAction, bindActionCreators, Dispatch } from "redux";
 import { withRouter, RouteComponentProps } from "react-router";
-import { AppBar, Box, Button, Container, Toolbar, Typography } from "@material-ui/core";
+import { AppBar, Box, Container, Toolbar, Typography } from "@material-ui/core";
 import styled, { AnyStyledComponent } from "styled-components";
 
 import { AppState } from "../reducers";
 import actions from "../actions";
 import { playerIsRoundCzar, playerIsRoundWinner, allAnswersAreIn } from "../selectors";
 
-import ActionDrawer from "../components/ActionDrawer";
 import NavDrawer from "../components/BottomDrawer";
 import BottomNav from "./BottomNav";
 import Notification from "../components/Notification";
@@ -20,6 +19,7 @@ import GameRound from "./GameRound";
 import PlayerCards from "./PlayerCards";
 import PlayerTrophies from "./PlayerTrophies";
 import Players from "./Players";
+import ActionDrawer from "./ActionDrawer";
 
 import LetteringLight from "../images/lettering_light.svg";
 import YSoSerious from "../images/y-so-serious-white.png";
@@ -154,7 +154,7 @@ class PlayGame extends React.Component<PlayGameProps, IPlayGameState> {
           <Separator text="Your Cards" />
           <PlayerCards />
         </GameContainer>
-        <Konfetti run={this.props.round?.winner?.player === this.props.player?.id} />
+        <Konfetti run={this.props.playerIsRoundWinner} />
         <Notification
           open={!!this.state.playerJoined}
           message={`Player joined: ${this.state.playerJoined ? this.state.playerJoined : ""}`}
@@ -173,19 +173,7 @@ class PlayGame extends React.Component<PlayGameProps, IPlayGameState> {
             }
           })()}
         </NavDrawer>
-        <ActionDrawer
-          open={this.props.playerIsRoundCzar && this.props.allAnswersAreIn && !this.props.round?.answersRevealed}
-        >
-          <ActionContainer maxWidth="sm">
-            <Typography variant="body1">
-              All the players have placed their answers, now it&apos;s time to reveal what terrible choices they made!
-            </Typography>
-            <br />
-            <Button variant="contained" color="primary" onClick={this.handleRevealAnswers}>
-              Reveal answers
-            </Button>
-          </ActionContainer>
-        </ActionDrawer>
+        <ActionDrawer />
       </GameRoot>
     );
   };
@@ -200,18 +188,6 @@ const GameRoot: AnyStyledComponent = styled(Box)`
 const GameContainer: AnyStyledComponent = styled(Container)`
   && {
     padding-bottom: 66px;
-  }
-`;
-
-const ActionContainer: AnyStyledComponent = styled(Container)`
-  && {
-    padding-top: 20px;
-    padding-bottom: 20px;
-
-    @media (min-width: 600px) {
-      padding-top: 25px;
-      padding-bottom: 25px;
-    }
   }
 `;
 

@@ -1,7 +1,7 @@
 import React from "react";
 import { connect } from "react-redux";
 import { AnyAction, bindActionCreators, Dispatch } from "redux";
-import { Box, Button } from "@material-ui/core";
+import { Box } from "@material-ui/core";
 import styled, { AnyStyledComponent } from "styled-components";
 
 import { ICard } from "../interfaces";
@@ -79,11 +79,6 @@ class GameRound extends React.Component<
               isHidden={!this.props.round.questionRevealed}
               onCardClick={this.handleRevealQuestion}
             />
-          )}
-          {this.props.round?.winner?.player === this.props.player?.id && (
-            <Button variant="contained" color="primary" onClick={this.handleStartRound}>
-              Start next round
-            </Button>
           )}
         </QuestionCardSpace>
         <AnswerCardsSpace>
