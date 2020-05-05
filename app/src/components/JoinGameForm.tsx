@@ -2,6 +2,8 @@ import React from "react";
 import { Button, TextField } from "@material-ui/core";
 import styled, { AnyStyledComponent } from "styled-components";
 
+import { colors } from "../Theme";
+
 interface IJoinGameFormProps {
   onFormSubmit: (name: string) => void;
 }
@@ -53,7 +55,7 @@ class JoinGameForm extends React.PureComponent<IJoinGameFormProps, IEnterState> 
 
 const NameTextField: AnyStyledComponent = styled(TextField)`
   && {
-    background: #f3f3f4;
+    background: ${colors.light};
   }
 `;
 
@@ -67,8 +69,8 @@ const JoinGameButton: AnyStyledComponent = styled(Button)`
     padding: 0.7rem 2rem;
 
     &:disabled {
-      background: #f3f3f4;
-      color: #1c1c1c;
+      background: ${colors.light};
+      color: ${colors.dark};
       box-shadow: inset 0px 0px 0px 1px rgba(0, 0, 0, 0.23);
     }
   }

@@ -2,6 +2,8 @@ import React from "react";
 import { Box, Typography } from "@material-ui/core";
 import styled, { AnyStyledComponent } from "styled-components";
 
+import { colors } from "../Theme";
+
 interface ISeperatorProps {
   text?: string;
 }
@@ -31,7 +33,7 @@ const SeparatorLine: AnyStyledComponent = styled(Box)`
   flex-basis: 50%;
   flex-shrink: 1;
   height: 0;
-  border-top: 1px solid #1c1c1c;
+  border-top: 1px solid ${colors.dark};
 `;
 
 const SeparatorText: AnyStyledComponent = styled(Typography)`

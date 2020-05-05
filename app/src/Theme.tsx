@@ -1,18 +1,23 @@
 import { createMuiTheme, responsiveFontSizes } from "@material-ui/core/styles";
 
+export const colors = {
+  dark: "#1c1c1c",
+  light: "#f3f3f4",
+};
+
 export default responsiveFontSizes(
   createMuiTheme({
     palette: {
       primary: {
-        main: "#1c1c1c",
-        contrastText: "#f3f3f4",
+        main: colors.dark,
+        contrastText: colors.light,
       },
       secondary: {
-        main: "#f3f3f4",
-        contrastText: "#1c1c1c",
+        main: colors.light,
+        contrastText: colors.dark,
       },
       background: {
-        paper: "#f3f3f4",
+        paper: colors.light,
         default: "#ffffff",
       },
     },

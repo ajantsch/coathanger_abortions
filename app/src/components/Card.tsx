@@ -3,6 +3,7 @@ import { Paper, Typography } from "@material-ui/core";
 import styled, { css, AnyStyledComponent } from "styled-components";
 
 import { ICard } from "../interfaces";
+import { colors } from "../Theme";
 
 import CoathangerDark from "../images/coathanger_dark.svg";
 import CoathangerLight from "../images/coathanger_light.svg";
@@ -68,16 +69,16 @@ const SharedCardStyles = css`
   text-align: left;
 
   &.question {
-    background-color: #1c1c1c;
+    background-color: ${colors.dark};
     background-image: url(${CoathangerLight});
-    color: #f3f3f4;
+    color: ${colors.light};
   }
 
   &.answer {
     background-color: #ffffff;
     background-image: url(${CoathangerDark});
     border: 1px solid #e3e6eb;
-    color: #1c1c1c;
+    color: ${colors.dark};
   }
 `;
 

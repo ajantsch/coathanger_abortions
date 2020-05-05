@@ -3,6 +3,7 @@ import { connect } from "react-redux";
 import { Container, Grid, Typography } from "@material-ui/core";
 import styled, { AnyStyledComponent } from "styled-components";
 
+import { colors } from "../Theme";
 import { AppState } from "../reducers";
 
 const mapStateToProps = (state: AppState) => ({
@@ -60,7 +61,7 @@ const WonCardIcon: AnyStyledComponent = styled.span`
   margin: 0 0 -2px 5px;
   height: 1rem;
   width: 0.7rem;
-  background: #1c1c1c;
+  background: ${colors.dark};
   border-radius: 2px;
 `;
 

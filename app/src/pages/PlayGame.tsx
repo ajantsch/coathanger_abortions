@@ -5,6 +5,7 @@ import { withRouter, RouteComponentProps } from "react-router";
 import { AppBar, Box, Container, Toolbar, Typography } from "@material-ui/core";
 import styled, { AnyStyledComponent } from "styled-components";
 
+import { colors } from "../Theme";
 import { AppState } from "../reducers";
 import actions from "../actions";
 import { playerIsRoundCzar, playerIsRoundWinner, allAnswersAreIn } from "../selectors";
@@ -193,7 +194,7 @@ const GameAppBar: AnyStyledComponent = styled(AppBar)`
   && {
     &.czar {
       background: linear-gradient(to right, #bf953f, #fcf6ba, #b38728);
-      color: #1c1c1c;
+      color: ${colors.dark};
     }
   }
 `;
