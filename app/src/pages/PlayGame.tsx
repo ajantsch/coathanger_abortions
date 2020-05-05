@@ -151,7 +151,7 @@ class PlayGame extends React.Component<PlayGameProps, IPlayGameState> {
           onClose={this.handleSnackbarClose}
         />
         <BottomNav onNavItemClick={this.handleNavItemClick} />
-        <BottomDrawer open={this.state.drawerOpen} onClick={this.toggleDrawer}>
+        <BottomDrawer open={this.state.drawerOpen} onClose={this.toggleDrawer}>
           {(() => {
             switch (this.state.drawerContent) {
               case "players":

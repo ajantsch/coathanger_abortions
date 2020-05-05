@@ -1,22 +1,31 @@
 import React from "react";
-import { Drawer } from "@material-ui/core";
+import { SwipeableDrawer } from "@material-ui/core";
 import styled, { AnyStyledComponent } from "styled-components";
 
 interface IBottomDrawerProps {
   open: boolean;
-  onClick: () => void;
+  onOpen?: () => void;
+  onClose?: () => void;
 }
 
 class BottomDrawer extends React.PureComponent<IBottomDrawerProps, {}> {
+  showDrawer = () => {
+    if (this.props.onOpen) {
+      this.props.onOpen();
+    }
+  };
+
   hideDrawer = () => {
-    this.props.onClick();
+    if (this.props.onClose) {
+      this.props.onClose();
+    }
   };
 
   render = () => {
     return (
-      <Drawer anchor="bottom" variant="temporary" open={this.props.open} onClick={this.hideDrawer}>
+      <SwipeableDrawer anchor="bottom" open={this.props.open} onOpen={this.showDrawer} onClose={this.hideDrawer}>
         <DrawerContent>{this.props.children}</DrawerContent>
-      </Drawer>
+      </SwipeableDrawer>
     );
   };
 }
