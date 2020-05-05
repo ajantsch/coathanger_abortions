@@ -28,7 +28,7 @@ class Card extends React.PureComponent<ICardProps, {}> {
         <CardAnimation className={this.props.isHidden && "hidden"}>
           <CardBack className={`card ${this.props.card.type}`} />
           <CardFront className={`card ${this.props.card.type}`}>
-            <Typography variant="h6">{this.props.card.content}</Typography>
+            <CardText>{this.props.card.content}</CardText>
             {this.props.isWinningCard && <WinnerCup />}
           </CardFront>
         </CardAnimation>
@@ -61,7 +61,7 @@ const SharedCardStyles = css`
   position: absolute;
   width: 100%;
   height: 100%;
-  border-radius: 20px;
+  border-radius: 15px;
   padding: 20px;
   backface-visibility: hidden;
   white-space: normal;
@@ -102,6 +102,14 @@ const CardBack: AnyStyledComponent = styled(Paper)`
     transform: rotateY(180deg);
 
     ${SharedCardStyles}
+  }
+`;
+
+const CardText: AnyStyledComponent = styled(Typography)`
+  && {
+    font-size: 1.2rem;
+    line-height: 1.5;
+    font-weight: 700;
   }
 `;
 
