@@ -14,14 +14,7 @@ class BottomDrawer extends React.PureComponent<IBottomDrawerProps, {}> {
 
   render = () => {
     return (
-      <Drawer
-        anchor="bottom"
-        variant="temporary"
-        open={this.props.open}
-        onClick={this.hideDrawer}
-        PaperProps={{ color: "secondary" }}
-        ModalProps={{ hideBackdrop: true }}
-      >
+      <Drawer anchor="bottom" variant="temporary" open={this.props.open} onClick={this.hideDrawer}>
         <DrawerContent>{this.props.children}</DrawerContent>
       </Drawer>
     );
@@ -30,7 +23,7 @@ class BottomDrawer extends React.PureComponent<IBottomDrawerProps, {}> {
 
 const DrawerContent: AnyStyledComponent = styled.div`
   && {
-    padding-bottom: 66px;
+    padding-bottom: 20px;
   }
 `;
 

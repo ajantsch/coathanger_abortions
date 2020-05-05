@@ -46,13 +46,11 @@ const GameBottomAppBar: AnyStyledComponent = styled(AppBar)`
   && {
     top: auto;
     bottom: 0;
-    z-index: 1500;
   }
 `;
 
 const GameBottomNavigation: AnyStyledComponent = styled(BottomNavigation)`
   && {
-    height: 66px;
     background: #ffffff;
   }
 `;
