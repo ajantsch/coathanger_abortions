@@ -10,16 +10,13 @@ import { AppState } from "../reducers";
 import actions from "../actions";
 import { playerIsRoundCzar, playerIsRoundWinner, allAnswersAreIn } from "../selectors";
 
-import NavDrawer from "../components/BottomDrawer";
-import BottomNav from "./BottomNav";
 import Notification from "../components/Notification";
 import Konfetti from "../components/Konfetti";
 import Separator from "../components/Separator";
 
 import GameRound from "./GameRound";
 import PlayerCards from "./PlayerCards";
-import PlayerTrophies from "./PlayerTrophies";
-import Players from "./Players";
+import BottomNav from "./BottomNav";
 import ActionDrawer from "./ActionDrawer";
 
 import LetteringLight from "../images/lettering_light.svg";
@@ -49,14 +46,10 @@ const mapDispatchToProps = (dispatch: Dispatch<AnyAction>) =>
 
 interface IPlayGameState {
   playerJoined: string | undefined;
-  navDrawerOpen: boolean;
-  navDrawerContent: string | undefined;
 }
 
 const DEFAULT_STATE: IPlayGameState = {
   playerJoined: undefined,
-  navDrawerOpen: false,
-  navDrawerContent: undefined,
 };
 
 type PlayGameProps = ReturnType<typeof mapStateToProps> &
@@ -68,39 +61,6 @@ class PlayGame extends React.Component<PlayGameProps, IPlayGameState> {
     super(props);
     this.state = DEFAULT_STATE;
   }
-
-  handleNavItemClick = (navItem: string) => {
-    switch (navItem) {
-      case "invite":
-        this.showShareMenu();
-        break;
-      case "players":
-        this.toggleNavDrawer("players");
-        break;
-      case "trophies":
-        this.toggleNavDrawer("trophies");
-    }
-  };
-
-  showShareMenu = () => {
-    if (navigator.share) {
-      console.warn(window.location.host);
-      // open os-native share menu
-      navigator.share({
-        title: "You are invited!",
-        text: "Join our game and proof what a terrible person you are.",
-        url: `https://&${window.location.host}/${this.props.game?.id}/join`,
-      });
-    }
-  };
-
-  toggleNavDrawer = (content?: string) => {
-    const newState: IPlayGameState = { ...this.state, navDrawerOpen: !this.state.navDrawerOpen };
-    if (content) {
-      newState.navDrawerContent = content;
-    }
-    this.setState(newState);
-  };
 
   handleSnackbarClose = () => {
     this.setState({ playerJoined: undefined });
@@ -165,19 +125,7 @@ class PlayGame extends React.Component<PlayGameProps, IPlayGameState> {
           message={`Player joined: ${this.state.playerJoined ? this.state.playerJoined : ""}`}
           onClose={this.handleSnackbarClose}
         />
-        <BottomNav onNavItemClick={this.handleNavItemClick} />
-        <NavDrawer open={this.state.navDrawerOpen} onClick={this.toggleNavDrawer}>
-          {(() => {
-            switch (this.state.navDrawerContent) {
-              case "players":
-                return <Players />;
-              case "trophies":
-                return <PlayerTrophies />;
-              default:
-                return <></>;
-            }
-          })()}
-        </NavDrawer>
+        <BottomNav />
         <ActionDrawer />
       </GameRoot>
     );

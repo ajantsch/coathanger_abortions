@@ -2,12 +2,12 @@ import React from "react";
 import { Drawer } from "@material-ui/core";
 import styled, { AnyStyledComponent } from "styled-components";
 
-interface IBottomDrawerProps {
+interface INavDrawerProps {
   open: boolean;
   onClick: () => void;
 }
 
-class BottomDrawer extends React.PureComponent<IBottomDrawerProps, {}> {
+class NavDrawer extends React.PureComponent<INavDrawerProps, {}> {
   hideDrawer = () => {
     this.props.onClick();
   };
@@ -27,4 +27,4 @@ const DrawerContent: AnyStyledComponent = styled.div`
   }
 `;
 
-export default BottomDrawer;
+export default NavDrawer;
