@@ -12,7 +12,6 @@ import RevealAnswers from "../components/RevealAnswers";
 import StartNewRound from "../components/StartNewRound";
 
 const mapStateToProps = (state: AppState) => ({
-  round: state.round,
   playerIsRoundWinner: playerIsRoundWinner(state),
   shouldShowRevealAnswerAction: shouldShowRevealAnswerAction(state),
 });
@@ -39,9 +38,12 @@ class ActionDrawer extends React.PureComponent<
   };
 
   render = () => {
-    const drawerOpen = this.props.shouldShowRevealAnswerAction || this.props.playerIsRoundWinner;
     return (
-      <Drawer anchor="bottom" open={drawerOpen} ModalProps={{ hideBackdrop: true }}>
+      <Drawer
+        anchor="bottom"
+        open={this.props.shouldShowRevealAnswerAction || this.props.playerIsRoundWinner}
+        ModalProps={{ hideBackdrop: true }}
+      >
         <DrawerContent maxWidth="sm">
           {this.props.shouldShowRevealAnswerAction && <RevealAnswers onClickReveal={this.handleRevealAnswers} />}
           {this.props.playerIsRoundWinner && <StartNewRound onClickStart={this.handleStartRound} />}

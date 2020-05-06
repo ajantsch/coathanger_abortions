@@ -22,8 +22,7 @@ class Players extends React.PureComponent<ReturnType<typeof mapStateToProps>, {}
               <PlayerEntry
                 variant="body1"
                 key={player.id}
-                className={player.active ? "active" : "inactive"}
-                color={player.id === this.props.round?.czar ? "error" : "primary"}
+                className={`${player.active ? "active" : "inactive"} ${player.id === this.props.round?.czar && "czar"}`}
               >
                 {`${player.name}`}
                 {player.wonCards.map(combo => (
@@ -67,6 +66,10 @@ const WonCardIcon: AnyStyledComponent = styled.span`
 
 const PlayerEntry: AnyStyledComponent = styled(Typography)`
   && {
+    &.czar {
+      color: #bf953f;
+    }
+
     &.inactive {
       opacity: 0.3;
     }

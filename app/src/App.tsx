@@ -7,7 +7,7 @@ import store from "./store";
 import theme from "./Theme";
 
 import NewGame from "./pages/NewGame";
-import JoinGame from "./pages/JoinGame";
+import EnterGame from "./pages/EnterGame";
 import PlayGame from "./pages/PlayGame";
 
 class App extends React.Component {
@@ -18,7 +18,7 @@ class App extends React.Component {
           <Router>
             <Switch>
               <Route path="/" exact default component={NewGame} />
-              <Route path="/:game_id/join" exact component={JoinGame} />
+              <Route path="/:game_id/join" exact component={EnterGame} />
               <Route path="/:game_id/" exact component={PlayGame} />
               <Redirect to="/" />
             </Switch>

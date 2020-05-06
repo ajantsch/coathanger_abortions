@@ -7,7 +7,7 @@ import { AppState } from "../reducers";
 import actions from "../actions";
 
 import JoinLayout from "../components/JoinLayout";
-import JoinGameForm from "../components/JoinGameForm";
+import EnterGameForm from "../components/EnterGameForm";
 
 const mapStateToProps = (state: AppState) => ({
   game: state.game,
@@ -17,10 +17,10 @@ const mapStateToProps = (state: AppState) => ({
 const mapDispatchToProps = (dispatch: Dispatch<AnyAction>) =>
   bindActionCreators({ getGame: actions.getGame, joinGame: actions.joinGame, getPlayer: actions.getPlayer }, dispatch);
 
-class JoinGame extends React.Component<
+class EnterGame extends React.Component<
   ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps> & RouteComponentProps<{ game_id: string }>
 > {
-  handleJoinGame = async (name: string) => {
+  handleEnterGame = async (name: string) => {
     this.props.joinGame(name);
   };
 
@@ -42,10 +42,10 @@ class JoinGame extends React.Component<
   render = () => {
     return (
       <JoinLayout>
-        <JoinGameForm onFormSubmit={this.handleJoinGame} />
+        <EnterGameForm onFormSubmit={this.handleEnterGame} />
       </JoinLayout>
     );
   };
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(withRouter(JoinGame));
+export default connect(mapStateToProps, mapDispatchToProps)(withRouter(EnterGame));

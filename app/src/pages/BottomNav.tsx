@@ -7,13 +7,14 @@ import PeopleIcon from "@material-ui/icons/People";
 import styled, { AnyStyledComponent } from "styled-components";
 
 import { AppState } from "../reducers";
+import { getActivePlayers } from "../selectors";
 
 interface INavBarProps {
   onNavItemClick: (item: string) => void;
 }
 
 const mapStateToProps = (state: AppState) => ({
-  game: state.game,
+  activePlayers: getActivePlayers(state),
 });
 
 class NavBar extends React.PureComponent<ReturnType<typeof mapStateToProps> & INavBarProps, {}> {
@@ -29,7 +30,7 @@ class NavBar extends React.PureComponent<ReturnType<typeof mapStateToProps> & IN
             label="Players"
             value="players"
             icon={
-              <Badge color="primary" badgeContent={this.props.game?.players.filter(player => player.active).length}>
+              <Badge color="primary" badgeContent={this.props.activePlayers.length}>
                 <PeopleIcon />
               </Badge>
             }

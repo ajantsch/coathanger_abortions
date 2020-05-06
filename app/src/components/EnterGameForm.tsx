@@ -4,7 +4,7 @@ import styled, { AnyStyledComponent } from "styled-components";
 
 import { colors } from "../Theme";
 
-interface IJoinGameFormProps {
+interface IEnterGameFormProps {
   onFormSubmit: (name: string) => void;
 }
 
@@ -16,8 +16,8 @@ const DEFAULT_STATE: IEnterState = {
   name: "",
 };
 
-class JoinGameForm extends React.PureComponent<IJoinGameFormProps, IEnterState> {
-  constructor(props: IJoinGameFormProps) {
+class EnterGameForm extends React.PureComponent<IEnterGameFormProps, IEnterState> {
+  constructor(props: IEnterGameFormProps) {
     super(props);
     this.state = DEFAULT_STATE;
   }
@@ -45,9 +45,9 @@ class JoinGameForm extends React.PureComponent<IJoinGameFormProps, IEnterState> 
           required
           autoFocus
         ></NameTextField>
-        <JoinGameButton type="submit" variant="contained" color="primary" disabled={!this.state.name.length}>
+        <EnterGameButton type="submit" variant="contained" color="primary" disabled={!this.state.name.length}>
           Enter game
-        </JoinGameButton>
+        </EnterGameButton>
       </form>
     );
   };
@@ -59,7 +59,7 @@ const NameTextField: AnyStyledComponent = styled(TextField)`
   }
 `;
 
-const JoinGameButton: AnyStyledComponent = styled(Button)`
+const EnterGameButton: AnyStyledComponent = styled(Button)`
   && {
     display: block;
     width: 100%;
@@ -76,4 +76,4 @@ const JoinGameButton: AnyStyledComponent = styled(Button)`
   }
 `;
 
-export default JoinGameForm;
+export default EnterGameForm;

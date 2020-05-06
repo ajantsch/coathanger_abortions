@@ -4,12 +4,12 @@ import { Box, Container, Typography } from "@material-ui/core";
 import styled, { AnyStyledComponent } from "styled-components";
 
 import CardCombo from "../components/CardCombo";
-
 import { AppState } from "../reducers";
 
 const mapStateToProps = (state: AppState) => ({
   player: state.player,
 });
+
 class PlayerTrophies extends React.Component<ReturnType<typeof mapStateToProps>, {}> {
   render = () => {
     return this.props.player?.wonCards.length ? (

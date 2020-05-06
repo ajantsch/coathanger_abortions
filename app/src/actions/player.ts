@@ -19,7 +19,7 @@ export interface IVoidPlayerAction extends IBaseAction {
   type: PlayerActionTypes.VOID;
 }
 
-export interface IJoinGameAction extends IBaseAction {
+export interface IEnterGameAction extends IBaseAction {
   type: PlayerActionTypes.JOIN_GAME;
   payload: IPlayer;
 }
@@ -46,13 +46,13 @@ export interface IReceiveWonQuestion extends IBaseAction {
 
 export type PlayerAction =
   | IVoidPlayerAction
-  | IJoinGameAction
+  | IEnterGameAction
   | IGetPlayerAction
   | IGiveAnswerAction
   | IReceiveWonQuestion
   | IDrawAnswerAction;
 
-export function getPlayer(): ThunkAction<Promise<IBaseAction>, AppState, undefined, IJoinGameAction> {
+export function getPlayer(): ThunkAction<Promise<IBaseAction>, AppState, undefined, IEnterGameAction> {
   return async (dispatch: ThunkDispatch<AppState, undefined, IBaseAction>, getState) => {
     const gameId = getState().game?.id;
     if (!gameId) {
@@ -78,7 +78,7 @@ export function getPlayer(): ThunkAction<Promise<IBaseAction>, AppState, undefin
   };
 }
 
-export function joinGame(playerName: string): ThunkAction<Promise<IBaseAction>, AppState, undefined, IJoinGameAction> {
+export function joinGame(playerName: string): ThunkAction<Promise<IBaseAction>, AppState, undefined, IEnterGameAction> {
   return async (dispatch: ThunkDispatch<AppState, undefined, IBaseAction>, getState) => {
     const gameId = getState().game?.id;
     if (!gameId) {
