@@ -41,9 +41,9 @@ const connectToGame = (
         dispatch(actions.remotePlayerRemoved(playerId));
       });
 
-      socket.on("new_round_started", () => {
-        console.info("New round started");
-        dispatch(actions.getCurrentRound(gameId));
+      socket.on("new_round_started", (round: IRound) => {
+        console.info("New round started:", round);
+        dispatch(actions.roundReceived(round));
       });
 
       socket.on("question_card_revealed", () => {
