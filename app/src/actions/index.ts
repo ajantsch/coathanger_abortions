@@ -2,7 +2,7 @@ import { GameActionTypes } from "./game";
 import { PlayerActionTypes } from "./player";
 import { RoundActionTypes } from "./round";
 import { NotificationActionTypes } from "./notification";
-
+import { SocketActionTypes } from "./socket";
 import {
   resetGame,
   getGame,
@@ -13,9 +13,7 @@ import {
   remotePlayerRemoved,
   assignWinningCard,
 } from "./game";
-
 import { resetPlayer, getPlayer, joinGame, giveAnswer } from "./player";
-
 import {
   resetRound,
   startNewRound,
@@ -29,10 +27,15 @@ import {
   answersRevealed,
   winnerReceived,
 } from "./round";
-
 import { showNotification, hideNotification } from "./notification";
+import { connectSocket, disconnectSocket } from "./socket";
 
-export type ActionTypes = GameActionTypes | PlayerActionTypes | RoundActionTypes | NotificationActionTypes;
+export type ActionTypes =
+  | GameActionTypes
+  | PlayerActionTypes
+  | RoundActionTypes
+  | NotificationActionTypes
+  | SocketActionTypes;
 
 export interface IBaseAction {
   type: ActionTypes;
@@ -65,4 +68,6 @@ export default {
   assignWinningCard,
   showNotification,
   hideNotification,
+  connectSocket,
+  disconnectSocket,
 };

@@ -1,10 +1,10 @@
 import { ThunkAction, ThunkDispatch } from "redux-thunk";
 
 import GameApi from "../services/api";
-import GameSocket from "../services/socket";
 import { IBaseAction } from "./index";
 import { AppState } from "../reducers";
 import { IPlayer, IGivenAnswer, IAnswerCard, IQuestionCard, ICardCombo } from "../interfaces";
+import { connectSocket } from "./socket";
 
 export enum PlayerActionTypes {
   VOID = "VOID",
@@ -67,7 +67,7 @@ export function resetPlayer(): ThunkAction<IResetPlayerAction, AppState, undefin
 }
 
 export function getPlayer(gameId: string): ThunkAction<Promise<IBaseAction>, AppState, undefined, IEnterGameAction> {
-  return async (dispatch: ThunkDispatch<AppState, undefined, IBaseAction>) => {
+  return async (dispatch: ThunkDispatch<AppState, undefined, IBaseAction>, getState) => {
     try {
       const playerId = localStorage.getItem(`cha_${gameId}_playerId`);
       if (!playerId) {
@@ -75,7 +75,11 @@ export function getPlayer(gameId: string): ThunkAction<Promise<IBaseAction>, App
       }
 
       const player = await GameApi.getGamePlayer(gameId, playerId);
-      await GameSocket.connectToGame(gameId, player.id);
+
+      const socket = getState().socket;
+      if (!socket) {
+        dispatch(connectSocket(gameId, player.id));
+      }
 
       return dispatch({
         type: PlayerActionTypes.GET_PLAYER,
@@ -91,11 +95,15 @@ export function joinGame(
   gameId: string,
   playerName: string,
 ): ThunkAction<Promise<IBaseAction>, AppState, undefined, IEnterGameAction> {
-  return async (dispatch: ThunkDispatch<AppState, undefined, IBaseAction>) => {
+  return async (dispatch: ThunkDispatch<AppState, undefined, IBaseAction>, getState) => {
     try {
       const player = await GameApi.addGamePlayer(gameId, playerName);
       localStorage.setItem(`cha_${gameId as string}_playerId`, player.id);
-      await GameSocket.connectToGame(gameId, player.id);
+
+      const socket = getState().socket;
+      if (!socket) {
+        dispatch(connectSocket(gameId, player.id));
+      }
 
       return dispatch({
         type: PlayerActionTypes.JOIN_GAME,
