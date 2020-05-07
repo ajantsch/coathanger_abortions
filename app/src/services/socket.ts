@@ -41,9 +41,9 @@ const connectToGame = (
         dispatch(actions.remotePlayerRemoved(playerId));
       });
 
-      socket.on("new_round_started", (round: IRound) => {
-        console.info("New round started:", round);
-        dispatch(actions.roundReceived(round));
+      socket.on("new_round_started", () => {
+        console.info("New round started");
+        dispatch(actions.getCurrentRound(gameId));
       });
 
       socket.on("question_card_revealed", () => {
@@ -51,8 +51,8 @@ const connectToGame = (
         dispatch(actions.questionRevealed());
       });
 
-      socket.on("answer_card_given", (answer: IGivenAnswer) => {
-        console.info("Answer card given:", answer);
+      socket.on("answer_card_received", (answer: IGivenAnswer) => {
+        console.info("Answer card received:", answer);
         dispatch(actions.answerReceived(answer));
       });
 

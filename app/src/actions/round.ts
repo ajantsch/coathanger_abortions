@@ -66,10 +66,12 @@ export interface IReceiveAnswerAction extends IBaseAction {
 
 export interface IRevealAnswersAction extends IBaseAction {
   type: RoundActionTypes.REVEAL_ANSWERS;
+  payload: IRound;
 }
 
 export interface IReceiveAnswersRevealedAction extends IBaseAction {
   type: RoundActionTypes.RECEIVE_ANSWERS_REVEALED;
+  payload: IRound;
 }
 
 export interface ISetWinnerAction extends IBaseAction {
@@ -131,10 +133,10 @@ export function answerReceived(answer: IGivenAnswer): IReceiveAnswerAction {
   };
 }
 
-export function answersRevealed(answer: IRound): IReceiveAnswersRevealedAction {
+export function answersRevealed(round: IRound): IReceiveAnswersRevealedAction {
   return {
     type: RoundActionTypes.RECEIVE_ANSWERS_REVEALED,
-    payload: answer,
+    payload: round,
   };
 }
 
@@ -206,10 +208,11 @@ export function revealQuestion(): ThunkAction<
 export function revealAnswers(): ThunkAction<Promise<IRevealAnswersAction>, AppState, undefined, IRevealAnswersAction> {
   return async (dispatch: ThunkDispatch<AppState, undefined, IRevealAnswersAction>, getState) => {
     const gameId = getState().game?.id;
-    await GameApi.revealAnswers(gameId as string);
+    const round = await GameApi.revealAnswers(gameId as string);
 
     return dispatch({
       type: RoundActionTypes.REVEAL_ANSWERS,
+      payload: round,
     });
   };
 }

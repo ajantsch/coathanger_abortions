@@ -180,7 +180,7 @@ const putAnswer = async (req: Request, res: Response) => {
   try {
     const answer = await selectAnswer(gameId, playerId, card);
 
-    socket.to(gameId).emit("answer_card_given", { player: playerId, card });
+    socket.to(gameId).emit("answer_card_received", { player: playerId, card });
 
     res.status(200);
     res.send(answer);

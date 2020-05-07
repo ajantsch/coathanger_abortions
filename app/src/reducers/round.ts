@@ -20,9 +20,9 @@ export default function(state: IRound | null = null, action: RoundAction) {
     case RoundActionTypes.RECEIVE_ANSWER:
       return state ? { ...state, answers: [...state.answers, action.payload] } : null;
     case RoundActionTypes.REVEAL_ANSWERS:
-      return state ? { ...state, answersRevealed: true, answers: shuffle(state.answers) } : null;
+      return { ...action.payload, answers: shuffle(action.payload.answers) };
     case RoundActionTypes.RECEIVE_ANSWERS_REVEALED:
-      return state ? { ...state, answersRevealed: true, answers: shuffle(state.answers) } : null;
+      return { ...action.payload, answers: shuffle(action.payload.answers) };
     case RoundActionTypes.RECEIVE_WINNER:
       return state ? { ...state, winner: action.payload } : null;
     default:
