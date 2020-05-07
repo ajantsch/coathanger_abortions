@@ -4,6 +4,7 @@ import { AppState } from "../reducers";
 
 const getPlayers = (state: AppState) => state.game?.players;
 const getRoundAnswers = (state: AppState) => state.round?.answers;
+const getRoundQuestionRevealed = (state: AppState) => state.round?.questionRevealed;
 const getRoundAnswersRevealed = (state: AppState) => state.round?.answersRevealed;
 const getPlayerId = (state: AppState) => state.player?.id;
 const getRoundCzar = (state: AppState) => state.round?.czar;
@@ -23,6 +24,16 @@ export const getActivePlayers = createSelector([getPlayers], players => {
   }
   return players.filter(player => player.active);
 });
+
+export const canGiveAnswer = createSelector(
+  [getRoundQuestionRevealed, getRoundAnswers, getPlayerId],
+  (questionRevealed, answers, playerId) => {
+    if (!questionRevealed || (answers && !!answers.find(answer => answer.player === playerId))) {
+      return false;
+    }
+    return true;
+  },
+);
 
 export const allAnswersAreIn = createSelector(
   [getActivePlayers, getRoundCzar, getRoundAnswers],

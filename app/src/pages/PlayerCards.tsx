@@ -8,11 +8,12 @@ import CardStack from "../components/CardStack";
 
 import { AppState } from "../reducers";
 import actions from "../actions";
+import { canGiveAnswer, playerIsRoundCzar } from "../selectors";
 
 const mapStateToProps = (state: AppState) => ({
-  game: state.game,
   player: state.player,
-  round: state.round,
+  playerIsRoundCzar: playerIsRoundCzar(state),
+  canGiveAnswer: canGiveAnswer(state),
 });
 
 const mapDispatchToProps = (dispatch: Dispatch<AnyAction>) =>
@@ -23,17 +24,18 @@ class PlayerCards extends React.Component<
   {}
 > {
   handleAnswerCardClicked = (card: ICard) => {
-    if (!this.props.game || !this.props.player || !this.props.round || this.props.round.czar === this.props.player.id) {
-      return;
+    if (this.props.canGiveAnswer) {
+      this.props.giveAnswer({ player: this.props.player?.id as string, card: card as IAnswerCard });
     }
-    this.props.giveAnswer({ player: this.props.player.id, card: card as IAnswerCard });
   };
 
   render = () => {
     return this.props.player ? (
       <CardStack
         cards={this.props.player.activeCards}
-        cardsClickable={this.props.round?.czar !== this.props.player.id}
+        cardsHidden={this.props.playerIsRoundCzar}
+        condensed={this.props.playerIsRoundCzar}
+        cardsClickable={!this.props.playerIsRoundCzar}
         onCardClick={this.handleAnswerCardClicked}
       />
     ) : (
