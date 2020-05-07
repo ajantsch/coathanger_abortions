@@ -4,58 +4,58 @@ import styled, { AnyStyledComponent } from "styled-components";
 
 import { colors } from "../Theme";
 
-interface IEnterGameFormProps {
-  onFormSubmit: (name: string) => void;
+interface IJoinGameFormProps {
+  onFormSubmit: (gameId: string) => void;
 }
 
-interface IEnterState {
-  name: string;
+interface IJoinGameFormState {
+  gameId: string;
 }
 
-const DEFAULT_STATE: IEnterState = {
-  name: "",
+const DEFAULT_STATE: IJoinGameFormState = {
+  gameId: "",
 };
 
-class EnterGameForm extends React.PureComponent<IEnterGameFormProps, IEnterState> {
-  constructor(props: IEnterGameFormProps) {
+class JoinGameForm extends React.PureComponent<IJoinGameFormProps, IJoinGameFormState> {
+  constructor(props: IJoinGameFormProps) {
     super(props);
     this.state = DEFAULT_STATE;
   }
 
-  handleNameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  handleGamecodeChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     event.preventDefault();
-    this.setState({ name: event.target.value });
+    this.setState({ gameId: event.target.value });
   };
 
   handleFormSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
-    this.props.onFormSubmit(this.state.name);
+    this.props.onFormSubmit(this.state.gameId);
   };
 
   render = () => {
     return (
-      <EnterGameFormRoot onSubmit={this.handleFormSubmit}>
+      <JoinGameFormRoot onSubmit={this.handleFormSubmit}>
         <NameTextField
           type="text"
-          id="name"
-          label="Your Name"
+          id="gamecode"
+          label="Game Code"
+          placeholder="e.g. r8bl2"
           variant="outlined"
-          value={this.state.name}
-          onChange={this.handleNameChange}
+          value={this.state.gameId}
+          onChange={this.handleGamecodeChange}
           fullWidth
           required
           autoFocus
-          autoComplete="name"
         ></NameTextField>
-        <EnterGameButton type="submit" variant="contained" color="primary" disabled={!this.state.name.length}>
-          Enter game
+        <EnterGameButton type="submit" variant="contained" color="primary" disabled={this.state.gameId.length < 6}>
+          Join game
         </EnterGameButton>
-      </EnterGameFormRoot>
+      </JoinGameFormRoot>
     );
   };
 }
 
-const EnterGameFormRoot: AnyStyledComponent = styled.form`
+const JoinGameFormRoot: AnyStyledComponent = styled.form`
   margin: 0 2rem;
   text-align: center;
 `;
@@ -72,8 +72,8 @@ const EnterGameButton: AnyStyledComponent = styled(Button)`
     width: 100%;
     font-size: 1.2rem;
     font-weight: 700;
-    margin: 1rem 0 0 0;
     padding: 0.7rem 1rem;
+    margin: 1rem 0 0 0;
 
     &:disabled {
       opacity: 0.7;
@@ -84,4 +84,4 @@ const EnterGameButton: AnyStyledComponent = styled(Button)`
   }
 `;
 
-export default EnterGameForm;
+export default JoinGameForm;

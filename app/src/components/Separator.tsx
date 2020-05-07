@@ -6,12 +6,13 @@ import { colors } from "../Theme";
 
 interface ISeperatorProps {
   text?: string;
+  className?: string;
 }
 
 class Separator extends React.PureComponent<ISeperatorProps, {}> {
   render = () => {
     return (
-      <SeparatorRoot>
+      <SeparatorRoot className={this.props.className}>
         <SeparatorLine />
         {this.props.text && <SeparatorText variant="overline">{this.props.text}</SeparatorText>}
         <SeparatorLine />

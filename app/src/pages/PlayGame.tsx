@@ -110,7 +110,7 @@ class PlayGame extends React.Component<PlayGameProps, IPlayGameState> {
               alt="Coathanger Abortions"
             />
             <ToolbarTypography variant="body1">
-              Game ID: <span className="bold">{this.props.game?.id}</span>
+              Game Code: <span className="bold">{this.props.game?.id}</span>
             </ToolbarTypography>
           </Toolbar>
         </GameAppBar>

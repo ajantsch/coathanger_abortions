@@ -42,11 +42,18 @@ const PageGrid: AnyStyledComponent = styled(Grid)`
 
 const LeftGrid: AnyStyledComponent = styled(Grid)`
   background-color: ${colors.dark};
-  background-image: url(${CoathangerLight});
-  background-position: bottom 32px right 32px;
-  background-repeat: no-repeat;
-  background-size: 50% auto;
   color: ${colors.light};
+
+  @media (min-height: 650px) {
+    background-image: url(${CoathangerLight});
+    background-position: bottom 32px right 32px;
+    background-repeat: no-repeat;
+    background-size: 35% auto;
+  }
+
+  @media (min-width: 600px) {
+    background-size: 50% auto;
+  }
 `;
 
 const RightGrid: AnyStyledComponent = styled(Grid)`

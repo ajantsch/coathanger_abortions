@@ -14,22 +14,26 @@ class CreateGameForm extends React.PureComponent<ICreateGameFormProps> {
 
   render = () => {
     return (
-      <form onSubmit={this.handleFormSubmit}>
-        <StartGameButton type="submit" variant="contained" color="primary">
+      <CreateGameFormRoot onSubmit={this.handleFormSubmit}>
+        <CreateGameButton type="submit" variant="contained" color="primary">
           Start a game
-        </StartGameButton>
-      </form>
+        </CreateGameButton>
+      </CreateGameFormRoot>
     );
   };
 }
 
-const StartGameButton: AnyStyledComponent = styled(Button)`
+const CreateGameFormRoot: AnyStyledComponent = styled.form`
+  margin: 0 2rem;
+  text-align: center;
+`;
+
+const CreateGameButton: AnyStyledComponent = styled(Button)`
   && {
-    display: block;
     font-size: 1.2rem;
     font-weight: 700;
-    margin: 2rem auto;
-    padding: 1rem 3rem;
+    padding: 1rem;
+    width: 100%;
 
     @media (min-width: 960px) {
       font-size: 1.6rem;
