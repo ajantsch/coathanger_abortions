@@ -2,8 +2,8 @@ import crypto from "crypto";
 
 import { ICard } from "../../models";
 
-import questionCards from "../../data/questions.txt";
-import answerCards from "../../data/answers.txt";
+import questionCards from "../../data/questions.md";
+import answerCards from "../../data/answers.md";
 
 const QUESTION_CARDS: ICard[] = [];
 const ANSWER_CARDS: ICard[] = [];
