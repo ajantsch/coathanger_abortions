@@ -7,7 +7,6 @@ import { IRound, IRemotePlayer, IGivenAnswer } from "../interfaces";
 const { SOCKET_URL } = process.env;
 
 const connectToGame = (gameId: string, playerId: string): Promise<SocketIOClient.Socket> => {
-  console.warn(gameId, playerId);
   return new Promise(resolve => {
     const gameSocket: SocketIOClient.Socket = io.connect(`${SOCKET_URL}`, {
       query: { gameId, playerId },
@@ -16,17 +15,17 @@ const connectToGame = (gameId: string, playerId: string): Promise<SocketIOClient
       gameSocket.emit("player_connected", `${playerId} now has a socket connection to game ${gameId}`);
 
       gameSocket.on("player_joined", (player: IRemotePlayer) => {
-        console.warn("Player joined:", player);
+        console.info("Player joined:", player);
         store.dispatch(actions.remotePlayerJoined(player));
       });
 
       gameSocket.on("player_set_active", (player: IRemotePlayer) => {
-        console.warn("Player set active:", player);
+        console.info("Player set active:", player);
         store.dispatch(actions.remotePlayerActive(player));
       });
 
       gameSocket.on("player_set_inactive", (player: IRemotePlayer) => {
-        console.warn("Player set inactive:", player);
+        console.info("Player set inactive:", player);
         store.dispatch(actions.remotePlayerInactive(player));
       });
 
@@ -36,27 +35,27 @@ const connectToGame = (gameId: string, playerId: string): Promise<SocketIOClient
       });
 
       gameSocket.on("new_round_started", (round: IRound) => {
-        console.warn("New round started:", round);
+        console.info("New round started:", round);
         actions.roundReceived(round)(store.dispatch, store.getState, undefined);
       });
 
       gameSocket.on("question_card_revealed", () => {
-        console.warn("Question card revealed.");
+        console.info("Question card revealed.");
         store.dispatch(actions.questionRevealed());
       });
 
       gameSocket.on("answer_card_given", (answer: IGivenAnswer) => {
-        console.warn("Answer card given:", answer);
+        console.info("Answer card given:", answer);
         store.dispatch(actions.answerReceived(answer));
       });
 
       gameSocket.on("answers_revealed", (round: IRound) => {
-        console.warn("Answers revealed:", round);
+        console.info("Answers revealed:", round);
         store.dispatch(actions.answersRevealed(round));
       });
 
       gameSocket.on("round_winner_set", (winner: IGivenAnswer) => {
-        console.warn("Winner of the round:", winner);
+        console.info("Winner of the round:", winner);
         actions.winnerReceived(winner)(store.dispatch, store.getState, undefined);
         actions.assignWinningCard(winner)(store.dispatch, store.getState, undefined);
       });

@@ -46,7 +46,6 @@ class BottomNav extends React.PureComponent<BottomNavProps, IBottomNavState> {
 
   showShareMenu = () => {
     if (navigator.share) {
-      console.warn(window.location.host);
       // open os-native share menu
       navigator.share({
         title: "You are invited!",
