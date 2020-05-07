@@ -5,7 +5,7 @@ import thunk from "redux-thunk";
 
 import rootReducer from "./reducers";
 
-const reduxMiddleware = [reduxLogger, thunk];
+const reduxMiddleware = [thunk, reduxLogger];
 const store = createStore(rootReducer, composeWithDevTools(applyMiddleware(...reduxMiddleware)));
 
 export default store;
