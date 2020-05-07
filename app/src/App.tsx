@@ -19,8 +19,13 @@ import PlayGame from "./pages/PlayGame";
 const reduxMiddleware = [thunk, createLogger()];
 const store = createStore(
   rootReducer,
-  load({ namespace: "coathanger_abortions" }),
-  composeWithDevTools(applyMiddleware(...reduxMiddleware, save({ namespace: "coathanger_abortions" }))),
+  load({ states: ["game", "player", "round"], namespace: "coathanger_abortions", disableWarnings: true }),
+  composeWithDevTools(
+    applyMiddleware(
+      ...reduxMiddleware,
+      save({ states: ["game", "player", "round"], namespace: "coathanger_abortions" }),
+    ),
+  ),
 );
 
 class App extends React.Component {
