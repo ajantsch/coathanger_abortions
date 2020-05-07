@@ -1493,7 +1493,7 @@ The bomb strapped to my chest.
 The bombing of Nagasaki.
 The bond between a woman and her horse.
 The boners of the elderly.
-The boy who sucks the farts our of my sweatpants.
+The boy who sucks the farts out of my sweatpants.
 The careless cunt who left a water ring on my credenza.
 The clitoris.
 The clown that followed me home from the grocery store.

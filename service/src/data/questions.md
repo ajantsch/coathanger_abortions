@@ -243,7 +243,7 @@ Some men aren’t looking for anything logical, like money. They can’t be boug
 Son, take it from someone who’s been around the block a few times. Nothin’ puts her in the mood like ______.
 Summer lovin’, had me a blast. ______, happened so fast.
 Sure, sex is great, but have you tried ______?
-Sweetheart, you and your sister escel in different ways. She's got her violin, and you've got ______.
+Sweetheart, you and your sister excel in different ways. She's got her violin, and you've got ______.
 TRIGGER WARNING: ______.
 TSA guidelines now prohibit ______ on airplanes.
 Tampax: Don’t let your period ruin ______.
@@ -274,7 +274,7 @@ This is the way the world ends This is the way the world ends Not with a bang bu
 This is your captain speaking. Fasten your seatbelts and prepare for ______.
 This is your captain speaking. Fasten your seatbelts and prepare for ______.
 This month's Cosmo: "Spice up your sex life by bringing ______ into the bedroom."
-This season at Steppenwolf, Samuel Beckett's classic existential play: Waitng for ______.
+This season at Steppenwolf, Samuel Beckett's classic existential play: Waiting for ______.
 Times have changed, girlfriend. If you want to meet people in New York, you got to be down for ______.
 To become a true Yanomami warrior, you must prove that you can withstand ______ without crying out.
 To prepare for his upcoming role, Daniel Day-Lewis immersed himself in the world of ______.
