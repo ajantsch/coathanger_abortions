@@ -4,7 +4,7 @@ import GameApi from "../services/api";
 import { IBaseAction } from "./index";
 import { AppState } from "../reducers";
 import { IPlayer, IGivenAnswer, IAnswerCard, IQuestionCard, ICardCombo } from "../interfaces";
-import { connectSocket } from "./socket";
+import { connectSocket, SocketActionTypes } from "./socket";
 
 export enum PlayerActionTypes {
   VOID = "VOID",
@@ -77,7 +77,7 @@ export function getPlayer(gameId: string): ThunkAction<Promise<IBaseAction>, App
       const player = await GameApi.getGamePlayer(gameId, playerId);
 
       const socket = getState().socket;
-      if (!socket) {
+      if (!socket.connected) {
         dispatch(connectSocket(gameId, player.id));
       }
 
@@ -101,7 +101,7 @@ export function joinGame(
       localStorage.setItem(`cha_${gameId as string}_playerId`, player.id);
 
       const socket = getState().socket;
-      if (!socket) {
+      if (!socket.connected) {
         dispatch(connectSocket(gameId, player.id));
       }
 
