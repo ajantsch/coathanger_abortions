@@ -4,7 +4,7 @@ import GameApi from "../services/api";
 import { IBaseAction } from "./index";
 import { AppState } from "../reducers";
 import { IPlayer, IGivenAnswer, IAnswerCard, IQuestionCard, ICardCombo } from "../interfaces";
-import { connectSocket, SocketActionTypes } from "./socket";
+import { connectSocket } from "./socket";
 
 export enum PlayerActionTypes {
   VOID = "VOID",
