@@ -5,6 +5,8 @@ import { shuffle } from "../utils";
 
 export default function(state: IRound | null = null, action: RoundAction) {
   switch (action.type) {
+    case RoundActionTypes.RESET_ROUND:
+      return null;
     case RoundActionTypes.START_ROUND:
       return action.payload;
     case RoundActionTypes.GET_CURRENT_ROUND:

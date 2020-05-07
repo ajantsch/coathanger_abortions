@@ -14,13 +14,24 @@ const mapStateToProps = (state: AppState) => ({
 });
 
 const mapDispatchToProps = (dispatch: Dispatch<AnyAction>) =>
-  bindActionCreators({ getGame: actions.getGame, joinGame: actions.joinGame, getPlayer: actions.getPlayer }, dispatch);
+  bindActionCreators(
+    {
+      getGame: actions.getGame,
+      joinGame: actions.joinGame,
+      getPlayer: actions.getPlayer,
+      resetGame: actions.resetGame,
+      resetPlayer: actions.resetPlayer,
+    },
+    dispatch,
+  );
 
 class EnterGame extends React.Component<
   ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps> & RouteComponentProps<{ game_id: string }>
 > {
   handleEnterGame = async (name: string) => {
-    this.props.joinGame(name);
+    if (this.props.game) {
+      this.props.joinGame(this.props.game.id, name);
+    }
   };
 
   componentDidUpdate = () => {
@@ -28,14 +39,21 @@ class EnterGame extends React.Component<
       return this.props.history.push("/");
     }
     if (this.props.game && this.props.player) {
-      return this.props.history.push(`/${this.props.game.id}`);
-    } else {
-      this.props.getPlayer();
+      return this.props.history.push(`/${this.props.match.params.game_id}`);
     }
   };
 
   componentDidMount = () => {
-    this.props.getGame(this.props.match.params.game_id);
+    if (this.props.game && this.props.game.id !== this.props.match.params.game_id) {
+      this.props.resetGame();
+    } else {
+      if (!this.props.game) {
+        this.props.getGame(this.props.match.params.game_id);
+      }
+      if (!this.props.player) {
+        this.props.getPlayer(this.props.match.params.game_id);
+      }
+    }
   };
 
   render = () => {
@@ -43,4 +61,4 @@ class EnterGame extends React.Component<
   };
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(withRouter(EnterGame));
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(EnterGame));

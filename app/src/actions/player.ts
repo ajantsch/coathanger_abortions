@@ -8,6 +8,7 @@ import { IPlayer, IGivenAnswer, IAnswerCard, IQuestionCard, ICardCombo } from ".
 
 export enum PlayerActionTypes {
   VOID = "VOID",
+  RESET_PLAYER = "RESET_PLAYER",
   GET_PLAYER = "GET_PLAYER",
   JOIN_GAME = "JOIN_GAME",
   GIVE_ANSER = "GIVE_ANSWER",
@@ -17,6 +18,10 @@ export enum PlayerActionTypes {
 
 export interface IVoidPlayerAction extends IBaseAction {
   type: PlayerActionTypes.VOID;
+}
+
+export interface IResetPlayerAction extends IBaseAction {
+  type: PlayerActionTypes.RESET_PLAYER;
 }
 
 export interface IEnterGameAction extends IBaseAction {
@@ -46,25 +51,29 @@ export interface IReceiveWonQuestion extends IBaseAction {
 
 export type PlayerAction =
   | IVoidPlayerAction
+  | IResetPlayerAction
   | IEnterGameAction
   | IGetPlayerAction
   | IGiveAnswerAction
   | IReceiveWonQuestion
   | IDrawAnswerAction;
 
-export function getPlayer(): ThunkAction<Promise<IBaseAction>, AppState, undefined, IEnterGameAction> {
-  return async (dispatch: ThunkDispatch<AppState, undefined, IBaseAction>, getState) => {
-    const gameId = getState().game?.id;
-    if (!gameId) {
-      return dispatch({ type: PlayerActionTypes.VOID });
-    }
+export function resetPlayer(): ThunkAction<IResetPlayerAction, AppState, undefined, IResetPlayerAction> {
+  return (dispatch: ThunkDispatch<AppState, undefined, IResetPlayerAction>) => {
+    return dispatch({
+      type: PlayerActionTypes.RESET_PLAYER,
+    });
+  };
+}
 
-    const playerId = localStorage.getItem(`cha_${gameId}_playerId`);
-    if (!playerId) {
-      return dispatch({ type: PlayerActionTypes.VOID });
-    }
-
+export function getPlayer(gameId: string): ThunkAction<Promise<IBaseAction>, AppState, undefined, IEnterGameAction> {
+  return async (dispatch: ThunkDispatch<AppState, undefined, IBaseAction>) => {
     try {
+      const playerId = localStorage.getItem(`cha_${gameId}_playerId`);
+      if (!playerId) {
+        return dispatch(resetPlayer());
+      }
+
       const player = await GameApi.getGamePlayer(gameId, playerId);
       await GameSocket.connectToGame(gameId, player.id);
 
@@ -73,29 +82,27 @@ export function getPlayer(): ThunkAction<Promise<IBaseAction>, AppState, undefin
         payload: player,
       });
     } catch (e) {
-      return dispatch({ type: PlayerActionTypes.VOID });
+      return dispatch(resetPlayer());
     }
   };
 }
 
-export function joinGame(playerName: string): ThunkAction<Promise<IBaseAction>, AppState, undefined, IEnterGameAction> {
-  return async (dispatch: ThunkDispatch<AppState, undefined, IBaseAction>, getState) => {
-    const gameId = getState().game?.id;
-    if (!gameId) {
-      return dispatch({ type: PlayerActionTypes.VOID });
-    }
-
+export function joinGame(
+  gameId: string,
+  playerName: string,
+): ThunkAction<Promise<IBaseAction>, AppState, undefined, IEnterGameAction> {
+  return async (dispatch: ThunkDispatch<AppState, undefined, IBaseAction>) => {
     try {
       const player = await GameApi.addGamePlayer(gameId, playerName);
       localStorage.setItem(`cha_${gameId as string}_playerId`, player.id);
-      await GameSocket.connectToGame(gameId as string, player.id);
+      await GameSocket.connectToGame(gameId, player.id);
 
       return dispatch({
         type: PlayerActionTypes.JOIN_GAME,
         payload: player,
       });
     } catch (e) {
-      return dispatch({ type: PlayerActionTypes.VOID });
+      return dispatch(resetPlayer());
     }
   };
 }
@@ -111,7 +118,7 @@ export function giveAnswer(
 
     const playerId = getState().player?.id;
     if (!playerId) {
-      return dispatch({ type: PlayerActionTypes.VOID });
+      return dispatch(resetPlayer());
     }
 
     try {
@@ -135,7 +142,7 @@ export function drawAnswer(): ThunkAction<Promise<IBaseAction>, AppState, undefi
 
     const playerId = getState().player?.id;
     if (!playerId) {
-      return dispatch({ type: PlayerActionTypes.VOID });
+      return dispatch(resetPlayer());
     }
 
     try {
@@ -153,8 +160,8 @@ export function drawAnswer(): ThunkAction<Promise<IBaseAction>, AppState, undefi
 export function receiveWonQuestion(
   question: IQuestionCard,
   answer: IAnswerCard,
-): ThunkAction<IBaseAction, AppState, undefined, IReceiveWonQuestion> {
-  return (dispatch: ThunkDispatch<AppState, undefined, IBaseAction>) => {
+): ThunkAction<IReceiveWonQuestion, AppState, undefined, IReceiveWonQuestion> {
+  return (dispatch: ThunkDispatch<AppState, undefined, IReceiveWonQuestion>) => {
     return dispatch({
       type: PlayerActionTypes.RECEIVE_WON_QUESTION,
       payload: { question, answer },

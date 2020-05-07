@@ -70,6 +70,12 @@ export type GameAction =
   | IRemotePlayerRemovedAction
   | IAssignWinningCard;
 
+export function resetGame(): IResetGameAction {
+  return {
+    type: GameActionTypes.RESET_GAME,
+  };
+}
+
 export function startGame(): ThunkAction<Promise<IBaseAction>, AppState, undefined, IStartGameAction> {
   return async (dispatch: ThunkDispatch<AppState, undefined, IBaseAction>) => {
     const game = await GameApi.createGame();

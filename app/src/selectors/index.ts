@@ -27,7 +27,7 @@ export const getActivePlayers = createSelector([getPlayers], players => {
 export const allAnswersAreIn = createSelector(
   [getActivePlayers, getRoundCzar, getRoundAnswers],
   (players, czar, roundAnswers) => {
-    if (!players || !czar || !roundAnswers) {
+    if (!players || !czar || !roundAnswers || !roundAnswers.length) {
       return false;
     }
     return players.filter(player => player.id !== czar).length <= roundAnswers.length;

@@ -4,6 +4,7 @@ import { RoundActionTypes } from "./round";
 import { NotificationActionTypes } from "./notification";
 
 import {
+  resetGame,
   getGame,
   startGame,
   remotePlayerJoined,
@@ -13,9 +14,10 @@ import {
   assignWinningCard,
 } from "./game";
 
-import { getPlayer, joinGame, giveAnswer } from "./player";
+import { resetPlayer, getPlayer, joinGame, giveAnswer } from "./player";
 
 import {
+  resetRound,
   startNewRound,
   getCurrentRound,
   roundReceived,
@@ -38,10 +40,13 @@ export interface IBaseAction {
 }
 
 export default {
+  resetGame,
   getGame,
   startGame,
+  resetPlayer,
   getPlayer,
   joinGame,
+  resetRound,
   startNewRound,
   getCurrentRound,
   roundReceived,

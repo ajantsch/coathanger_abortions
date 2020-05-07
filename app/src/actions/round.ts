@@ -9,6 +9,7 @@ import { receiveWonQuestion, drawAnswer } from "./player";
 
 export enum RoundActionTypes {
   VOID = "VOID",
+  RESET_ROUND = "RESET_ROUND",
   START_ROUND = "START_ROUND",
   GET_CURRENT_ROUND = "GET_CURRENT_ROUND",
   RECEIVE_ROUND = "RECEIVE_ROUND",
@@ -24,6 +25,10 @@ export enum RoundActionTypes {
 
 export interface IVoidRoundAction extends IBaseAction {
   type: RoundActionTypes.VOID;
+}
+
+export interface IResetRoundAction extends IBaseAction {
+  type: RoundActionTypes.RESET_ROUND;
 }
 
 export interface IStartRoundAction extends IBaseAction {
@@ -79,6 +84,7 @@ export interface IReceiveWinnerAction extends IBaseAction {
 
 export type RoundAction =
   | IVoidRoundAction
+  | IResetRoundAction
   | IStartRoundAction
   | IGetCurrentRoundAction
   | IReceiveRoundAction
@@ -90,6 +96,12 @@ export type RoundAction =
   | IReceiveAnswersRevealedAction
   | ISetWinnerAction
   | IReceiveWinnerAction;
+
+export function resetRound(): IResetRoundAction {
+  return {
+    type: RoundActionTypes.RESET_ROUND,
+  };
+}
 
 export function roundReceived(
   round: IRound,
@@ -129,7 +141,7 @@ export function answersRevealed(answer: IRound): IReceiveAnswersRevealedAction {
 export function winnerReceived(
   winner: IGivenAnswer,
 ): ThunkAction<IReceiveWinnerAction, AppState, undefined, IReceiveWinnerAction> {
-  return (dispatch: ThunkDispatch<AppState, undefined, IReceiveWinnerAction>, getState) => {
+  return (dispatch: ThunkDispatch<AppState, undefined, IBaseAction>, getState) => {
     const round = getState().round;
     const player = getState().player;
     if (round) {
@@ -156,20 +168,22 @@ export function startNewRound(): ThunkAction<Promise<IStartRoundAction>, AppStat
   };
 }
 
-export function getCurrentRound(): ThunkAction<
-  Promise<IGetCurrentRoundAction>,
-  AppState,
-  undefined,
-  IGetCurrentRoundAction
-> {
-  return async (dispatch: ThunkDispatch<AppState, undefined, IGetCurrentRoundAction>, getState) => {
-    const gameId = getState().game?.id;
-    const round = await GameApi.getRound(gameId as string);
+export function getCurrentRound(
+  gameId: string,
+): ThunkAction<Promise<IBaseAction>, AppState, undefined, IGetCurrentRoundAction> {
+  return async (dispatch: ThunkDispatch<AppState, undefined, IBaseAction>) => {
+    try {
+      const round = await GameApi.getRound(gameId);
 
-    return dispatch({
-      type: RoundActionTypes.GET_CURRENT_ROUND,
-      payload: round,
-    });
+      return dispatch({
+        type: RoundActionTypes.GET_CURRENT_ROUND,
+        payload: round,
+      });
+    } catch (e) {
+      return dispatch({
+        type: RoundActionTypes.RESET_ROUND,
+      });
+    }
   };
 }
 

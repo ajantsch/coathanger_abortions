@@ -36,8 +36,11 @@ const mapStateToProps = (state: AppState) => ({
 const mapDispatchToProps = (dispatch: Dispatch<AnyAction>) =>
   bindActionCreators(
     {
+      resetGame: actions.resetGame,
       getGame: actions.getGame,
+      resetPlayer: actions.resetPlayer,
       getPlayer: actions.getPlayer,
+      resetRound: actions.resetRound,
       getCurrentRound: actions.getCurrentRound,
       startRound: actions.startNewRound,
       revealAnswers: actions.revealAnswers,
@@ -64,19 +67,17 @@ class PlayGame extends React.Component<PlayGameProps, {}> {
       return this.props.history.push("/");
     }
     if (this.props.game && !this.props.player) {
-      return this.props.history.push(`/${this.props.game.id}/join`);
+      return this.props.history.push(`/${this.props.match.params.game_id}/join`);
     }
   };
 
   componentDidMount = async () => {
-    this.props.getGame(this.props.match.params.game_id);
-    if (this.props.game) {
-      if (!this.props.player) {
-        this.props.getPlayer();
-      }
-      if (!this.props.round) {
-        this.props.getCurrentRound();
-      }
+    if (this.props.game && this.props.game.id !== this.props.match.params.game_id) {
+      this.props.resetGame();
+    } else {
+      this.props.getGame(this.props.match.params.game_id);
+      this.props.getPlayer(this.props.match.params.game_id);
+      this.props.getCurrentRound(this.props.match.params.game_id);
     }
   };
 
@@ -144,4 +145,4 @@ const ToolbarTypography: AnyStyledComponent = styled(Typography)`
   }
 `;
 
-export default connect(mapStateToProps, mapDispatchToProps)(withRouter(PlayGame));
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(PlayGame));

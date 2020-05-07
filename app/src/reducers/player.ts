@@ -5,6 +5,8 @@ export default function(state: IPlayer | null = null, action: PlayerAction) {
   switch (action.type) {
     case PlayerActionTypes.VOID:
       return state;
+    case PlayerActionTypes.RESET_PLAYER:
+      return null;
     case PlayerActionTypes.GET_PLAYER:
       return action.payload;
     case PlayerActionTypes.JOIN_GAME:

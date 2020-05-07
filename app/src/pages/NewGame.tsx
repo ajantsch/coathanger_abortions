@@ -37,6 +37,7 @@ class NewGame extends React.Component<
       }
       return this.props.history.push(`/${this.props.game.id}`);
     }
+    return this.props.history.push(`/`);
   };
 
   render = () => {
