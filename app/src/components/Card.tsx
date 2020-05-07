@@ -16,10 +16,29 @@ interface ICardProps {
   isWinningCard?: boolean;
 }
 
-class Card extends React.PureComponent<ICardProps, {}> {
+interface ICardState {
+  clickDisabled: boolean;
+}
+
+const DEFAULT_STATE: ICardState = {
+  clickDisabled: false,
+};
+
+class Card extends React.PureComponent<ICardProps, ICardState> {
+  constructor(props: ICardProps) {
+    super(props);
+    this.state = DEFAULT_STATE;
+  }
+
   handleCardClicked = () => {
-    if (this.props.onCardClick) {
-      this.props.onCardClick(this.props.card);
+    if (this.props.onCardClick && !this.state.clickDisabled) {
+      if (!this.state.clickDisabled) {
+        this.props.onCardClick(this.props.card);
+      }
+      this.setState({ clickDisabled: true });
+      window.setTimeout(() => {
+        this.setState({ clickDisabled: false });
+      }, 1000);
     }
   };
 
