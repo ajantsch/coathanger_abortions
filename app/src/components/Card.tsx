@@ -67,6 +67,7 @@ const SharedCardStyles = css`
   backface-visibility: hidden;
   white-space: normal;
   text-align: left;
+  user-select: none;
 
   &.question {
     background-color: ${colors.dark};
