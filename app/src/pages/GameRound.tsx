@@ -7,22 +7,22 @@ import styled, { AnyStyledComponent } from "styled-components";
 import { ICard } from "../interfaces";
 import { AppState } from "../reducers";
 import actions from "../actions";
+import { playerIsRoundCzar, canSelectWinner } from "../selectors";
 
 import Card from "../components/Card";
 import CardStack from "../components/CardStack";
 import StartGame from "../components/StartGame";
 
 const mapStateToProps = (state: AppState) => ({
-  game: state.game,
-  player: state.player,
   round: state.round,
+  playerIsRoundCzar: playerIsRoundCzar(state),
+  canSelectWinner: canSelectWinner(state),
 });
 
 const mapDispatchToProps = (dispatch: Dispatch<AnyAction>) =>
   bindActionCreators(
     {
       revealQuestion: actions.revealQuestion,
-      giveAnswer: actions.giveAnswer,
       revealAnswers: actions.revealAnswers,
       setWinner: actions.setWinner,
       startRound: actions.startNewRound,
@@ -35,17 +35,13 @@ class GameRound extends React.Component<
   {}
 > {
   handleRevealQuestion = async () => {
-    if (this.props.round?.czar === this.props.player?.id && !this.props.round?.questionRevealed) {
+    if (this.props.playerIsRoundCzar && !this.props.round?.questionRevealed) {
       this.props.revealQuestion();
     }
   };
 
   handleCardClicked = (card: ICard) => {
-    if (
-      this.props.round?.answersRevealed &&
-      !this.props.round?.winner &&
-      this.props.round?.czar === this.props.player?.id
-    ) {
+    if (this.props.canSelectWinner) {
       const winner = this.props.round?.answers.find(answer => answer.card.id === card.id);
       if (winner) {
         this.props.setWinner(winner);
@@ -54,19 +50,13 @@ class GameRound extends React.Component<
   };
 
   handleRevealAnswers = () => {
-    if (this.props.round?.czar === this.props.player?.id) {
+    if (this.props.playerIsRoundCzar) {
       this.props.revealAnswers();
     }
   };
 
   handleStartPlaying = () => {
     this.props.startRound();
-  };
-
-  handleStartRound = () => {
-    if (this.props.round?.winner?.player === this.props.player?.id) {
-      this.props.startRound();
-    }
   };
 
   render = () => {
@@ -85,11 +75,7 @@ class GameRound extends React.Component<
           <CardStack
             cards={this.props.round?.answers.map(answer => answer.card) || []}
             cardsHidden={!this.props.round?.answersRevealed}
-            cardsClickable={
-              !this.props.round?.winner &&
-              !!this.props.round?.answersRevealed &&
-              this.props.round?.czar === this.props.player?.id
-            }
+            cardsClickable={this.props.canSelectWinner}
             onCardClick={this.handleCardClicked}
             winningCard={this.props.round?.winner?.card.id}
           />
