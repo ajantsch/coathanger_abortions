@@ -51,3 +51,7 @@ export interface IGameNotification {
   text: string;
   visible: boolean;
 }
+
+export interface ISocketStatus {
+  connected: boolean;
+}

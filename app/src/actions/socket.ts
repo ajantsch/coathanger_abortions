@@ -31,7 +31,8 @@ export function connectSocket(
   };
 }
 
-export function disconnectSocket(): IDisconnectSocketAction {
+export function disconnectSocket(socket: SocketIOClient.Socket): IDisconnectSocketAction {
+  GameSocket.disconnectFromGame(socket);
   return {
     type: SocketActionTypes.DISCONNECT_SOCKET,
   };
