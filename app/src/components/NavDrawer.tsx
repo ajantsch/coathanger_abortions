@@ -14,7 +14,13 @@ class NavDrawer extends React.PureComponent<INavDrawerProps, {}> {
 
   render = () => {
     return (
-      <Drawer anchor="bottom" variant="temporary" open={this.props.open} onClick={this.hideDrawer}>
+      <Drawer
+        anchor="bottom"
+        variant="temporary"
+        ModalProps={{ hideBackdrop: true }}
+        open={this.props.open}
+        onClick={this.hideDrawer}
+      >
         <DrawerContent>{this.props.children}</DrawerContent>
       </Drawer>
     );
