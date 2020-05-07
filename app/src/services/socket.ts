@@ -17,6 +17,7 @@ const connectToGame = (gameId: string, playerId: string): Promise<SocketIOClient
       gameSocket.on("player_joined", (player: IRemotePlayer) => {
         console.info("Player joined:", player);
         store.dispatch(actions.remotePlayerJoined(player));
+        store.dispatch(actions.showNotification(`Player joined: ${player.name}`));
       });
 
       gameSocket.on("player_set_active", (player: IRemotePlayer) => {

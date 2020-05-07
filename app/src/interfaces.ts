@@ -46,3 +46,8 @@ export interface IGivenAnswer {
   player: string;
   card: IAnswerCard;
 }
+
+export interface IGameNotification {
+  text: string;
+  visible: boolean;
+}

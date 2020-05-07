@@ -1,6 +1,7 @@
 import { GameActionTypes } from "./game";
 import { PlayerActionTypes } from "./player";
 import { RoundActionTypes } from "./round";
+import { NotificationActionTypes } from "./notification";
 
 import {
   getGame,
@@ -27,7 +28,9 @@ import {
   winnerReceived,
 } from "./round";
 
-export type ActionTypes = GameActionTypes | PlayerActionTypes | RoundActionTypes;
+import { showNotification, hideNotification } from "./notification";
+
+export type ActionTypes = GameActionTypes | PlayerActionTypes | RoundActionTypes | NotificationActionTypes;
 
 export interface IBaseAction {
   type: ActionTypes;
@@ -55,4 +58,6 @@ export default {
   answersRevealed,
   winnerReceived,
   assignWinningCard,
+  showNotification,
+  hideNotification,
 };

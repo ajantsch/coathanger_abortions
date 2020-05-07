@@ -10,7 +10,6 @@ import { AppState } from "../reducers";
 import actions from "../actions";
 import { playerIsRoundCzar, playerIsRoundWinner, allAnswersAreIn } from "../selectors";
 
-import Notification from "../components/Notification";
 import Konfetti from "../components/Konfetti";
 import Separator from "../components/Separator";
 
@@ -18,6 +17,7 @@ import GameRound from "./GameRound";
 import PlayerCards from "./PlayerCards";
 import BottomNav from "./BottomNav";
 import ActionDrawer from "./ActionDrawer";
+import GameNotifications from "./GameNotifications";
 
 import LetteringLight from "../images/lettering_light.svg";
 import LetteringDark from "../images/lettering_dark.svg";
@@ -27,6 +27,7 @@ const mapStateToProps = (state: AppState) => ({
   game: state.game,
   round: state.round,
   player: state.player,
+  notification: state.notification,
   playerIsRoundCzar: playerIsRoundCzar(state),
   playerIsRoundWinner: playerIsRoundWinner(state),
   allAnswersAreIn: allAnswersAreIn(state),
@@ -40,63 +41,42 @@ const mapDispatchToProps = (dispatch: Dispatch<AnyAction>) =>
       getCurrentRound: actions.getCurrentRound,
       startRound: actions.startNewRound,
       revealAnswers: actions.revealAnswers,
+      hideNotification: actions.hideNotification,
     },
     dispatch,
   );
-
-interface IPlayGameState {
-  playerJoined: string | undefined;
-}
-
-const DEFAULT_STATE: IPlayGameState = {
-  playerJoined: undefined,
-};
 
 type PlayGameProps = ReturnType<typeof mapStateToProps> &
   ReturnType<typeof mapDispatchToProps> &
   RouteComponentProps<{ game_id: string }>;
 
-class PlayGame extends React.Component<PlayGameProps, IPlayGameState> {
-  constructor(props: PlayGameProps) {
-    super(props);
-    this.state = DEFAULT_STATE;
-  }
-
+class PlayGame extends React.Component<PlayGameProps, {}> {
   handleSnackbarClose = () => {
-    this.setState({ playerJoined: undefined });
+    this.props.hideNotification();
   };
 
   handleRevealAnswers = () => {
     this.props.revealAnswers();
   };
 
-  componentDidUpdate = (prevProps: PlayGameProps) => {
+  componentDidUpdate = () => {
     if (!this.props.game) {
       return this.props.history.push("/");
     }
     if (this.props.game && !this.props.player) {
       return this.props.history.push(`/${this.props.game.id}/join`);
     }
-
-    // check if new player joined the game
-    const joinedPlayer = this.props.game.players.filter(
-      player => (prevProps.game?.players || []).map(prevPlayer => prevPlayer.id).indexOf(player.id) < 0,
-    );
-    if (joinedPlayer.length && joinedPlayer[0].id !== this.props.player?.id) {
-      this.setState({ playerJoined: joinedPlayer[0].name });
-    }
   };
 
   componentDidMount = async () => {
     this.props.getGame(this.props.match.params.game_id);
-    if (!this.props.game) {
-      return this.props.history.push("/");
-    }
-    if (this.props.game && !this.props.player) {
-      this.props.getPlayer();
-    }
-    if (this.props.game && !this.props.round) {
-      this.props.getCurrentRound();
+    if (this.props.game) {
+      if (!this.props.player) {
+        this.props.getPlayer();
+      }
+      if (!this.props.round) {
+        this.props.getCurrentRound();
+      }
     }
   };
 
@@ -120,11 +100,7 @@ class PlayGame extends React.Component<PlayGameProps, IPlayGameState> {
           <PlayerCards />
         </GameContainer>
         <Konfetti run={this.props.playerIsRoundWinner} />
-        <Notification
-          open={!!this.state.playerJoined}
-          message={`Player joined: ${this.state.playerJoined ? this.state.playerJoined : ""}`}
-          onClose={this.handleSnackbarClose}
-        />
+        <GameNotifications />
         <BottomNav />
         <ActionDrawer />
       </GameRoot>
