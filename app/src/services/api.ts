@@ -22,6 +22,10 @@ const getGamePlayer = async (gameId: string, playerId: string) => {
   return axios.get<IPlayer>(`${API_BASE_URL}/games/${gameId}/player/${playerId}`).then(res => res.data);
 };
 
+const removeGamePlayer = async (gameId: string, playerId: string) => {
+  return axios.delete<IPlayer>(`${API_BASE_URL}/games/${gameId}/player/${playerId}`).then(res => res.data);
+};
+
 const selectRoundWinner = async (gameId: string, playerId: string, answer: IGivenAnswer) => {
   return axios
     .post(`${API_BASE_URL}/games/${gameId}/round/winner`, { player: playerId, card: answer.card })
@@ -63,6 +67,7 @@ export default {
   getRound,
   addGamePlayer,
   getGamePlayer,
+  removeGamePlayer,
   revealQuestion,
   selectAnswer,
   drawAnswer,

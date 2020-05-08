@@ -34,11 +34,13 @@ const insertGamePlayer = async (gameId: string, player: IPlayer): Promise<IPlaye
 
   game.players.push(player);
   ACTIVE_GAMES.set(game.id, game);
-  logger.info(`New player added to game ${game.id}: ${player.name}`);
+
+  logger.info(`New player added to game ${game.id}: ${player.id}`);
+
   return player;
 };
 
-const findGamePlayer = async (gameId: string, playerId: string) => {
+const findGamePlayer = async (gameId: string, playerId: string): Promise<IPlayer> => {
   const game = ACTIVE_GAMES.get(gameId);
   if (!game) {
     throw new Error(`Could not find game with id ${gameId}`);
@@ -53,19 +55,27 @@ const findGamePlayer = async (gameId: string, playerId: string) => {
   return player;
 };
 
-const removeGamePlayer = async (gameId: string, playerId: string): Promise<void> => {
+const removeGamePlayer = async (gameId: string, playerId: string): Promise<IPlayer> => {
   const game = ACTIVE_GAMES.get(gameId);
   if (!game) {
     throw new Error(`Could not find game with id ${gameId}`);
   }
 
-  const playerIndex = game.players.map(player => player.id).indexOf(playerId);
-  if (playerIndex < 0) {
-    throw new Error(`Could not find player with id ${playerId} in game ${gameId}`);
+  const player = game.players.find(player => player.id === playerId);
+
+  if (!player) {
+    throw new Error(`Could not find player ${playerId} in game ${gameId}`);
   }
 
   game.players = game.players.filter(player => player.id !== playerId);
+  if (game.currentRound) {
+    game.currentRound.answers = game.currentRound.answers.filter(answer => answer.player !== playerId);
+  }
   ACTIVE_GAMES.set(gameId, game);
+
+  logger.info(`Player removed from game ${game.id}: ${player.id}`);
+
+  return player;
 };
 
 const findCurrentRound = async (gameId: string): Promise<IRound> => {
@@ -135,9 +145,11 @@ const selectAnswer = async (gameId: string, playerId: string, card: ICard): Prom
   }
 
   game.players[playerIndex].activeCards.splice(selectedCardIndex, 1);
-  logger.info(`player answer received from ${playerId}`);
   game.currentRound.answers.push({ player: playerId, card });
   ACTIVE_GAMES.set(gameId, game);
+
+  logger.info(`player answer received from ${playerId}`);
+
   return card;
 };
 

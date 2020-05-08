@@ -4,6 +4,8 @@ import { AppState } from "../reducers";
 import { IBaseAction } from "./index";
 import GameSocket from "../services/socket";
 
+let SOCKET: SocketIOClient.Socket | undefined = undefined;
+
 export enum SocketActionTypes {
   CONNECT_SOCKET = "CONNECT_SOCKET",
   DISCONNECT_SOCKET = "DISCONNECT_SOCKET",
@@ -24,15 +26,15 @@ export function connectSocket(
   playerId: string,
 ): ThunkAction<Promise<IConnectSocketAction>, AppState, undefined, IConnectSocketAction> {
   return async (dispatch: ThunkDispatch<AppState, undefined, IConnectSocketAction>) => {
-    await GameSocket.connectToGame(gameId, playerId, dispatch);
+    SOCKET = await GameSocket.connectToGame(gameId, playerId, dispatch);
     return dispatch({
       type: SocketActionTypes.CONNECT_SOCKET,
     });
   };
 }
 
-export function disconnectSocket(socket: SocketIOClient.Socket): IDisconnectSocketAction {
-  GameSocket.disconnectFromGame(socket);
+export function disconnectSocket(): IDisconnectSocketAction {
+  GameSocket.disconnectFromGame(SOCKET);
   return {
     type: SocketActionTypes.DISCONNECT_SOCKET,
   };

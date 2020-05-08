@@ -32,12 +32,8 @@ class NewGame extends React.Component<
 
   componentDidUpdate = () => {
     if (this.props.game) {
-      if (!this.props.player) {
-        return this.props.history.push(`/${this.props.game.id}/join`);
-      }
       return this.props.history.push(`/${this.props.game.id}`);
     }
-    return this.props.history.push(`/`);
   };
 
   render = () => {

@@ -6,8 +6,9 @@ import { AppBar, Box, Container, Toolbar, Typography } from "@material-ui/core";
 import styled, { AnyStyledComponent } from "styled-components";
 
 import { colors } from "../Theme";
-import { AppState } from "../reducers";
+
 import actions from "../actions";
+import { AppState } from "../reducers";
 import { playerIsRoundCzar, playerIsRoundWinner, allAnswersAreIn } from "../selectors";
 
 import Konfetti from "../components/Konfetti";

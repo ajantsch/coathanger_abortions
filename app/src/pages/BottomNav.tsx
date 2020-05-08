@@ -1,26 +1,32 @@
 import React from "react";
 import { connect } from "react-redux";
+import { AnyAction, bindActionCreators, Dispatch } from "redux";
 import { AppBar, BottomNavigation, BottomNavigationAction, Badge } from "@material-ui/core";
 import PersonAddIcon from "@material-ui/icons/PersonAdd";
 import EmojiEventsIcon from "@material-ui/icons/EmojiEvents";
 import PeopleIcon from "@material-ui/icons/People";
+import ExitIcon from "@material-ui/icons/DirectionsRun";
 import styled, { AnyStyledComponent } from "styled-components";
 
+import actions from "../actions";
 import { AppState } from "../reducers";
 import { getActivePlayers } from "../selectors";
 
 import NavDrawer from "../components/NavDrawer";
+import ConfirmationDialog from "../components/ConfirmationDialog";
 import PlayerTrophies from "./PlayerTrophies";
 import Players from "./Players";
 
 interface IBottomNavState {
   navDrawerOpen: boolean;
   navDrawerContent: string | undefined;
+  dialogOpen: boolean;
 }
 
 const DEFAULT_STATE: IBottomNavState = {
   navDrawerOpen: false,
   navDrawerContent: undefined,
+  dialogOpen: false,
 };
 
 const mapStateToProps = (state: AppState) => ({
@@ -28,7 +34,15 @@ const mapStateToProps = (state: AppState) => ({
   activePlayers: getActivePlayers(state),
 });
 
-type BottomNavProps = ReturnType<typeof mapStateToProps>;
+const mapDispatchToProps = (dispatch: Dispatch<AnyAction>) =>
+  bindActionCreators(
+    {
+      leaveGame: actions.leaveGame,
+    },
+    dispatch,
+  );
+
+type BottomNavProps = ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps>;
 
 class BottomNav extends React.PureComponent<BottomNavProps, IBottomNavState> {
   constructor(props: BottomNavProps) {
@@ -55,6 +69,17 @@ class BottomNav extends React.PureComponent<BottomNavProps, IBottomNavState> {
     }
   };
 
+  showExitGameDialog = () => {
+    this.setState({ dialogOpen: true });
+  };
+
+  handleDialogClose = (confirmed: boolean) => {
+    this.setState({ dialogOpen: false });
+    if (confirmed && this.props.gameId) {
+      this.props.leaveGame(this.props.gameId);
+    }
+  };
+
   handleNavItemClick = (_event: React.ChangeEvent<{}>, navItem: string) => {
     switch (navItem) {
       case "invite":
@@ -65,6 +90,9 @@ class BottomNav extends React.PureComponent<BottomNavProps, IBottomNavState> {
         break;
       case "trophies":
         this.toggleNavDrawer("trophies");
+        break;
+      case "exit":
+        this.showExitGameDialog();
     }
   };
 
@@ -84,6 +112,7 @@ class BottomNav extends React.PureComponent<BottomNavProps, IBottomNavState> {
             />
             <GameBottomNavigationAction label="Trophies" value="trophies" icon={<EmojiEventsIcon />} />
             <GameBottomNavigationAction label="Invite" value="invite" icon={<PersonAddIcon />} />
+            <GameBottomNavigationAction label="Exit" value="exit" icon={<ExitIcon />} />
           </GameBottomNavigation>
         </GameBottomAppBar>
 
@@ -99,6 +128,8 @@ class BottomNav extends React.PureComponent<BottomNavProps, IBottomNavState> {
             }
           })()}
         </NavDrawer>
+
+        <ConfirmationDialog open={this.state.dialogOpen} onClose={this.handleDialogClose} />
       </>
     );
   };
@@ -124,4 +155,4 @@ const GameBottomNavigationAction: AnyStyledComponent = styled(BottomNavigationAc
   }
 `;
 
-export default connect(mapStateToProps)(BottomNav);
+export default connect(mapStateToProps, mapDispatchToProps)(BottomNav);

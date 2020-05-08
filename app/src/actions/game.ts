@@ -4,6 +4,7 @@ import GameApi from "../services/api";
 import { IBaseAction } from "./index";
 import { AppState } from "../reducers";
 import { IGame, IRemotePlayer, IGivenAnswer, ICardCombo } from "../interfaces";
+import { getCurrentRound } from "./round";
 
 export enum GameActionTypes {
   VOID = "VOID",
@@ -136,10 +137,16 @@ export function remotePlayerActive(player: IRemotePlayer): IRemotePlayerActiveAc
   };
 }
 
-export function remotePlayerRemoved(playerId: string): IRemotePlayerRemovedAction {
-  return {
-    type: GameActionTypes.REMOTE_PLAYER_REMOVED,
-    payload: playerId,
+export function remotePlayerRemoved(
+  gameId: string,
+  playerId: string,
+): ThunkAction<IBaseAction, AppState, undefined, IRemotePlayerRemovedAction> {
+  return (dispatch: ThunkDispatch<AppState, undefined, IBaseAction>) => {
+    dispatch(getCurrentRound(gameId));
+    return dispatch({
+      type: GameActionTypes.REMOTE_PLAYER_REMOVED,
+      payload: playerId,
+    });
   };
 }
 

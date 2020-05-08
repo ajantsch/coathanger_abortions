@@ -131,16 +131,17 @@ const getGamePlayer = async (req: Request, res: Response) => {
 
 const deleteGamePlayer = async (req: Request, res: Response) => {
   const gameId = req.params.game_id;
-  const { id } = req.body;
+  const playerId = req.params.player_id;
 
   res.type("json");
 
   try {
-    await removeGamePlayer(gameId, id);
+    const player = await removeGamePlayer(gameId, playerId);
 
-    socket.to(gameId).emit("player_removed", id);
+    socket.to(gameId).emit("player_removed", player);
 
-    res.sendStatus(200);
+    res.status(200);
+    res.send(player);
   } catch (err) {
     logger.error(err);
     res.status(404);

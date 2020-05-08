@@ -36,9 +36,10 @@ const connectToGame = (
         dispatch(actions.remotePlayerInactive(player));
       });
 
-      socket.on("player_removed", (playerId: string) => {
-        console.warn("Player removed:", playerId);
-        dispatch(actions.remotePlayerRemoved(playerId));
+      socket.on("player_removed", (player: IRemotePlayer) => {
+        console.warn("Player removed:", player.id);
+        dispatch(actions.remotePlayerRemoved(gameId, player.id));
+        dispatch(actions.showNotification(`Player left: ${player.name}`));
       });
 
       socket.on("new_round_started", (round: IRound) => {
@@ -72,8 +73,10 @@ const connectToGame = (
   });
 };
 
-const disconnectFromGame = (socket: SocketIOClient.Socket) => {
-  socket.disconnect();
+const disconnectFromGame = (socket?: SocketIOClient.Socket) => {
+  if (socket) {
+    socket.disconnect();
+  }
 };
 
 export default { connectToGame, disconnectFromGame };
