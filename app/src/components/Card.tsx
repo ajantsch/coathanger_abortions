@@ -30,16 +30,22 @@ class Card extends React.PureComponent<ICardProps, ICardState> {
     this.state = DEFAULT_STATE;
   }
 
+  debounceTimerId: undefined | number = undefined;
+
   handleCardClicked = () => {
     if (this.props.onCardClick && !this.state.clickDisabled) {
       if (!this.state.clickDisabled) {
         this.props.onCardClick(this.props.card);
       }
       this.setState({ clickDisabled: true });
-      window.setTimeout(() => {
+      this.debounceTimerId = window.setTimeout(() => {
         this.setState({ clickDisabled: false });
       }, 1000);
     }
+  };
+
+  componentWillUnmount = () => {
+    clearTimeout(this.debounceTimerId);
   };
 
   render = () => {
