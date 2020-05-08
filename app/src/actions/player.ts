@@ -8,6 +8,7 @@ import { connectSocket, disconnectSocket } from "./socket";
 import { remotePlayerJoined, resetGame } from "./game";
 import { resetRound } from "./round";
 import { playerLoaded, resetStatus } from "./status";
+import { resetNotification } from "./notification";
 
 export enum PlayerActionTypes {
   VOID = "VOID",
@@ -199,6 +200,7 @@ export function leaveGame(gameId: string): ThunkAction<Promise<IBaseAction>, App
       dispatch(disconnectSocket());
       dispatch(resetRound());
       dispatch(resetGame());
+      dispatch(resetNotification);
       dispatch(resetStatus());
       return dispatch({
         type: PlayerActionTypes.LEAVE_GAME,

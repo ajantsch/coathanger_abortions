@@ -23,7 +23,9 @@ const connectToGame = (
       socket.on("player_joined", (player: IRemotePlayer) => {
         console.info("Player joined:", player);
         dispatch(actions.remotePlayerJoined(player));
-        dispatch(actions.showNotification(`Player joined: ${player.name}`));
+        if (player.id !== playerId) {
+          dispatch(actions.showNotification(`Player joined: ${player.name}`));
+        }
       });
 
       socket.on("player_set_active", (player: IRemotePlayer) => {
@@ -39,7 +41,9 @@ const connectToGame = (
       socket.on("player_removed", (player: IRemotePlayer) => {
         console.warn("Player removed:", player.id);
         dispatch(actions.remotePlayerRemoved(gameId, player.id));
-        dispatch(actions.showNotification(`Player left: ${player.name}`));
+        if (player.id !== playerId) {
+          dispatch(actions.showNotification(`Player left: ${player.name}`));
+        }
       });
 
       socket.on("new_round_started", (round: IRound) => {

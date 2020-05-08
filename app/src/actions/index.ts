@@ -30,7 +30,7 @@ import {
   answersRevealed,
   winnerReceived,
 } from "./round";
-import { showNotification, hideNotification } from "./notification";
+import { showNotification, hideNotification, resetNotification } from "./notification";
 import { connectSocket, disconnectSocket } from "./socket";
 
 export type ActionTypes =
@@ -76,6 +76,7 @@ export default {
   assignWinningCard,
   showNotification,
   hideNotification,
+  resetNotification,
   connectSocket,
   disconnectSocket,
 };

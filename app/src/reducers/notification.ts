@@ -12,6 +12,8 @@ export default function(state: IGameNotification = initialState, action: Notific
       return { ...state, text: action.payload, visible: true };
     case NotificationActionTypes.HIDE_NOTIFICATION:
       return { ...state, visible: false };
+    case NotificationActionTypes.RESET_NOTIFICATION:
+      return initialState;
     default:
       return state;
   }
