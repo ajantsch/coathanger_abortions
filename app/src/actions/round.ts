@@ -5,7 +5,7 @@ import { IBaseAction } from "./index";
 import { AppState } from "../reducers";
 import { IGivenAnswer, IRound } from "../interfaces";
 
-import { receiveWonQuestion, drawAnswer } from "./player";
+import { receiveTrophy, drawAnswer } from "./player";
 
 export enum RoundActionTypes {
   VOID = "VOID",
@@ -146,10 +146,8 @@ export function winnerReceived(
   return (dispatch: ThunkDispatch<AppState, undefined, IBaseAction>, getState) => {
     const round = getState().round;
     const player = getState().player;
-    if (round) {
-      if (player?.id === winner.player) {
-        dispatch(receiveWonQuestion(round.question, winner.card));
-      }
+    if (round && player && player.id === winner.player) {
+      dispatch(receiveTrophy(round.question, winner.card));
     }
     return dispatch({
       type: RoundActionTypes.RECEIVE_WINNER,
@@ -158,10 +156,11 @@ export function winnerReceived(
   };
 }
 
-export function startNewRound(): ThunkAction<Promise<IStartRoundAction>, AppState, undefined, IStartRoundAction> {
-  return async (dispatch: ThunkDispatch<AppState, undefined, IStartRoundAction>, getState) => {
-    const gameId = getState().game?.id;
-    const round = await GameApi.startNewRound(gameId as string);
+export function startNewRound(
+  gameId: string,
+): ThunkAction<Promise<IStartRoundAction>, AppState, undefined, IStartRoundAction> {
+  return async (dispatch: ThunkDispatch<AppState, undefined, IStartRoundAction>) => {
+    const round = await GameApi.startNewRound(gameId);
 
     return dispatch({
       type: RoundActionTypes.START_ROUND,
@@ -176,27 +175,20 @@ export function getCurrentRound(
   return async (dispatch: ThunkDispatch<AppState, undefined, IBaseAction>) => {
     try {
       const round = await GameApi.getRound(gameId);
-
       return dispatch({
         type: RoundActionTypes.GET_CURRENT_ROUND,
         payload: round,
       });
     } catch (e) {
-      return dispatch({
-        type: RoundActionTypes.RESET_ROUND,
-      });
+      return dispatch(resetRound());
     }
   };
 }
 
-export function revealQuestion(): ThunkAction<
-  Promise<IRevealQuestionAction>,
-  AppState,
-  undefined,
-  IRevealQuestionAction
-> {
-  return async (dispatch: ThunkDispatch<AppState, undefined, IRevealQuestionAction>, getState) => {
-    const gameId = getState().game?.id;
+export function revealQuestion(
+  gameId: string,
+): ThunkAction<Promise<IRevealQuestionAction>, AppState, undefined, IRevealQuestionAction> {
+  return async (dispatch: ThunkDispatch<AppState, undefined, IRevealQuestionAction>) => {
     await GameApi.revealQuestion(gameId as string);
 
     return dispatch({
@@ -205,9 +197,10 @@ export function revealQuestion(): ThunkAction<
   };
 }
 
-export function revealAnswers(): ThunkAction<Promise<IRevealAnswersAction>, AppState, undefined, IRevealAnswersAction> {
-  return async (dispatch: ThunkDispatch<AppState, undefined, IRevealAnswersAction>, getState) => {
-    const gameId = getState().game?.id;
+export function revealAnswers(
+  gameId: string,
+): ThunkAction<Promise<IRevealAnswersAction>, AppState, undefined, IRevealAnswersAction> {
+  return async (dispatch: ThunkDispatch<AppState, undefined, IRevealAnswersAction>) => {
     const round = await GameApi.revealAnswers(gameId as string);
 
     return dispatch({

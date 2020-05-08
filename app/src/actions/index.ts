@@ -1,8 +1,11 @@
+import { StatusActionTypes } from "./status";
 import { GameActionTypes } from "./game";
 import { PlayerActionTypes } from "./player";
 import { RoundActionTypes } from "./round";
 import { NotificationActionTypes } from "./notification";
 import { SocketActionTypes } from "./socket";
+
+import { gameLoaded, playerLoaded, resetStatus } from "./status";
 import {
   resetGame,
   getGame,
@@ -31,6 +34,7 @@ import { showNotification, hideNotification } from "./notification";
 import { connectSocket, disconnectSocket } from "./socket";
 
 export type ActionTypes =
+  | StatusActionTypes
   | GameActionTypes
   | PlayerActionTypes
   | RoundActionTypes
@@ -43,6 +47,9 @@ export interface IBaseAction {
 }
 
 export default {
+  gameLoaded,
+  playerLoaded,
+  resetStatus,
   resetGame,
   getGame,
   startGame,

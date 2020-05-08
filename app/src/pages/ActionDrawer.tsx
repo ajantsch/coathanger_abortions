@@ -12,6 +12,7 @@ import RevealAnswers from "../components/RevealAnswers";
 import StartNewRound from "../components/StartNewRound";
 
 const mapStateToProps = (state: AppState) => ({
+  game: state.game,
   playerIsRoundWinner: playerIsRoundWinner(state),
   shouldShowRevealAnswerAction: shouldShowRevealAnswerAction(state),
 });
@@ -30,11 +31,15 @@ class ActionDrawer extends React.PureComponent<
   {}
 > {
   handleRevealAnswers = () => {
-    this.props.revealAnswers();
+    if (this.props.game) {
+      this.props.revealAnswers(this.props.game.id);
+    }
   };
 
   handleStartRound = () => {
-    this.props.startRound();
+    if (this.props.game) {
+      this.props.startRound(this.props.game.id);
+    }
   };
 
   render = () => {

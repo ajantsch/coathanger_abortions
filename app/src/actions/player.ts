@@ -5,8 +5,9 @@ import { IBaseAction } from "./index";
 import { AppState } from "../reducers";
 import { IPlayer, IGivenAnswer, IAnswerCard, IQuestionCard, ICardCombo } from "../interfaces";
 import { connectSocket, disconnectSocket } from "./socket";
-import { resetGame } from "./game";
+import { remotePlayerJoined, resetGame } from "./game";
 import { resetRound } from "./round";
+import { playerLoaded, resetStatus } from "./status";
 
 export enum PlayerActionTypes {
   VOID = "VOID",
@@ -77,18 +78,16 @@ export function resetPlayer(): ThunkAction<IResetPlayerAction, AppState, undefin
 export function getPlayer(gameId: string): ThunkAction<Promise<IBaseAction>, AppState, undefined, IJoinGameAction> {
   return async (dispatch: ThunkDispatch<AppState, undefined, IBaseAction>, getState) => {
     try {
+      dispatch(playerLoaded());
       const playerId = localStorage.getItem(`cha_${gameId}_playerId`);
       if (!playerId) {
         return dispatch(resetPlayer());
       }
-
       const player = await GameApi.getGamePlayer(gameId, playerId);
-
       const socket = getState().socket;
       if (!socket.connected) {
         dispatch(connectSocket(gameId, player.id));
       }
-
       return dispatch({
         type: PlayerActionTypes.GET_PLAYER,
         payload: player,
@@ -105,6 +104,7 @@ export function joinGame(
 ): ThunkAction<Promise<IBaseAction>, AppState, undefined, IJoinGameAction> {
   return async (dispatch: ThunkDispatch<AppState, undefined, IBaseAction>, getState) => {
     try {
+      dispatch(playerLoaded());
       const player = await GameApi.addGamePlayer(gameId, playerName);
       localStorage.setItem(`cha_${gameId as string}_playerId`, player.id);
 
@@ -112,7 +112,8 @@ export function joinGame(
       if (!socket.connected) {
         dispatch(connectSocket(gameId, player.id));
       }
-
+      const { activeCards, ...remotePlayer } = player;
+      dispatch(remotePlayerJoined(remotePlayer));
       return dispatch({
         type: PlayerActionTypes.JOIN_GAME,
         payload: player,
@@ -173,7 +174,7 @@ export function drawAnswer(): ThunkAction<Promise<IBaseAction>, AppState, undefi
   };
 }
 
-export function receiveWonQuestion(
+export function receiveTrophy(
   question: IQuestionCard,
   answer: IAnswerCard,
 ): ThunkAction<IReceiveWonQuestionAction, AppState, undefined, IReceiveWonQuestionAction> {
@@ -198,6 +199,7 @@ export function leaveGame(gameId: string): ThunkAction<Promise<IBaseAction>, App
       dispatch(disconnectSocket());
       dispatch(resetRound());
       dispatch(resetGame());
+      dispatch(resetStatus());
       return dispatch({
         type: PlayerActionTypes.LEAVE_GAME,
       });

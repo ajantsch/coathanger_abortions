@@ -14,6 +14,7 @@ import CardStack from "../components/CardStack";
 import StartGame from "../components/StartGame";
 
 const mapStateToProps = (state: AppState) => ({
+  game: state.game,
   round: state.round,
   playerIsRoundCzar: playerIsRoundCzar(state),
   canSelectWinner: canSelectWinner(state),
@@ -35,8 +36,8 @@ class GameRound extends React.Component<
   {}
 > {
   handleRevealQuestion = async () => {
-    if (this.props.playerIsRoundCzar && !this.props.round?.questionRevealed) {
-      this.props.revealQuestion();
+    if (this.props.game && this.props.playerIsRoundCzar && !this.props.round?.questionRevealed) {
+      this.props.revealQuestion(this.props.game.id);
     }
   };
 
@@ -50,13 +51,15 @@ class GameRound extends React.Component<
   };
 
   handleRevealAnswers = () => {
-    if (this.props.playerIsRoundCzar) {
-      this.props.revealAnswers();
+    if (this.props.game && this.props.playerIsRoundCzar) {
+      this.props.revealAnswers(this.props.game.id);
     }
   };
 
   handleStartPlaying = () => {
-    this.props.startRound();
+    if (this.props.game) {
+      this.props.startRound(this.props.game.id);
+    }
   };
 
   render = () => {

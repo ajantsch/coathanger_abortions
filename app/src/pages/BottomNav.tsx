@@ -64,7 +64,7 @@ class BottomNav extends React.PureComponent<BottomNavProps, IBottomNavState> {
       navigator.share({
         title: "You are invited!",
         text: "Join our game and proof what a terrible person you are.",
-        url: `https://&${window.location.host}/${this.props.gameId}/join`,
+        url: `https://&${window.location.host}/${this.props.gameId}`,
       });
     }
   };

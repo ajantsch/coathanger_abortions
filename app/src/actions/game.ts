@@ -5,6 +5,7 @@ import { IBaseAction } from "./index";
 import { AppState } from "../reducers";
 import { IGame, IRemotePlayer, IGivenAnswer, ICardCombo } from "../interfaces";
 import { getCurrentRound } from "./round";
+import { gameLoaded } from "./status";
 
 export enum GameActionTypes {
   VOID = "VOID",
@@ -80,13 +81,12 @@ export function resetGame(): IResetGameAction {
 export function startGame(): ThunkAction<Promise<IBaseAction>, AppState, undefined, IStartGameAction> {
   return async (dispatch: ThunkDispatch<AppState, undefined, IBaseAction>) => {
     const game = await GameApi.createGame();
-
     if (!game) {
       return dispatch({
         type: GameActionTypes.RESET_GAME,
       });
     }
-
+    dispatch(gameLoaded());
     return dispatch({
       type: GameActionTypes.START_GAME,
       payload: game,
@@ -98,12 +98,7 @@ export function getGame(gameId: string): ThunkAction<Promise<IBaseAction>, AppSt
   return async (dispatch: ThunkDispatch<AppState, undefined, IBaseAction>) => {
     try {
       const game = await GameApi.getGame(gameId);
-      if (!game) {
-        return dispatch({
-          type: GameActionTypes.RESET_GAME,
-        });
-      }
-
+      dispatch(gameLoaded());
       return dispatch({
         type: GameActionTypes.GET_GAME,
         payload: game,
@@ -140,9 +135,9 @@ export function remotePlayerActive(player: IRemotePlayer): IRemotePlayerActiveAc
 export function remotePlayerRemoved(
   gameId: string,
   playerId: string,
-): ThunkAction<IBaseAction, AppState, undefined, IRemotePlayerRemovedAction> {
-  return (dispatch: ThunkDispatch<AppState, undefined, IBaseAction>) => {
-    dispatch(getCurrentRound(gameId));
+): ThunkAction<Promise<IBaseAction>, AppState, undefined, IRemotePlayerRemovedAction> {
+  return async (dispatch: ThunkDispatch<AppState, undefined, IBaseAction>) => {
+    await dispatch(getCurrentRound(gameId));
     return dispatch({
       type: GameActionTypes.REMOTE_PLAYER_REMOVED,
       payload: playerId,
@@ -154,13 +149,6 @@ export function assignWinningCard(
   winner: IGivenAnswer,
 ): ThunkAction<Promise<IBaseAction>, AppState, undefined, IAssignWinningCard> {
   return async (dispatch: ThunkDispatch<AppState, undefined, IBaseAction>, getState) => {
-    const gameId = getState().game?.id;
-    if (!gameId) {
-      return dispatch({
-        type: GameActionTypes.VOID,
-      });
-    }
-
     const round = getState().round;
     if (!round) {
       return dispatch({

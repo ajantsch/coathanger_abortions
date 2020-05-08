@@ -11,10 +11,8 @@ import { ThemeProvider } from "@material-ui/styles";
 import rootReducer from "./reducers";
 import theme from "./Theme";
 
-import JoinLayout from "./components/JoinLayout";
 import NewGame from "./pages/NewGame";
-import EnterGame from "./pages/EnterGame";
-import PlayGame from "./pages/PlayGame";
+import GameManager from "./pages/GameManager";
 
 const reduxMiddleware = [thunk, createLogger()];
 const store = createStore(
@@ -35,13 +33,8 @@ class App extends React.Component {
         <ThemeProvider theme={theme}>
           <Router>
             <Switch>
-              <Route path={["/", "/:game_id/join"]} exact default>
-                <JoinLayout>
-                  <Route path="/" exact component={NewGame} />
-                  <Route path="/:game_id/join" exact component={EnterGame} />
-                </JoinLayout>
-              </Route>
-              <Route path="/:game_id/" exact component={PlayGame} />
+              <Route path="/" exact component={NewGame} />
+              <Route path="/:game_id/" component={GameManager} />
               <Redirect to="/" />
             </Switch>
           </Router>

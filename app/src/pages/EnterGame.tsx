@@ -6,9 +6,11 @@ import { withRouter, RouteComponentProps } from "react-router";
 import { AppState } from "../reducers";
 import actions from "../actions";
 
+import JoinLayout from "../components/JoinLayout";
 import EnterGameForm from "../components/EnterGameForm";
 
 const mapStateToProps = (state: AppState) => ({
+  status: state.status,
   game: state.game,
   player: state.player,
 });
@@ -16,11 +18,7 @@ const mapStateToProps = (state: AppState) => ({
 const mapDispatchToProps = (dispatch: Dispatch<AnyAction>) =>
   bindActionCreators(
     {
-      getGame: actions.getGame,
       joinGame: actions.joinGame,
-      getPlayer: actions.getPlayer,
-      resetGame: actions.resetGame,
-      resetPlayer: actions.resetPlayer,
     },
     dispatch,
   );
@@ -34,30 +32,12 @@ class EnterGame extends React.Component<
     }
   };
 
-  componentDidUpdate = () => {
-    if (!this.props.game) {
-      return this.props.history.push("/");
-    }
-    if (this.props.game && this.props.player) {
-      return this.props.history.push(`/${this.props.match.params.game_id}`);
-    }
-  };
-
-  componentDidMount = () => {
-    if (this.props.game && this.props.game.id !== this.props.match.params.game_id) {
-      this.props.resetGame();
-    } else {
-      if (!this.props.game) {
-        this.props.getGame(this.props.match.params.game_id);
-      }
-      if (!this.props.player) {
-        this.props.getPlayer(this.props.match.params.game_id);
-      }
-    }
-  };
-
   render = () => {
-    return <EnterGameForm onFormSubmit={this.handleEnterGame} />;
+    return (
+      <JoinLayout>
+        <EnterGameForm onFormSubmit={this.handleEnterGame} />
+      </JoinLayout>
+    );
   };
 }
 

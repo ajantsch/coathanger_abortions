@@ -55,3 +55,8 @@ export interface IGameNotification {
 export interface ISocketStatus {
   connected: boolean;
 }
+
+export interface IGameStatus {
+  gameLoaded: boolean;
+  playerLoaded: boolean;
+}

@@ -45,9 +45,12 @@ export const allAnswersAreIn = createSelector(
   },
 );
 
-export const canSelectWinner = createSelector([allAnswersAreIn, getRoundWinner], (allAnswersIn, winner) => {
-  return allAnswersIn && !winner;
-});
+export const canSelectWinner = createSelector(
+  [playerIsRoundCzar, allAnswersAreIn, getRoundWinner],
+  (isCzar, allAnswersIn, winner) => {
+    return isCzar && allAnswersIn && !winner;
+  },
+);
 
 export const shouldShowRevealAnswerAction = createSelector(
   [playerIsRoundCzar, allAnswersAreIn, getRoundAnswersRevealed],

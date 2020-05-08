@@ -9,7 +9,7 @@ import { colors } from "../Theme";
 
 import actions from "../actions";
 import { AppState } from "../reducers";
-import { playerIsRoundCzar, playerIsRoundWinner, allAnswersAreIn } from "../selectors";
+import { playerIsRoundCzar, playerIsRoundWinner } from "../selectors";
 
 import Konfetti from "../components/Konfetti";
 import Separator from "../components/Separator";
@@ -25,27 +25,14 @@ import LetteringDark from "../images/lettering_dark.svg";
 import YSoSerious from "../images/y-so-serious-white.png";
 
 const mapStateToProps = (state: AppState) => ({
-  game: state.game,
-  round: state.round,
-  player: state.player,
-  notification: state.notification,
   playerIsRoundCzar: playerIsRoundCzar(state),
   playerIsRoundWinner: playerIsRoundWinner(state),
-  allAnswersAreIn: allAnswersAreIn(state),
 });
 
 const mapDispatchToProps = (dispatch: Dispatch<AnyAction>) =>
   bindActionCreators(
     {
-      resetGame: actions.resetGame,
-      getGame: actions.getGame,
-      resetPlayer: actions.resetPlayer,
-      getPlayer: actions.getPlayer,
-      resetRound: actions.resetRound,
       getCurrentRound: actions.getCurrentRound,
-      startRound: actions.startNewRound,
-      revealAnswers: actions.revealAnswers,
-      hideNotification: actions.hideNotification,
     },
     dispatch,
   );
@@ -55,31 +42,8 @@ type PlayGameProps = ReturnType<typeof mapStateToProps> &
   RouteComponentProps<{ game_id: string }>;
 
 class PlayGame extends React.Component<PlayGameProps, {}> {
-  handleSnackbarClose = () => {
-    this.props.hideNotification();
-  };
-
-  handleRevealAnswers = () => {
-    this.props.revealAnswers();
-  };
-
-  componentDidUpdate = () => {
-    if (!this.props.game) {
-      return this.props.history.push("/");
-    }
-    if (this.props.game && !this.props.player) {
-      return this.props.history.push(`/${this.props.match.params.game_id}/join`);
-    }
-  };
-
   componentDidMount = async () => {
-    if (this.props.game && this.props.game.id !== this.props.match.params.game_id) {
-      this.props.resetGame();
-    } else {
-      this.props.getGame(this.props.match.params.game_id);
-      this.props.getPlayer(this.props.match.params.game_id);
-      this.props.getCurrentRound(this.props.match.params.game_id);
-    }
+    this.props.getCurrentRound(this.props.match.params.game_id);
   };
 
   render = () => {
@@ -92,7 +56,7 @@ class PlayGame extends React.Component<PlayGameProps, {}> {
               alt="Coathanger Abortions"
             />
             <ToolbarTypography variant="body1">
-              Game Code: <span className="bold">{this.props.game?.id}</span>
+              Game Code: <span className="bold">{this.props.match.params.game_id}</span>
             </ToolbarTypography>
           </Toolbar>
         </GameAppBar>
