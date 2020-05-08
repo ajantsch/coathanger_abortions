@@ -69,7 +69,8 @@ export type PlayerAction =
   | IDrawAnswerAction;
 
 export function resetPlayer(): ThunkAction<IResetPlayerAction, AppState, undefined, IResetPlayerAction> {
-  return (dispatch: ThunkDispatch<AppState, undefined, IResetPlayerAction>) => {
+  return (dispatch: ThunkDispatch<AppState, undefined, IBaseAction>) => {
+    dispatch(disconnectSocket());
     return dispatch({
       type: PlayerActionTypes.RESET_PLAYER,
     });
@@ -179,7 +180,7 @@ export function receiveTrophy(
   question: IQuestionCard,
   answer: IAnswerCard,
 ): ThunkAction<IReceiveWonQuestionAction, AppState, undefined, IReceiveWonQuestionAction> {
-  return (dispatch: ThunkDispatch<AppState, undefined, IReceiveWonQuestionAction>) => {
+  return (dispatch: ThunkDispatch<AppState, undefined, IBaseAction>) => {
     return dispatch({
       type: PlayerActionTypes.RECEIVE_WON_QUESTION,
       payload: { question, answer },
