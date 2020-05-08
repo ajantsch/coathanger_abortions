@@ -30,11 +30,11 @@ class PlayerTrophies extends React.Component<ReturnType<typeof mapStateToProps>,
 const NoTrophiesContainer: AnyStyledComponent = styled(Container)`
   && {
     padding-top: 20px;
-    padding-bottom: 20px;
+    padding-bottom: 25px;
 
     @media (min-width: 600px) {
       padding-top: 25px;
-      padding-bottom: 25px;
+      padding-bottom: 30px;
     }
   }
 `;

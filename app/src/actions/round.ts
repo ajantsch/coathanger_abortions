@@ -108,7 +108,7 @@ export function resetRound(): IResetRoundAction {
 export function roundReceived(
   round: IRound,
 ): ThunkAction<IReceiveRoundAction, AppState, undefined, IReceiveRoundAction> {
-  return (dispatch: ThunkDispatch<AppState, undefined, IReceiveRoundAction>, getState) => {
+  return (dispatch: ThunkDispatch<AppState, undefined, IBaseAction>, getState) => {
     const player = getState().player;
     if (player && player.activeCards.length < 10) {
       dispatch(drawAnswer());
@@ -159,7 +159,7 @@ export function winnerReceived(
 export function startNewRound(
   gameId: string,
 ): ThunkAction<Promise<IStartRoundAction>, AppState, undefined, IStartRoundAction> {
-  return async (dispatch: ThunkDispatch<AppState, undefined, IStartRoundAction>) => {
+  return async (dispatch: ThunkDispatch<AppState, undefined, IBaseAction>) => {
     const round = await GameApi.startNewRound(gameId);
 
     return dispatch({
@@ -188,7 +188,7 @@ export function getCurrentRound(
 export function revealQuestion(
   gameId: string,
 ): ThunkAction<Promise<IRevealQuestionAction>, AppState, undefined, IRevealQuestionAction> {
-  return async (dispatch: ThunkDispatch<AppState, undefined, IRevealQuestionAction>) => {
+  return async (dispatch: ThunkDispatch<AppState, undefined, IBaseAction>) => {
     await GameApi.revealQuestion(gameId as string);
 
     return dispatch({
@@ -200,7 +200,7 @@ export function revealQuestion(
 export function revealAnswers(
   gameId: string,
 ): ThunkAction<Promise<IRevealAnswersAction>, AppState, undefined, IRevealAnswersAction> {
-  return async (dispatch: ThunkDispatch<AppState, undefined, IRevealAnswersAction>) => {
+  return async (dispatch: ThunkDispatch<AppState, undefined, IBaseAction>) => {
     const round = await GameApi.revealAnswers(gameId as string);
 
     return dispatch({
@@ -213,7 +213,7 @@ export function revealAnswers(
 export function setWinner(
   answer: IGivenAnswer,
 ): ThunkAction<Promise<ISetWinnerAction>, AppState, undefined, ISetWinnerAction> {
-  return async (dispatch: ThunkDispatch<AppState, undefined, ISetWinnerAction>, getState) => {
+  return async (dispatch: ThunkDispatch<AppState, undefined, IBaseAction>, getState) => {
     const gameId = getState().game?.id as string;
     const playerId = getState().player?.id as string;
     await GameApi.selectRoundWinner(gameId, playerId, answer);

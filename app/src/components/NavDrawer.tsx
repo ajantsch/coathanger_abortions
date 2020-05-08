@@ -1,6 +1,5 @@
 import React from "react";
 import { Drawer } from "@material-ui/core";
-import styled, { AnyStyledComponent } from "styled-components";
 
 interface INavDrawerProps {
   open: boolean;
@@ -21,16 +20,10 @@ class NavDrawer extends React.PureComponent<INavDrawerProps, {}> {
         open={this.props.open}
         onClick={this.hideDrawer}
       >
-        <DrawerContent>{this.props.children}</DrawerContent>
+        {this.props.children}
       </Drawer>
     );
   };
 }
-
-const DrawerContent: AnyStyledComponent = styled.div`
-  && {
-    padding-bottom: 20px;
-  }
-`;
 
 export default NavDrawer;
