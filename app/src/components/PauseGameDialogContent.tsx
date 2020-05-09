@@ -1,6 +1,6 @@
 import React from "react";
 import { Button, DialogActions, DialogContent, DialogContentText, DialogTitle } from "@material-ui/core";
-import { Hotel, HotTub, SmokingRooms } from "@material-ui/icons";
+import { Hotel, Bathtub, SmokingRooms } from "@material-ui/icons";
 import styled, { AnyStyledComponent } from "styled-components";
 
 interface IPauseGameDialogContentProps {
@@ -18,7 +18,7 @@ class PauseGameDialogContent extends React.PureComponent<IPauseGameDialogContent
               <SmokingRooms fontSize="large" titleAccess="Smoking" />
             </IconWrapper>
             <IconWrapper>
-              <HotTub fontSize="large" titleAccess="Hottub" />
+              <Bathtub fontSize="large" titleAccess="Bathtub" />
             </IconWrapper>
             <IconWrapper>
               <Hotel fontSize="large" titleAccess="Bed" />
