@@ -259,3 +259,5 @@ export function leaveGame(gameId: string): ThunkAction<Promise<IBaseAction>, App
     }
   };
 }
+
+export default { resetPlayer, getPlayer, joinGame, pausePlaying, resumePlaying, leaveGame, giveAnswer };

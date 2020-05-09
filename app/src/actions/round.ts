@@ -224,3 +224,17 @@ export function setWinner(
     });
   };
 }
+
+export default {
+  resetRound,
+  startNewRound,
+  getCurrentRound,
+  roundReceived,
+  revealQuestion,
+  revealAnswers,
+  setWinner,
+  questionRevealed,
+  answerReceived,
+  answersRevealed,
+  winnerReceived,
+};
