@@ -6,6 +6,7 @@ import PersonAddIcon from "@material-ui/icons/PersonAdd";
 import EmojiEventsIcon from "@material-ui/icons/EmojiEvents";
 import PeopleIcon from "@material-ui/icons/People";
 import ExitIcon from "@material-ui/icons/DirectionsRun";
+import EmojiFoodBeverageIcon from "@material-ui/icons/EmojiFoodBeverage";
 import styled, { AnyStyledComponent } from "styled-components";
 
 import actions from "../actions";
@@ -14,6 +15,8 @@ import { getActivePlayers } from "../selectors";
 
 import NavDrawer from "../components/NavDrawer";
 import ConfirmationDialog from "../components/ConfirmationDialog";
+import ExitGameDialogContent from "../components/ExitGameDialogContent";
+import PauseGameDialogContent from "../components/PauseGameDialogContent";
 import PlayerTrophies from "./PlayerTrophies";
 import Players from "./Players";
 
@@ -21,16 +24,19 @@ interface IBottomNavState {
   navDrawerOpen: boolean;
   navDrawerContent: string | undefined;
   dialogOpen: boolean;
+  dialogContent: string | undefined;
 }
 
 const DEFAULT_STATE: IBottomNavState = {
   navDrawerOpen: false,
   navDrawerContent: undefined,
   dialogOpen: false,
+  dialogContent: undefined,
 };
 
 const mapStateToProps = (state: AppState) => ({
   gameId: state.game?.id,
+  playerId: state.player?.id,
   activePlayers: getActivePlayers(state),
 });
 
@@ -38,6 +44,8 @@ const mapDispatchToProps = (dispatch: Dispatch<AnyAction>) =>
   bindActionCreators(
     {
       leaveGame: actions.leaveGame,
+      pausePlaying: actions.pausePlaying,
+      resumePlaying: actions.resumePlaying,
     },
     dispatch,
   );
@@ -73,11 +81,25 @@ class BottomNav extends React.PureComponent<BottomNavProps, IBottomNavState> {
     this.setState({ dialogOpen: true });
   };
 
-  handleDialogClose = (confirmed: boolean) => {
+  openConfirmationDialog = (content: string) => {
+    if (content === "pause" && this.props.gameId && this.props.playerId) {
+      this.props.pausePlaying(this.props.gameId, this.props.playerId);
+    }
+    this.setState({ dialogOpen: true, dialogContent: content });
+  };
+
+  handleDialogConfirmed = () => {
     this.setState({ dialogOpen: false });
-    if (confirmed && this.props.gameId) {
+    if (this.props.gameId && this.state.dialogContent === "exit") {
       this.props.leaveGame(this.props.gameId);
     }
+    if (this.props.gameId && this.props.playerId && this.state.dialogContent === "pause") {
+      this.props.resumePlaying(this.props.gameId, this.props.playerId);
+    }
+  };
+
+  handleDialogCancelled = () => {
+    this.setState({ dialogOpen: false });
   };
 
   handleNavItemClick = (_event: React.ChangeEvent<{}>, navItem: string) => {
@@ -91,8 +113,11 @@ class BottomNav extends React.PureComponent<BottomNavProps, IBottomNavState> {
       case "trophies":
         this.toggleNavDrawer("trophies");
         break;
+      case "pause":
+        this.openConfirmationDialog("pause");
+        break;
       case "exit":
-        this.showExitGameDialog();
+        this.openConfirmationDialog("exit");
     }
   };
 
@@ -110,8 +135,9 @@ class BottomNav extends React.PureComponent<BottomNavProps, IBottomNavState> {
                 </Badge>
               }
             />
-            <GameBottomNavigationAction label="Trophies" value="trophies" icon={<EmojiEventsIcon />} />
             <GameBottomNavigationAction label="Invite" value="invite" icon={<PersonAddIcon />} />
+            <GameBottomNavigationAction label="Trophies" value="trophies" icon={<EmojiEventsIcon />} />
+            <GameBottomNavigationAction label="Pause" value="pause" icon={<EmojiFoodBeverageIcon />} />
             <GameBottomNavigationAction label="Exit" value="exit" icon={<ExitIcon />} />
           </GameBottomNavigation>
         </GameBottomAppBar>
@@ -129,7 +155,28 @@ class BottomNav extends React.PureComponent<BottomNavProps, IBottomNavState> {
           })()}
         </NavDrawer>
 
-        <ConfirmationDialog open={this.state.dialogOpen} onClose={this.handleDialogClose} />
+        <ConfirmationDialog
+          open={this.state.dialogOpen}
+          onClose={this.handleDialogCancelled}
+          disableBackdropClick={this.state.dialogContent === "pause"}
+          disableEscapeKeyDown={this.state.dialogContent === "pause"}
+        >
+          {(() => {
+            switch (this.state.dialogContent) {
+              case "exit":
+                return (
+                  <ExitGameDialogContent
+                    onClickConfirm={this.handleDialogConfirmed}
+                    onClickCancel={this.handleDialogCancelled}
+                  />
+                );
+              case "pause":
+                return <PauseGameDialogContent onClickConfirm={this.handleDialogConfirmed} />;
+              default:
+                return <></>;
+            }
+          })()}
+        </ConfirmationDialog>
       </>
     );
   };

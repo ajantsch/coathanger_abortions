@@ -22,6 +22,14 @@ const getGamePlayer = async (gameId: string, playerId: string) => {
   return axios.get<IPlayer>(`${API_BASE_URL}/games/${gameId}/player/${playerId}`).then(res => res.data);
 };
 
+const patchGamePlayerActive = async (gameId: string, playerId: string) => {
+  return axios.patch<IPlayer>(`${API_BASE_URL}/games/${gameId}/player/${playerId}/active`).then(res => res.data);
+};
+
+const patchGamePlayerInactive = async (gameId: string, playerId: string) => {
+  return axios.patch<IPlayer>(`${API_BASE_URL}/games/${gameId}/player/${playerId}/inactive`).then(res => res.data);
+};
+
 const removeGamePlayer = async (gameId: string, playerId: string) => {
   return axios.delete<IPlayer>(`${API_BASE_URL}/games/${gameId}/player/${playerId}`).then(res => res.data);
 };
@@ -67,6 +75,8 @@ export default {
   getRound,
   addGamePlayer,
   getGamePlayer,
+  patchGamePlayerActive,
+  patchGamePlayerInactive,
   removeGamePlayer,
   revealQuestion,
   selectAnswer,

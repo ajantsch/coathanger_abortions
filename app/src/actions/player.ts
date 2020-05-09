@@ -15,6 +15,8 @@ export enum PlayerActionTypes {
   RESET_PLAYER = "RESET_PLAYER",
   GET_PLAYER = "GET_PLAYER",
   JOIN_GAME = "JOIN_GAME",
+  PAUSE_PLAYING = "PAUSE_PLAYING",
+  RESUME_PLAYING = "RESUME_PLAYING",
   LEAVE_GAME = "LEAVE_GAME",
   GIVE_ANSER = "GIVE_ANSWER",
   DRAW_ANSWER = "DRAW_ANSWER",
@@ -32,6 +34,14 @@ export interface IResetPlayerAction extends IBaseAction {
 export interface IJoinGameAction extends IBaseAction {
   type: PlayerActionTypes.JOIN_GAME;
   payload: IPlayer;
+}
+
+export interface IPausePlayingAction extends IBaseAction {
+  type: PlayerActionTypes.PAUSE_PLAYING;
+}
+
+export interface IResumePlayingAction extends IBaseAction {
+  type: PlayerActionTypes.RESUME_PLAYING;
 }
 
 export interface ILeaveGameAction extends IBaseAction {
@@ -62,6 +72,8 @@ export type PlayerAction =
   | IVoidPlayerAction
   | IResetPlayerAction
   | IJoinGameAction
+  | IPausePlayingAction
+  | IResumePlayingAction
   | ILeaveGameAction
   | IGetPlayerAction
   | IGiveAnswerAction
@@ -122,6 +134,42 @@ export function joinGame(
       });
     } catch (e) {
       return dispatch(resetPlayer());
+    }
+  };
+}
+
+export function pausePlaying(
+  gameId: string,
+  playerId: string,
+): ThunkAction<Promise<IBaseAction>, AppState, undefined, IPausePlayingAction> {
+  return async (dispatch: ThunkDispatch<AppState, undefined, IBaseAction>) => {
+    try {
+      await GameApi.patchGamePlayerInactive(gameId, playerId);
+      return dispatch({
+        type: PlayerActionTypes.PAUSE_PLAYING,
+      });
+    } catch (e) {
+      return dispatch({
+        type: PlayerActionTypes.VOID,
+      });
+    }
+  };
+}
+
+export function resumePlaying(
+  gameId: string,
+  playerId: string,
+): ThunkAction<Promise<IBaseAction>, AppState, undefined, IResumePlayingAction> {
+  return async (dispatch: ThunkDispatch<AppState, undefined, IBaseAction>) => {
+    try {
+      await GameApi.patchGamePlayerActive(gameId, playerId);
+      return dispatch({
+        type: PlayerActionTypes.RESUME_PLAYING,
+      });
+    } catch (e) {
+      return dispatch({
+        type: PlayerActionTypes.VOID,
+      });
     }
   };
 }

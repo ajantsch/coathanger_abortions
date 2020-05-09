@@ -11,6 +11,10 @@ export default function(state: IPlayer | null = null, action: PlayerAction) {
       return action.payload;
     case PlayerActionTypes.JOIN_GAME:
       return action.payload;
+    case PlayerActionTypes.PAUSE_PLAYING:
+      return state ? { ...state, active: false } : null;
+    case PlayerActionTypes.RESUME_PLAYING:
+      return state ? { ...state, active: true } : null;
     case PlayerActionTypes.LEAVE_GAME:
       return null;
     case PlayerActionTypes.GIVE_ANSER:
