@@ -63,7 +63,7 @@ const postGame = async (_req: Request, res: Response) => {
 
   const game: IGame = {
     ...newGame(),
-    id: randomString(6, "A#"),
+    id: randomString(6, "aA#"),
     availableQuestions: shuffle(questionCards),
     availableAnswers: shuffle(answerCards),
   };

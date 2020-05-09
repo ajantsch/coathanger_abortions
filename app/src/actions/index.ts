@@ -5,12 +5,33 @@ import { RoundActionTypes } from "./round";
 import { NotificationActionTypes } from "./notification";
 import { SocketActionTypes } from "./socket";
 
-import statusActions from "./status";
-import gameActions from "./game";
-import playerActions from "./player";
-import roundActions from "./round";
-import notificationActions from "./notification";
-import socketActions from "./socket";
+import { gameLoaded, playerLoaded, resetStatus } from "./status";
+import {
+  resetGame,
+  getGame,
+  startGame,
+  remotePlayerJoined,
+  remotePlayerActive,
+  remotePlayerInactive,
+  remotePlayerRemoved,
+  assignWinningCard,
+} from "./game";
+import { resetPlayer, getPlayer, joinGame, pausePlaying, resumePlaying, leaveGame, giveAnswer } from "./player";
+import {
+  resetRound,
+  startNewRound,
+  getCurrentRound,
+  roundReceived,
+  revealQuestion,
+  revealAnswers,
+  setWinner,
+  questionRevealed,
+  answerReceived,
+  answersRevealed,
+  winnerReceived,
+} from "./round";
+import { showNotification, hideNotification, resetNotification } from "./notification";
+import { connectSocket, disconnectSocket } from "./socket";
 
 export type ActionTypes =
   | StatusActionTypes
@@ -26,10 +47,38 @@ export interface IBaseAction {
 }
 
 export default {
-  ...statusActions,
-  ...playerActions,
-  ...gameActions,
-  ...roundActions,
-  ...notificationActions,
-  ...socketActions,
+  gameLoaded,
+  playerLoaded,
+  resetStatus,
+  resetGame,
+  getGame,
+  startGame,
+  resetPlayer,
+  getPlayer,
+  joinGame,
+  pausePlaying,
+  resumePlaying,
+  leaveGame,
+  resetRound,
+  startNewRound,
+  getCurrentRound,
+  roundReceived,
+  remotePlayerJoined,
+  remotePlayerActive,
+  remotePlayerInactive,
+  remotePlayerRemoved,
+  revealQuestion,
+  giveAnswer,
+  revealAnswers,
+  setWinner,
+  questionRevealed,
+  answerReceived,
+  answersRevealed,
+  winnerReceived,
+  assignWinningCard,
+  showNotification,
+  hideNotification,
+  resetNotification,
+  connectSocket,
+  disconnectSocket,
 };

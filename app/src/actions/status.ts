@@ -37,5 +37,3 @@ export function resetStatus(): IStatusResetAction {
     type: StatusActionTypes.RESET_STATUS,
   };
 }
-
-export default { gameLoaded, playerLoaded, resetStatus };

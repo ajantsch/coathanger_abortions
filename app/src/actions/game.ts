@@ -162,14 +162,3 @@ export function assignWinningCard(
     });
   };
 }
-
-export default {
-  resetGame,
-  getGame,
-  startGame,
-  remotePlayerJoined,
-  remotePlayerActive,
-  remotePlayerInactive,
-  remotePlayerRemoved,
-  assignWinningCard,
-};

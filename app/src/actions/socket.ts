@@ -39,5 +39,3 @@ export function disconnectSocket(): IDisconnectSocketAction {
     type: SocketActionTypes.DISCONNECT_SOCKET,
   };
 }
-
-export default { connectSocket, disconnectSocket };

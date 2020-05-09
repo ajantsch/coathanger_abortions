@@ -39,5 +39,3 @@ export function resetNotification(): IResetNotificationAction {
     type: NotificationActionTypes.RESET_NOTIFICATION,
   };
 }
-
-export default { showNotification, hideNotification, resetNotification };
