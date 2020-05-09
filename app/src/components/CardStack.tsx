@@ -44,7 +44,7 @@ const CardBoxWrapper: AnyStyledComponent = styled(Box)`
     display: flex;
     flex-direction: row;
     flex-wrap: wrap;
-    justify-content: center;
+    justify-content: space-between;
     overflow: hidden;
     transition: padding-right 1s ease-in-out;
 
