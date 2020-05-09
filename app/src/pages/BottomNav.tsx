@@ -198,6 +198,7 @@ const GameBottomNavigation: AnyStyledComponent = styled(BottomNavigation)`
 
 const GameBottomNavigationAction: AnyStyledComponent = styled(BottomNavigationAction)`
   && {
+    min-width: 64px;
     padding-top: 16px;
   }
 `;
