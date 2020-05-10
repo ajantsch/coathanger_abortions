@@ -22,9 +22,11 @@ export default function(state: IPlayer | null = null, action: PlayerAction) {
         ? { ...state, activeCards: [...state.activeCards].filter(card => card.id !== action.payload.card.id) }
         : null;
     case PlayerActionTypes.DRAW_ANSWER:
-      return state ? { ...state, activeCards: [...state.activeCards, action.payload] } : null;
+      return state ? { ...state, activeCards: [action.payload, ...state.activeCards] } : null;
+    case PlayerActionTypes.REPLACE_CARD:
+      return state ? { ...state, activeCards: action.payload } : null;
     case PlayerActionTypes.RECEIVE_WON_QUESTION:
-      return state ? { ...state, wonCards: [...state.wonCards, action.payload] } : null;
+      return state ? { ...state, wonCards: [action.payload, ...state.wonCards] } : null;
     default:
       return state;
   }

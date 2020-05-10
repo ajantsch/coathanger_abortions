@@ -80,7 +80,6 @@ class GameRound extends React.Component<
             cardsHidden={!this.props.round?.answersRevealed}
             cardsClickable={this.props.canSelectWinner}
             onCardClick={this.handleCardClicked}
-            winningCard={this.props.round?.winner?.card.id}
           />
         </AnswerCardsSpace>
       </CurrentRound>

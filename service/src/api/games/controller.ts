@@ -17,6 +17,7 @@ import {
   findCurrentRound,
   startNewRound,
   drawAnswer,
+  replaceAnswer,
   setPlayerActiveStatus,
 } from "./repository";
 import { logger, randomString, genUuid, shuffle, playerOutputSanitization, gameOutputSanitization } from "../../util";
@@ -297,6 +298,26 @@ const getAnswer = async (req: Request, res: Response) => {
   }
 };
 
+const patchReplaceCard = async (req: Request, res: Response) => {
+  const gameId = req.params.game_id;
+  const playerId = req.params.player_id;
+  const { id } = req.body;
+
+  res.type("json");
+
+  try {
+    const card = await replaceAnswer(gameId, playerId, id);
+    res.status(200);
+    res.send(card);
+  } catch (err) {
+    logger.error(err);
+    res.status(500);
+    res.send(JSON.stringify(err, replaceErrors));
+  } finally {
+    res.end();
+  }
+};
+
 const patchPlayerActive = async (req: Request, res: Response) => {
   const gameId = req.params.game_id;
   const playerId = req.params.player_id;
@@ -354,6 +375,7 @@ export {
   getCurrentRound,
   putNewRound,
   getAnswer,
+  patchReplaceCard,
   patchPlayerActive,
   patchPlayerInactive,
 };

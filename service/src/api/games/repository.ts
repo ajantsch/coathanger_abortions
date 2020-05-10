@@ -209,6 +209,36 @@ const drawAnswer = async (gameId: string, playerId: string): Promise<ICard> => {
   return card;
 };
 
+const replaceAnswer = async (gameId: string, playerId: string, cardId: string): Promise<ICard> => {
+  const game = ACTIVE_GAMES.get(gameId);
+  if (!game) {
+    throw new Error(`Could not find game with id ${gameId}`);
+  }
+
+  const player = game.players.find(player => player.id === playerId);
+  if (!player) {
+    throw new Error(`Could not find player ${playerId} in game ${gameId}`);
+  }
+
+  const card = player.activeCards.find(card => card.id === card.id);
+  if (!card) {
+    throw new Error(`Player ${playerId} does not have card with id ${cardId} in his active cards`);
+  }
+
+  // remove card from player stack and a new one from the available answer cards
+  const replacementCard = game.availableAnswers.splice(0, 1)[0];
+  game.players = game.players.map(player => {
+    if (player.id === playerId) {
+      const activeCards = [...player.activeCards.filter(card => card.id !== cardId), replacementCard];
+      return { ...player, activeCards };
+    }
+    return player;
+  });
+
+  ACTIVE_GAMES.set(gameId, game);
+  return replacementCard;
+};
+
 const setPlayerActiveStatus = async (gameId: string, playerId: string, status: boolean): Promise<IPlayer> => {
   const game = ACTIVE_GAMES.get(gameId);
   if (!game) {
@@ -236,6 +266,7 @@ export {
   revealAnswers,
   selectWinningCard,
   drawAnswer,
+  replaceAnswer,
   findCurrentRound,
   startNewRound,
   setPlayerActiveStatus,

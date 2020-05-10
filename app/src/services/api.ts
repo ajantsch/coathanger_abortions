@@ -1,6 +1,6 @@
 import axios from "axios";
 
-import { IGame, IPlayer, IRound, ICard, IGivenAnswer } from "../interfaces";
+import { IGame, IPlayer, IRound, ICard, IAnswerCard, IGivenAnswer } from "../interfaces";
 
 const { API_BASE_URL } = process.env;
 
@@ -62,7 +62,13 @@ const selectAnswer = async (gameId: string, playerId: string, card: ICard) => {
 };
 
 const drawAnswer = async (gameId: string, playerId: string) => {
-  return axios.get<ICard>(`${API_BASE_URL}/games/${gameId}/player/${playerId}/card`).then(res => res.data);
+  return axios.get<IAnswerCard>(`${API_BASE_URL}/games/${gameId}/player/${playerId}/card`).then(res => res.data);
+};
+
+const replaceAnswer = async (gameId: string, playerId: string, cardId: string) => {
+  return axios
+    .patch<IAnswerCard>(`${API_BASE_URL}/games/${gameId}/player/${playerId}/card`, { id: cardId })
+    .then(res => res.data);
 };
 
 const revealAnswers = async (gameId: string): Promise<IRound> => {
@@ -81,6 +87,7 @@ export default {
   revealQuestion,
   selectAnswer,
   drawAnswer,
+  replaceAnswer,
   revealAnswers,
   selectRoundWinner,
   startNewRound,

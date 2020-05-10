@@ -39,7 +39,7 @@ export interface IRemotePlayer {
 }
 
 export interface IPlayer extends IRemotePlayer {
-  activeCards: ICard[];
+  activeCards: IAnswerCard[];
 }
 
 export interface IGivenAnswer {

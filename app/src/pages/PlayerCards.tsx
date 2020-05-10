@@ -11,21 +11,28 @@ import actions from "../actions";
 import { canGiveAnswer, playerIsRoundCzar } from "../selectors";
 
 const mapStateToProps = (state: AppState) => ({
+  gameId: state.game?.id,
   player: state.player,
   playerIsRoundCzar: playerIsRoundCzar(state),
   canGiveAnswer: canGiveAnswer(state),
 });
 
 const mapDispatchToProps = (dispatch: Dispatch<AnyAction>) =>
-  bindActionCreators({ giveAnswer: actions.giveAnswer }, dispatch);
+  bindActionCreators({ giveAnswer: actions.giveAnswer, replaceCard: actions.replaceAnswerCard }, dispatch);
 
 class PlayerCards extends React.Component<
   ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps>,
   {}
 > {
   handleAnswerCardClicked = (card: ICard) => {
-    if (this.props.canGiveAnswer) {
-      this.props.giveAnswer({ player: this.props.player?.id as string, card: card as IAnswerCard });
+    if (this.props.player && this.props.canGiveAnswer) {
+      this.props.giveAnswer({ player: this.props.player.id, card: card as IAnswerCard });
+    }
+  };
+
+  handleCardReplaceClick = (cardId: string) => {
+    if (this.props.gameId && this.props.player) {
+      this.props.replaceCard(this.props.gameId, this.props.player.id, cardId);
     }
   };
 
@@ -36,6 +43,8 @@ class PlayerCards extends React.Component<
         condensed={this.props.playerIsRoundCzar}
         cardsClickable={!this.props.playerIsRoundCzar}
         onCardClick={this.handleAnswerCardClicked}
+        cardsReplaceable={!this.props.playerIsRoundCzar}
+        onCardReplaceClick={this.handleCardReplaceClick}
       />
     ) : (
       <></>

@@ -12,7 +12,6 @@ interface ICardProps {
   card: ICard;
   isHidden?: boolean;
   onCardClick?: (card: ICard) => void;
-  isWinningCard?: boolean;
 }
 
 interface ICardState {

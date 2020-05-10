@@ -1,5 +1,6 @@
 import React from "react";
 import { Box } from "@material-ui/core";
+import { Cached as Replace } from "@material-ui/icons";
 import styled, { AnyStyledComponent } from "styled-components";
 
 import { ICard } from "../interfaces";
@@ -11,7 +12,8 @@ interface ICardStackProps {
   cardsClickable: boolean;
   condensed?: boolean;
   onCardClick?: (card: ICard) => void;
-  winningCard?: string;
+  cardsReplaceable?: boolean;
+  onCardReplaceClick?: (cardId: string) => void;
 }
 
 class CardStack extends React.PureComponent<ICardStackProps, {}> {
@@ -21,17 +23,26 @@ class CardStack extends React.PureComponent<ICardStackProps, {}> {
     }
   };
 
+  handleCardReplaceClicked = (cardId: string) => {
+    if (this.props.onCardReplaceClick) {
+      this.props.onCardReplaceClick(cardId);
+    }
+  };
+
   render = () => {
     return (
       <CardBoxWrapper className={this.props.condensed ? "condensed" : null}>
         {this.props.cards.map(card => (
           <CardBox key={card.id} className={this.props.condensed ? "condensed" : null}>
-            <Card
-              card={card}
-              isHidden={this.props.cardsHidden}
-              onCardClick={this.handleCardClicked}
-              isWinningCard={card.id === this.props.winningCard}
-            />
+            <Card card={card} isHidden={this.props.cardsHidden} onCardClick={this.handleCardClicked} />
+            {this.props.cardsReplaceable && (
+              <ReplaceIcon
+                fontSize="large"
+                color="action"
+                titleAccess="replace card"
+                onClick={() => this.handleCardReplaceClicked(card.id)}
+              />
+            )}
           </CardBox>
         ))}
       </CardBoxWrapper>
@@ -60,6 +71,7 @@ const CardBoxWrapper: AnyStyledComponent = styled(Box)`
 
 const CardBox: AnyStyledComponent = styled(Box)`
   && {
+    position: relative;
     display: flex;
     padding: 20px;
     transition: margin-right 1s ease-in-out;
@@ -67,6 +79,14 @@ const CardBox: AnyStyledComponent = styled(Box)`
     &.condensed {
       margin-right: -285px;
     }
+  }
+`;
+
+const ReplaceIcon: AnyStyledComponent = styled(Replace)`
+  && {
+    position: absolute;
+    bottom: 30px;
+    left: 30px;
   }
 `;
 

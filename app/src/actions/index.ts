@@ -16,7 +16,16 @@ import {
   remotePlayerRemoved,
   assignWinningCard,
 } from "./game";
-import { resetPlayer, getPlayer, joinGame, pausePlaying, resumePlaying, leaveGame, giveAnswer } from "./player";
+import {
+  resetPlayer,
+  getPlayer,
+  joinGame,
+  pausePlaying,
+  resumePlaying,
+  leaveGame,
+  giveAnswer,
+  replaceAnswerCard,
+} from "./player";
 import {
   resetRound,
   startNewRound,
@@ -69,6 +78,7 @@ export default {
   remotePlayerRemoved,
   revealQuestion,
   giveAnswer,
+  replaceAnswerCard,
   revealAnswers,
   setWinner,
   questionRevealed,

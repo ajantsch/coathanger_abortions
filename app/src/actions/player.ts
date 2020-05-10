@@ -20,6 +20,7 @@ export enum PlayerActionTypes {
   LEAVE_GAME = "LEAVE_GAME",
   GIVE_ANSER = "GIVE_ANSWER",
   DRAW_ANSWER = "DRAW_ANSWER",
+  REPLACE_CARD = "REPLACE_CARD",
   RECEIVE_WON_QUESTION = "RECEIVE_WON_QUESTION",
 }
 
@@ -63,6 +64,11 @@ export interface IDrawAnswerAction extends IBaseAction {
   payload: IAnswerCard;
 }
 
+export interface IReplaceCardAction extends IBaseAction {
+  type: PlayerActionTypes.REPLACE_CARD;
+  payload: IAnswerCard[];
+}
+
 export interface IReceiveWonQuestionAction extends IBaseAction {
   type: PlayerActionTypes.RECEIVE_WON_QUESTION;
   payload: ICardCombo;
@@ -78,7 +84,8 @@ export type PlayerAction =
   | IGetPlayerAction
   | IGiveAnswerAction
   | IReceiveWonQuestionAction
-  | IDrawAnswerAction;
+  | IDrawAnswerAction
+  | IReplaceCardAction;
 
 export function resetPlayer(): ThunkAction<IResetPlayerAction, AppState, undefined, IResetPlayerAction> {
   return (dispatch: ThunkDispatch<AppState, undefined, IBaseAction>) => {
@@ -217,6 +224,29 @@ export function drawAnswer(): ThunkAction<Promise<IBaseAction>, AppState, undefi
       return dispatch({
         type: PlayerActionTypes.DRAW_ANSWER,
         payload: card,
+      });
+    } catch (e) {
+      return dispatch({ type: PlayerActionTypes.VOID });
+    }
+  };
+}
+
+export function replaceAnswerCard(
+  gameId: string,
+  playerId: string,
+  cardId: string,
+): ThunkAction<Promise<IBaseAction>, AppState, undefined, IReplaceCardAction> {
+  return async (dispatch: ThunkDispatch<AppState, undefined, IBaseAction>, getState) => {
+    const playerCards = getState().player?.activeCards;
+    if (!playerCards) {
+      return dispatch({ type: PlayerActionTypes.VOID });
+    }
+    try {
+      const newCard = await GameApi.replaceAnswer(gameId, playerId, cardId);
+      const updatedPlayerCards = playerCards.map(card => (card.id === cardId ? newCard : card));
+      return dispatch({
+        type: PlayerActionTypes.REPLACE_CARD,
+        payload: updatedPlayerCards,
       });
     } catch (e) {
       return dispatch({ type: PlayerActionTypes.VOID });
