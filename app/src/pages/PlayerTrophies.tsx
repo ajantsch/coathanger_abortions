@@ -46,6 +46,14 @@ const CardComboScrollContainer: AnyStyledComponent = styled(Box)`
     overflow-y: hidden;
     white-space: nowrap;
     text-align: center;
+
+    padding-top: 20px;
+    padding-bottom: 25px;
+
+    @media (min-width: 600px) {
+      padding-top: 25px;
+      padding-bottom: 30px;
+    }
   }
 `;
 
