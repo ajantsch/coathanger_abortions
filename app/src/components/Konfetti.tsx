@@ -11,7 +11,7 @@ class Konfetti extends React.Component<IKonfettiProps, {}> {
     return this.props.run ? (
       <StyledConfetti
         recycle={false}
-        colors={["#a864fd", "#29cdff", "#78ff44", "#ff718d", "#fdff6a"]}
+        colors={["#1c1c1c", "#fcf6ba", "#b38728"]}
         opacity={0.9}
         initialVelocityX={0}
         run={true}

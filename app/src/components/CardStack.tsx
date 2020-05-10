@@ -49,7 +49,7 @@ const CardBoxWrapper: AnyStyledComponent = styled(Box)`
     transition: padding-right 1s ease-in-out;
 
     &.condensed {
-      padding-right: 290px;
+      padding-right: 285px;
     }
 
     @media (min-width: 600px) {
@@ -65,7 +65,7 @@ const CardBox: AnyStyledComponent = styled(Box)`
     transition: margin-right 1s ease-in-out;
 
     &.condensed {
-      margin-right: -290px;
+      margin-right: -285px;
     }
   }
 `;

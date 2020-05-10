@@ -25,6 +25,17 @@ export const getActivePlayers = createSelector([getPlayers], players => {
   return players.filter(player => player.active);
 });
 
+export const getRoundWinnerName = createSelector([getRoundWinner, getPlayers], (roundWinner, players) => {
+  if (!players || !roundWinner) {
+    return "";
+  }
+  const winningPlayer = players.find(player => player.id === roundWinner);
+  if (!winningPlayer) {
+    return "";
+  }
+  return winningPlayer?.name;
+});
+
 export const canGiveAnswer = createSelector(
   [getRoundQuestionRevealed, getRoundAnswers, getPlayerId],
   (questionRevealed, answers, playerId) => {

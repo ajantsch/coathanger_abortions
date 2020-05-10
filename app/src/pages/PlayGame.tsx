@@ -23,6 +23,7 @@ import GameNotifications from "./GameNotifications";
 import LetteringLight from "../images/lettering_light.svg";
 import LetteringDark from "../images/lettering_dark.svg";
 import YSoSerious from "../images/y-so-serious-white.png";
+import WinnerDialog from "./WinnerDialog";
 
 const mapStateToProps = (state: AppState) => ({
   playerIsRoundCzar: playerIsRoundCzar(state),
@@ -66,6 +67,7 @@ class PlayGame extends React.Component<PlayGameProps, {}> {
           <PlayerCards />
         </GameContainer>
         <Konfetti run={this.props.playerIsRoundWinner} />
+        <WinnerDialog />
         <GameNotifications />
         <BottomNav />
         <ActionDrawer />

@@ -8,12 +8,13 @@ import { IQuestionCard, IAnswerCard } from "../interfaces";
 interface ICardComboProps {
   question: IQuestionCard;
   answer: IAnswerCard;
+  className?: string;
 }
 
 class CardCombo extends React.PureComponent<ICardComboProps, {}> {
   render = () => {
     return (
-      <CardComboRoot>
+      <CardComboRoot className={this.props.className}>
         <Card card={this.props.question} />
         <AnswerCardWrapper>
           <Card card={this.props.answer} />
@@ -32,8 +33,13 @@ const CardComboRoot: AnyStyledComponent = styled(Box)`
 
 const AnswerCardWrapper: AnyStyledComponent = styled(Box)`
   && {
-    margin-top: -200px;
-    margin-left: 50px;
+    margin-top: -70px;
+    margin-left: 20px;
+
+    @media (min-width: 600px) {
+      margin-top: -310px;
+      margin-left: 220px;
+    }
   }
 `;
 

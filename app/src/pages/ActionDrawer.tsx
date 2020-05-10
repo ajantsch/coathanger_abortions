@@ -13,6 +13,7 @@ import StartNewRound from "../components/StartNewRound";
 
 const mapStateToProps = (state: AppState) => ({
   game: state.game,
+  round: state.round,
   playerIsRoundWinner: playerIsRoundWinner(state),
   shouldShowRevealAnswerAction: shouldShowRevealAnswerAction(state),
 });
