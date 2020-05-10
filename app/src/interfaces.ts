@@ -46,17 +46,3 @@ export interface IGivenAnswer {
   player: string;
   card: IAnswerCard;
 }
-
-export interface IGameNotification {
-  text: string;
-  visible: boolean;
-}
-
-export interface ISocketStatus {
-  connected: boolean;
-}
-
-export interface IGameStatus {
-  gameLoaded: boolean;
-  playerLoaded: boolean;
-}

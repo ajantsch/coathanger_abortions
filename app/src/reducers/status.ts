@@ -1,12 +1,11 @@
-import { IGameStatus } from "../interfaces";
 import { StatusAction, StatusActionTypes } from "../actions/status";
 
-const initialState: IGameStatus = {
+const initialState = {
   gameLoaded: false,
   playerLoaded: false,
 };
 
-export default function(state: IGameStatus = initialState, action: StatusAction) {
+export default function(state = initialState, action: StatusAction) {
   switch (action.type) {
     case StatusActionTypes.GAME_LOADED:
       return { ...state, gameLoaded: true };

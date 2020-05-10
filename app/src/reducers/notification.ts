@@ -1,12 +1,11 @@
-import { IGameNotification } from "../interfaces";
 import { NotificationAction, NotificationActionTypes } from "../actions/notification";
 
-const initialState: IGameNotification = {
+const initialState = {
   text: "",
   visible: false,
 };
 
-export default function(state: IGameNotification = initialState, action: NotificationAction) {
+export default function(state = initialState, action: NotificationAction) {
   switch (action.type) {
     case NotificationActionTypes.SHOW_NOTIFICATION:
       return { ...state, text: action.payload, visible: true };
