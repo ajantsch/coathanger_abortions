@@ -104,6 +104,7 @@ const QuestionCardSpace: AnyStyledComponent = styled(Box)`
     flex-grow: 0;
     flex-shrink: 0;
     flex-basis: 250px;
+    padding: 20px;
   }
 `;
 

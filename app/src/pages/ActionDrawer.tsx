@@ -47,7 +47,7 @@ class ActionDrawer extends React.PureComponent<
       <Drawer
         anchor="bottom"
         open={this.props.shouldShowRevealAnswerAction || this.props.playerIsRoundWinner}
-        ModalProps={{ hideBackdrop: true }}
+        ModalProps={{ hideBackdrop: !this.props.shouldShowRevealAnswerAction }}
       >
         <DrawerContent maxWidth="sm">
           {this.props.shouldShowRevealAnswerAction && <RevealAnswers onClickReveal={this.handleRevealAnswers} />}

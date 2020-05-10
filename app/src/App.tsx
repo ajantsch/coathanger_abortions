@@ -22,13 +22,7 @@ const store = createStore(
   load({ ...reduxLocalStorageSettings, disableWarnings: true }),
   NODE_ENV === "production"
     ? applyMiddleware(thunk, save(reduxLocalStorageSettings))
-    : composeWithDevTools(
-        applyMiddleware(
-          thunk,
-          createLogger(),
-          save({ states: ["game", "player", "round"], namespace: "coathanger_abortions" }),
-        ),
-      ),
+    : composeWithDevTools(applyMiddleware(thunk, createLogger(), save(reduxLocalStorageSettings))),
 );
 
 class App extends React.Component {

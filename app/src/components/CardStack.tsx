@@ -44,12 +44,16 @@ const CardBoxWrapper: AnyStyledComponent = styled(Box)`
     display: flex;
     flex-direction: row;
     flex-wrap: wrap;
-    justify-content: space-between;
+    justify-content: center;
     overflow: hidden;
     transition: padding-right 1s ease-in-out;
 
     &.condensed {
-      padding-right: 200px;
+      padding-right: 290px;
+    }
+
+    @media (min-width: 600px) {
+      justify-content: space-between;
     }
   }
 `;
@@ -57,15 +61,11 @@ const CardBoxWrapper: AnyStyledComponent = styled(Box)`
 const CardBox: AnyStyledComponent = styled(Box)`
   && {
     display: flex;
-    margin-bottom: -200px;
+    padding: 20px;
     transition: margin-right 1s ease-in-out;
 
     &.condensed {
-      margin-right: -200px;
-    }
-
-    &:last-of-type {
-      margin-bottom: 0;
+      margin-right: -290px;
     }
   }
 `;

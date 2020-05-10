@@ -65,9 +65,13 @@ class Card extends React.PureComponent<ICardProps, ICardState> {
 
 const CardRoot: AnyStyledComponent = styled.div`
   width: 250px;
-  height: 350px;
-  margin: 25px;
-  perspective: 600px;
+  height: 250px;
+  perspective: 400px;
+
+  @media (min-width: 600px) {
+    height: 350px;
+    perspective: 600px;
+  }
 `;
 
 const CardAnimation: AnyStyledComponent = styled.div`
@@ -87,7 +91,7 @@ const SharedCardStyles = css`
   position: absolute;
   width: 100%;
   height: 100%;
-  border-radius: 15px;
+  border-radius: 10px;
   padding: 20px;
   backface-visibility: hidden;
   white-space: normal;
@@ -106,51 +110,74 @@ const SharedCardStyles = css`
     border: 1px solid #e3e6eb;
     color: ${colors.dark};
   }
+
+  @media (min-width: 600px) {
+    border-radius: 15px;
+  }
 `;
 
 const CardFront: AnyStyledComponent = styled(Paper)`
   && {
-    background-size: 100px 58px;
+    background-size: 70px auto;
     background-position: right 20px bottom 20px;
     background-repeat: no-repeat;
 
     transform: rotateY(0deg);
 
     ${SharedCardStyles}
+
+    @media (min-width: 600px) {
+      background-size: 100px auto;
+    }
   }
 `;
 
 const CardBack: AnyStyledComponent = styled(Paper)`
   && {
-    background-size: 200px 116px;
+    background-size: 150px auto;
     background-position: center center;
     background-repeat: no-repeat;
 
     transform: rotateY(180deg);
 
     ${SharedCardStyles}
+
+    @media (min-width: 600px) {
+      background-size: 200px auto;
+    }
   }
 `;
 
 const CardText: AnyStyledComponent = styled(Typography)`
   && {
-    font-size: 1.2rem;
+    font-size: 1.1rem;
     line-height: 1.5;
     font-weight: 700;
+
+    @media (min-width: 600px) {
+      font-size: 1.2rem;
+    }
   }
 `;
 
 const WinnerCup: AnyStyledComponent = styled.div`
   position: absolute;
-  top: 50%;
+  bottom: 2rem;
   left: 50%;
-  margin: -75px 0 0 -75px;
+  margin: 0 0 0 -70px;
   display: block;
-  width: 150px;
-  height: 150px;
+  width: 100px;
+  height: 100px;
   background-image: url(${WinnerCupIcon});
   background-size: contain;
   background-repeat: no-repeat;
+
+  @media (min-width: 600px) {
+    width: 150px;
+    height: 150px;
+    bottom: 3rem;
+    margin: 0 0 0 -95px;
+  }
 `;
 
 export default Card;
