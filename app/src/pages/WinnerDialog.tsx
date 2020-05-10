@@ -1,25 +1,18 @@
 import React from "react";
 import { connect } from "react-redux";
-import { Dialog, DialogContent, DialogContentText, DialogTitle, Slide } from "@material-ui/core";
-import { TransitionProps } from "@material-ui/core/transitions/transition";
+import { Dialog, DialogContent, DialogContentText, DialogTitle } from "@material-ui/core";
 import styled, { AnyStyledComponent } from "styled-components";
 
 import { AppState } from "../reducers";
 import { playerIsRoundWinner, getRoundWinnerName } from "../selectors";
 
 import CardCombo from "../components/CardCombo";
+import SlideUpTransition from "../components/SlideUpTransition";
 
 const mapStateToProps = (state: AppState) => ({
   round: state.round,
   playerIsRoundWinner: playerIsRoundWinner(state),
   roundWinnerName: getRoundWinnerName(state),
-});
-
-const Transition = React.forwardRef(function Transition(
-  props: TransitionProps & { children?: React.ReactElement },
-  ref: React.Ref<unknown>,
-) {
-  return <Slide direction="up" ref={ref} {...props} />;
 });
 
 class WinnerDialog extends React.PureComponent<ReturnType<typeof mapStateToProps>, {}> {
@@ -30,7 +23,7 @@ class WinnerDialog extends React.PureComponent<ReturnType<typeof mapStateToProps
         {...{
           "aria-labelledby": "winner-dialog-title",
           "aria-describedby": "winner-dialog-description",
-          TransitionComponent: Transition,
+          TransitionComponent: SlideUpTransition,
         }}
       >
         <DialogTitle id="winner-dialog-title">We have a winner!</DialogTitle>
