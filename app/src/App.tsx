@@ -14,16 +14,21 @@ import theme from "./Theme";
 import NewGame from "./pages/NewGame";
 import GameManager from "./pages/GameManager";
 
-const reduxMiddleware = [thunk, createLogger()];
+const { NODE_ENV } = process.env;
+const reduxLocalStorageSettings = { states: ["game", "player", "round"], namespace: "coathanger_abortions" };
+
 const store = createStore(
   rootReducer,
-  load({ states: ["game", "player", "round"], namespace: "coathanger_abortions", disableWarnings: true }),
-  composeWithDevTools(
-    applyMiddleware(
-      ...reduxMiddleware,
-      save({ states: ["game", "player", "round"], namespace: "coathanger_abortions" }),
-    ),
-  ),
+  load({ ...reduxLocalStorageSettings, disableWarnings: true }),
+  NODE_ENV === "production"
+    ? applyMiddleware(thunk, save(reduxLocalStorageSettings))
+    : composeWithDevTools(
+        applyMiddleware(
+          thunk,
+          createLogger(),
+          save({ states: ["game", "player", "round"], namespace: "coathanger_abortions" }),
+        ),
+      ),
 );
 
 class App extends React.Component {
