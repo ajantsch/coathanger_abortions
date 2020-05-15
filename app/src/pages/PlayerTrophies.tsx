@@ -15,7 +15,7 @@ class PlayerTrophies extends React.Component<ReturnType<typeof mapStateToProps>,
     return this.props.player?.wonCards.length ? (
       <CardComboScrollContainer>
         {this.props.player.wonCards.map(combo => (
-          <CardCombo key={combo.question.id} {...combo} />
+          <StyledCardCombo key={combo.question.id} {...combo} />
         ))}
       </CardComboScrollContainer>
     ) : (
@@ -54,6 +54,12 @@ const CardComboScrollContainer: AnyStyledComponent = styled(Box)`
       padding-top: 25px;
       padding-bottom: 30px;
     }
+  }
+`;
+
+const StyledCardCombo: AnyStyledComponent = styled(CardCombo)`
+  && {
+    margin: 20px;
   }
 `;
 
