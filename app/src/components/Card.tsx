@@ -1,5 +1,5 @@
-import React from "react";
-import { Paper, Typography } from "@material-ui/core";
+import React, { CSSProperties } from "react";
+import { Box, Paper, Typography } from "@material-ui/core";
 import styled, { css, AnyStyledComponent } from "styled-components";
 
 import { ICard } from "../interfaces";
@@ -13,6 +13,7 @@ interface ICardProps {
   isHidden?: boolean;
   onCardClick?: (card: ICard) => void;
   className?: string;
+  style?: CSSProperties;
 }
 
 interface ICardState {
@@ -49,7 +50,7 @@ class Card extends React.PureComponent<ICardProps, ICardState> {
 
   render = () => {
     return (
-      <CardRoot onClick={this.handleCardClicked} className={this.props.className}>
+      <CardRoot onClick={this.handleCardClicked} className={this.props.className} style={this.props.style}>
         <CardAnimation className={this.props.isHidden && "hidden"}>
           <CardBack className={`card ${this.props.card.type}`} />
           <CardFront className={`card ${this.props.card.type}`}>
@@ -61,27 +62,31 @@ class Card extends React.PureComponent<ICardProps, ICardState> {
   };
 }
 
-const CardRoot: AnyStyledComponent = styled.div`
-  width: 250px;
-  height: 250px;
-  perspective: 400px;
+const CardRoot: AnyStyledComponent = styled(Box)`
+  && {
+    width: 250px;
+    height: 250px;
+    perspective: 400px;
 
-  @media (min-width: 600px) {
-    height: 350px;
-    perspective: 600px;
+    @media (min-width: 600px) {
+      height: 350px;
+      perspective: 600px;
+    }
   }
 `;
 
-const CardAnimation: AnyStyledComponent = styled.div`
-  position: relative;
-  width: 100%;
-  height: 100%;
+const CardAnimation: AnyStyledComponent = styled(Box)`
+  && {
+    position: relative;
+    width: 100%;
+    height: 100%;
 
-  transition: transform 1s;
-  transform-style: preserve-3d;
+    transition: transform 1s;
+    transform-style: preserve-3d;
 
-  &.hidden {
-    transform: rotateY(180deg);
+    &.hidden {
+      transform: rotateY(180deg);
+    }
   }
 `;
 

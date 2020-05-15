@@ -106,7 +106,7 @@ const GameAppBar: AnyStyledComponent = styled(AppBar)`
 const GameContainer: AnyStyledComponent = styled(Container)`
   && {
     padding-top: 48px;
-    padding-bottom: 62px;
+    padding-bottom: 82px;
   }
 `;
 

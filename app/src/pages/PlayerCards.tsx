@@ -2,13 +2,14 @@ import React from "react";
 import { connect } from "react-redux";
 import { AnyAction, bindActionCreators, Dispatch } from "redux";
 
+import { AppContext } from "../AppContext";
 import { ICard, IAnswerCard } from "../interfaces";
-
-import CardStack from "../components/CardStack";
 
 import { AppState } from "../reducers";
 import actions from "../actions";
 import { canGiveAnswer, playerIsRoundCzar } from "../selectors";
+
+import CardStack from "../components/CardStack";
 
 const mapStateToProps = (state: AppState) => ({
   gameId: state.game?.id,
@@ -38,20 +39,21 @@ class PlayerCards extends React.Component<
 
   render = () => {
     return this.props.player ? (
-      <>
-        <CardStack
-          cards={this.props.player.activeCards}
-          condensed={this.props.playerIsRoundCzar}
-          cardsClickable={!this.props.playerIsRoundCzar}
-          onCardClick={this.handleAnswerCardClicked}
-          cardsReplaceable={!this.props.playerIsRoundCzar}
-          onCardReplaceClick={this.handleCardReplaceClick}
-        />
-      </>
+      <CardStack
+        cards={this.props.player.activeCards}
+        condensed={this.props.playerIsRoundCzar}
+        cardsClickable={!this.props.playerIsRoundCzar}
+        onCardClick={this.handleAnswerCardClicked}
+        cardsReplaceable={!this.props.playerIsRoundCzar}
+        onCardReplaceClick={this.handleCardReplaceClick}
+        touchSupported={this.context.touchSupported}
+      />
     ) : (
       <></>
     );
   };
 }
+
+PlayerCards.contextType = AppContext;
 
 export default connect(mapStateToProps, mapDispatchToProps)(PlayerCards);

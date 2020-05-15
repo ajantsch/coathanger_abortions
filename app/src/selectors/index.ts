@@ -42,12 +42,23 @@ export const canGiveAnswer = createSelector([getRoundAnswers, getPlayerId], (ans
   return true;
 });
 
-export const otherPlayersAnswerCards = createSelector([getRoundAnswers, getPlayerId], (answers, playerId) => {
-  if (!answers) {
-    return [];
-  }
-  return answers.filter(answer => answer.player !== playerId).map(answer => answer.card);
-});
+export const otherActivePlayersAnswerCards = createSelector(
+  [getRoundAnswers, getActivePlayers, getPlayerId],
+  (answers, activePlayers, playerId) => {
+    if (!answers || !activePlayers) {
+      return [];
+    }
+    return answers
+      .filter(answer => {
+        const player = activePlayers.find(player => player.id === answer.player);
+        if (!player) {
+          return false;
+        }
+        return player.id !== playerId;
+      })
+      .map(answer => answer.card);
+  },
+);
 
 export const allAnswersAreIn = createSelector(
   [getActivePlayers, getRoundCzar, getRoundAnswers],

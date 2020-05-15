@@ -12,4 +12,14 @@ function shuffle<T>(array: T[]): T[] {
   return array;
 }
 
-export { shuffle };
+function touchSupported(): boolean {
+  try {
+    document.createEvent("TouchEvent");
+    return true;
+  } catch (e) {
+    // touch is not available
+    return false;
+  }
+}
+
+export { shuffle, touchSupported };

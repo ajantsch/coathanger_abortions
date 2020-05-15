@@ -14,6 +14,7 @@ interface ICardStackProps {
   onCardClick?: (card: ICard) => void;
   cardsReplaceable?: boolean;
   onCardReplaceClick?: (cardId: string) => void;
+  touchSupported?: boolean;
 }
 
 class CardStack extends React.PureComponent<ICardStackProps, {}> {
@@ -34,12 +35,19 @@ class CardStack extends React.PureComponent<ICardStackProps, {}> {
       <CardBoxWrapper className={this.props.condensed ? "condensed" : null}>
         {this.props.cards.map(card => (
           <CardBox key={card.id} className={this.props.condensed ? "condensed" : null}>
-            <Card card={card} isHidden={this.props.cardsHidden} onCardClick={this.handleCardClicked} />
-            {this.props.cardsReplaceable && (
+            <ScalableCard
+              card={card}
+              isHidden={this.props.cardsHidden}
+              onCardClick={this.handleCardClicked}
+              style={this.props.cardsClickable ? { cursor: "pointer" } : {}}
+            />
+
+            {this.props.cardsReplaceable && !this.props.touchSupported && (
               <ReplaceIcon
                 fontSize="large"
                 color="action"
                 titleAccess="replace card"
+                className="replace-icon"
                 onClick={() => this.handleCardReplaceClicked(card.id)}
               />
             )}
@@ -68,7 +76,7 @@ const CardBoxWrapper: AnyStyledComponent = styled(Box)`
 
     @media (min-width: 600px) {
       flex-wrap: wrap;
-      justify-content: center;
+      justify-content: space-between;
       overflow-x: hidden;
       margin-left: 0;
       margin-right: 0;
@@ -86,14 +94,39 @@ const CardBox: AnyStyledComponent = styled(Box)`
     &.condensed {
       margin-right: -285px;
     }
+
+    & > .replace-icon {
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s ease-in-out;
+    }
+
+    &:hover {
+      & > .replace-icon {
+        opacity: 1;
+        pointer-events: auto;
+      }
+    }
+  }
+`;
+
+const ScalableCard: AnyStyledComponent = styled(Card)`
+  && {
+    transition: transform 0.3s ease-in-out;
+
+    &.touching {
+      transform: scale(1.2);
+      transition: transform 1s ease-in-out;
+    }
   }
 `;
 
 const ReplaceIcon: AnyStyledComponent = styled(Replace)`
   && {
     position: absolute;
-    bottom: 30px;
-    left: 30px;
+    bottom: 40px;
+    left: 40px;
+    cursor: pointer;
   }
 `;
 

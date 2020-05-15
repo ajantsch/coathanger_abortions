@@ -7,7 +7,7 @@ import styled, { AnyStyledComponent } from "styled-components";
 import { ICard } from "../interfaces";
 import { AppState } from "../reducers";
 import actions from "../actions";
-import { playerIsRoundCzar, canSelectWinner, otherPlayersAnswerCards } from "../selectors";
+import { playerIsRoundCzar, canSelectWinner, otherActivePlayersAnswerCards } from "../selectors";
 
 import CardCombo from "../components/CardCombo";
 import CardStack from "../components/CardStack";
@@ -19,7 +19,7 @@ const mapStateToProps = (state: AppState) => ({
   playerId: state.player?.id,
   playerIsRoundCzar: playerIsRoundCzar(state),
   canSelectWinner: canSelectWinner(state),
-  otherPlayersAnswerCards: otherPlayersAnswerCards(state),
+  otherActivePlayersAnswerCards: otherActivePlayersAnswerCards(state),
 });
 
 const mapDispatchToProps = (dispatch: Dispatch<AnyAction>) =>
@@ -72,7 +72,7 @@ class GameRound extends React.Component<
         </QuestionCardSpace>
         <AnswerCardsSpace>
           <CardStack
-            cards={this.props.otherPlayersAnswerCards}
+            cards={this.props.otherActivePlayersAnswerCards}
             cardsHidden={!this.props.round?.answersRevealed}
             cardsClickable={this.props.canSelectWinner}
             onCardClick={this.handleCardClicked}
