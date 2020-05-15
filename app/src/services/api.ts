@@ -48,10 +48,6 @@ const getRound = async (gameId: string): Promise<IRound> => {
   return axios.get(`${API_BASE_URL}/games/${gameId}/round`).then(res => res.data);
 };
 
-const revealQuestion = async (gameId: string) => {
-  return axios.patch<IRound>(`${API_BASE_URL}/games/${gameId}/round/question`).then(res => res.data);
-};
-
 const selectAnswer = async (gameId: string, playerId: string, card: ICard) => {
   return axios
     .put<IGivenAnswer>(`${API_BASE_URL}/games/${gameId}/answer`, {
@@ -84,7 +80,6 @@ export default {
   patchGamePlayerActive,
   patchGamePlayerInactive,
   removeGamePlayer,
-  revealQuestion,
   selectAnswer,
   drawAnswer,
   replaceAnswer,

@@ -12,6 +12,7 @@ interface ICardProps {
   card: ICard;
   isHidden?: boolean;
   onCardClick?: (card: ICard) => void;
+  className?: string;
 }
 
 interface ICardState {
@@ -48,7 +49,7 @@ class Card extends React.PureComponent<ICardProps, ICardState> {
 
   render = () => {
     return (
-      <CardRoot onClick={this.handleCardClicked}>
+      <CardRoot onClick={this.handleCardClicked} className={this.props.className}>
         <CardAnimation className={this.props.isHidden && "hidden"}>
           <CardBack className={`card ${this.props.card.type}`} />
           <CardFront className={`card ${this.props.card.type}`}>

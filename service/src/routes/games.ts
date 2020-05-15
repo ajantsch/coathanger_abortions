@@ -5,7 +5,6 @@ import {
   putGamePlayer,
   getGamePlayer,
   putAnswer,
-  patchRevealQuestion,
   patchRevealAnswers,
   postWinningAnswer,
   getCurrentRound,
@@ -25,7 +24,6 @@ router.get("/:game_id/player/:player_id", getGamePlayer);
 router.delete("/:game_id/player/:player_id", deleteGamePlayer);
 router.get("/:game_id/round/", getCurrentRound);
 router.put("/:game_id/round/", putNewRound);
-router.patch("/:game_id/round/question", patchRevealQuestion);
 router.put("/:game_id/answer", putAnswer);
 router.patch("/:game_id/round/answers", patchRevealAnswers);
 router.post("/:game_id/round/winner", postWinningAnswer);

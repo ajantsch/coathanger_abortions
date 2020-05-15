@@ -9,7 +9,6 @@ interface IAnswer {
 interface IRound {
   czar: IPlayer["id"];
   question: ICard;
-  questionRevealed: boolean;
   answers: IAnswer[];
   answersRevealed: boolean;
   winner: IAnswer | undefined;
@@ -18,7 +17,6 @@ interface IRound {
 const newRound = (): IRound => {
   return {
     question: undefined,
-    questionRevealed: false,
     czar: undefined,
     answers: [],
     answersRevealed: false,

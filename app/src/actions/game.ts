@@ -80,25 +80,26 @@ export function resetGame(): IResetGameAction {
 
 export function startGame(): ThunkAction<Promise<IBaseAction>, AppState, undefined, IStartGameAction> {
   return async (dispatch: ThunkDispatch<AppState, undefined, IBaseAction>) => {
-    const game = await GameApi.createGame();
-    if (!game) {
+    dispatch(gameLoaded());
+    try {
+      const game = await GameApi.createGame();
+      return dispatch({
+        type: GameActionTypes.START_GAME,
+        payload: game,
+      });
+    } catch (e) {
       return dispatch({
         type: GameActionTypes.RESET_GAME,
       });
     }
-    dispatch(gameLoaded());
-    return dispatch({
-      type: GameActionTypes.START_GAME,
-      payload: game,
-    });
   };
 }
 
 export function getGame(gameId: string): ThunkAction<Promise<IBaseAction>, AppState, undefined, IGetGameAction> {
   return async (dispatch: ThunkDispatch<AppState, undefined, IBaseAction>) => {
+    dispatch(gameLoaded());
     try {
       const game = await GameApi.getGame(gameId);
-      dispatch(gameLoaded());
       return dispatch({
         type: GameActionTypes.GET_GAME,
         payload: game,

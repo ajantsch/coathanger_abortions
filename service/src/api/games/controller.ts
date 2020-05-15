@@ -11,7 +11,6 @@ import {
   removeGamePlayer,
   findGamePlayer,
   selectAnswer,
-  revealQuestion,
   revealAnswers,
   selectWinningCard,
   findCurrentRound,
@@ -143,27 +142,6 @@ const deleteGamePlayer = async (req: Request, res: Response) => {
 
     res.status(200);
     res.send(player);
-  } catch (err) {
-    logger.error(err);
-    res.status(404);
-    res.send(JSON.stringify(err, replaceErrors));
-  } finally {
-    res.end();
-  }
-};
-
-const patchRevealQuestion = async (req: Request, res: Response) => {
-  const gameId = req.params.game_id;
-
-  res.type("json");
-
-  try {
-    const round = await revealQuestion(gameId);
-
-    socket.to(gameId).emit("question_card_revealed");
-
-    res.status(200);
-    res.send(round);
   } catch (err) {
     logger.error(err);
     res.status(404);
@@ -368,7 +346,6 @@ export {
   putGamePlayer,
   getGamePlayer,
   deleteGamePlayer,
-  patchRevealQuestion,
   putAnswer,
   patchRevealAnswers,
   postWinningAnswer,

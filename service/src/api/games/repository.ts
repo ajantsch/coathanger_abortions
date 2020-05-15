@@ -114,17 +114,6 @@ const startNewRound = async (gameId: string): Promise<IRound> => {
   return game.currentRound;
 };
 
-const revealQuestion = async (gameId: string): Promise<IRound> => {
-  const game = ACTIVE_GAMES.get(gameId);
-  if (!game) {
-    throw new Error(`Could not find game with id ${gameId}`);
-  }
-
-  game.currentRound.questionRevealed = true;
-  ACTIVE_GAMES.set(gameId, game);
-  return game.currentRound;
-};
-
 const selectAnswer = async (gameId: string, playerId: string, card: ICard): Promise<ICard> => {
   const game = ACTIVE_GAMES.get(gameId);
   if (!game) {
@@ -261,7 +250,6 @@ export {
   insertGamePlayer,
   findGamePlayer,
   removeGamePlayer,
-  revealQuestion,
   selectAnswer,
   revealAnswers,
   selectWinningCard,

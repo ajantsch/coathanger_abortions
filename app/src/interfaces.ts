@@ -6,7 +6,6 @@ export interface IGame {
 export interface IRound {
   czar: IRemotePlayer["id"];
   question: IQuestionCard;
-  questionRevealed: boolean;
   answers: IGivenAnswer[];
   answersRevealed: boolean;
   winner?: IGivenAnswer;

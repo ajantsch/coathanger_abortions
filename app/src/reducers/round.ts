@@ -13,10 +13,6 @@ export default function(state: IRound | null = null, action: RoundAction) {
       return action.payload;
     case RoundActionTypes.RECEIVE_ROUND:
       return action.payload;
-    case RoundActionTypes.REVEAL_QUESTION:
-      return state ? { ...state, questionRevealed: true } : null;
-    case RoundActionTypes.RECEIVE_QUESTION_REVEALED:
-      return state ? { ...state, questionRevealed: true } : null;
     case RoundActionTypes.RECEIVE_ANSWER:
       return state ? { ...state, answers: [...state.answers, action.payload] } : null;
     case RoundActionTypes.REVEAL_ANSWERS:

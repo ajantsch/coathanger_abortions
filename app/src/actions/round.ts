@@ -13,8 +13,6 @@ export enum RoundActionTypes {
   START_ROUND = "START_ROUND",
   GET_CURRENT_ROUND = "GET_CURRENT_ROUND",
   RECEIVE_ROUND = "RECEIVE_ROUND",
-  REVEAL_QUESTION = "REVEAL_QUESTION",
-  RECEIVE_QUESTION_REVEALED = "RECEIVE_QUESTION_REVEALED",
   GIVE_ANSWER = "GIVE_ANSWER",
   RECEIVE_ANSWER = "RECEIVE_ANSWER",
   REVEAL_ANSWERS = "REVEAL_ANSWERS",
@@ -44,14 +42,6 @@ export interface IGetCurrentRoundAction extends IBaseAction {
 export interface IReceiveRoundAction extends IBaseAction {
   type: RoundActionTypes.RECEIVE_ROUND;
   payload: IRound;
-}
-
-export interface IRevealQuestionAction extends IBaseAction {
-  type: RoundActionTypes.REVEAL_QUESTION;
-}
-
-export interface IReceiveQuestionRevealedAction extends IBaseAction {
-  type: RoundActionTypes.RECEIVE_QUESTION_REVEALED;
 }
 
 export interface IGiveAnswerAction extends IBaseAction {
@@ -90,8 +80,6 @@ export type RoundAction =
   | IStartRoundAction
   | IGetCurrentRoundAction
   | IReceiveRoundAction
-  | IRevealQuestionAction
-  | IReceiveQuestionRevealedAction
   | IGiveAnswerAction
   | IReceiveAnswerAction
   | IRevealAnswersAction
@@ -117,12 +105,6 @@ export function roundReceived(
       type: RoundActionTypes.RECEIVE_ROUND,
       payload: round,
     });
-  };
-}
-
-export function questionRevealed(): IReceiveQuestionRevealedAction {
-  return {
-    type: RoundActionTypes.RECEIVE_QUESTION_REVEALED,
   };
 }
 
@@ -182,18 +164,6 @@ export function getCurrentRound(
     } catch (e) {
       return dispatch(resetRound());
     }
-  };
-}
-
-export function revealQuestion(
-  gameId: string,
-): ThunkAction<Promise<IRevealQuestionAction>, AppState, undefined, IRevealQuestionAction> {
-  return async (dispatch: ThunkDispatch<AppState, undefined, IBaseAction>) => {
-    await GameApi.revealQuestion(gameId as string);
-
-    return dispatch({
-      type: RoundActionTypes.REVEAL_QUESTION,
-    });
   };
 }
 

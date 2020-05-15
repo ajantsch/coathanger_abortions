@@ -51,11 +51,6 @@ const connectToGame = (
         dispatch(actions.roundReceived(round));
       });
 
-      socket.on("question_card_revealed", () => {
-        console.info("Question card revealed.");
-        dispatch(actions.questionRevealed());
-      });
-
       socket.on("answer_card_received", (answer: IGivenAnswer) => {
         console.info("Answer card received:", answer);
         dispatch(actions.answerReceived(answer));

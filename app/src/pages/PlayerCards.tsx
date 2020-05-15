@@ -38,14 +38,16 @@ class PlayerCards extends React.Component<
 
   render = () => {
     return this.props.player ? (
-      <CardStack
-        cards={this.props.player.activeCards}
-        condensed={this.props.playerIsRoundCzar}
-        cardsClickable={!this.props.playerIsRoundCzar}
-        onCardClick={this.handleAnswerCardClicked}
-        cardsReplaceable={!this.props.playerIsRoundCzar}
-        onCardReplaceClick={this.handleCardReplaceClick}
-      />
+      <>
+        <CardStack
+          cards={this.props.player.activeCards}
+          condensed={this.props.playerIsRoundCzar}
+          cardsClickable={!this.props.playerIsRoundCzar}
+          onCardClick={this.handleAnswerCardClicked}
+          cardsReplaceable={!this.props.playerIsRoundCzar}
+          onCardReplaceClick={this.handleCardReplaceClick}
+        />
+      </>
     ) : (
       <></>
     );
