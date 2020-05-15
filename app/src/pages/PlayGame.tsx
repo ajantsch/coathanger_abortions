@@ -2,7 +2,7 @@ import React from "react";
 import { connect } from "react-redux";
 import { AnyAction, bindActionCreators, Dispatch } from "redux";
 import { withRouter, RouteComponentProps } from "react-router";
-import { AppBar, Box, Container, Toolbar, Typography } from "@material-ui/core";
+import { AppBar, Box, Container, Slide, Toolbar, Typography, useScrollTrigger } from "@material-ui/core";
 import styled, { AnyStyledComponent } from "styled-components";
 
 import { colors } from "../Theme";
@@ -24,6 +24,16 @@ import LetteringLight from "../images/lettering_light.svg";
 import LetteringDark from "../images/lettering_dark.svg";
 import YSoSerious from "../images/y-so-serious-white.png";
 import WinnerDialog from "./WinnerDialog";
+
+function HideOnScroll(props: { children: React.ReactElement }) {
+  const trigger = useScrollTrigger();
+
+  return (
+    <Slide appear={false} direction="down" in={!trigger}>
+      {props.children}
+    </Slide>
+  );
+}
 
 const mapStateToProps = (state: AppState) => ({
   playerIsRoundCzar: playerIsRoundCzar(state),
@@ -50,17 +60,19 @@ class PlayGame extends React.Component<PlayGameProps, {}> {
   render = () => {
     return (
       <GameRoot>
-        <GameAppBar position="static" className={this.props.playerIsRoundCzar && "czar"}>
-          <Toolbar variant="dense">
-            <ToolbarLogo
-              src={this.props.playerIsRoundCzar ? LetteringDark : LetteringLight}
-              alt="Coathanger Abortions"
-            />
-            <ToolbarTypography variant="body1">
-              Game Code: <span className="bold">{this.props.match.params.game_id}</span>
-            </ToolbarTypography>
-          </Toolbar>
-        </GameAppBar>
+        <HideOnScroll {...this.props}>
+          <GameAppBar className={this.props.playerIsRoundCzar && "czar"}>
+            <Toolbar variant="dense">
+              <ToolbarLogo
+                src={this.props.playerIsRoundCzar ? LetteringDark : LetteringLight}
+                alt="Coathanger Abortions"
+              />
+              <ToolbarTypography variant="body1">
+                Game Code: <span className="bold">{this.props.match.params.game_id}</span>
+              </ToolbarTypography>
+            </Toolbar>
+          </GameAppBar>
+        </HideOnScroll>
         <GameContainer maxWidth="lg">
           <GameRound />
           <Separator text="Your Cards" />
@@ -93,7 +105,8 @@ const GameAppBar: AnyStyledComponent = styled(AppBar)`
 
 const GameContainer: AnyStyledComponent = styled(Container)`
   && {
-    padding-bottom: 66px;
+    padding-top: 48px;
+    padding-bottom: 62px;
   }
 `;
 
