@@ -3,11 +3,11 @@ var colors = require("colors");
 
 exec("git push --tags", (error, stdout, stderr) => {
   if (error) {
-    console.log(colors.red(`error: ${error.message}`));
+    console.log(colors.red(`${error.message}`));
     return;
   }
   if (stderr) {
-    console.log(colors.red(`stderr: ${stderr}`));
+    console.log(colors.red(`${stderr}`));
     return;
   }
   console.log(
