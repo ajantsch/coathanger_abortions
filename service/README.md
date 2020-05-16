@@ -26,3 +26,4 @@ Draw 2 or Draw 3 cards removed as they are currently not supported.
 - http://cah.frustratednerd.com/reject-pack-2/
 - http://cah.frustratednerd.com/tabletop-pack/
 - http://cah.frustratednerd.com/bigger-blacker-box-pack/
+- https://frustratednerd.com/cahd/2000s-nostalgia-pack/
