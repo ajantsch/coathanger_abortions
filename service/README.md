@@ -31,3 +31,4 @@ Draw 2 or Draw 3 cards removed as they are currently not supported.
 - https://frustratednerd.com/cahd/2000s-nostalgia-pack/
 - https://frustratednerd.com/cahd/college-pack/
 - https://frustratednerd.com/cahd/a-i-pack/
+- https://frustratednerd.com/cahd/theatre-pack/
