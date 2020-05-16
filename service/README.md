@@ -1,4 +1,4 @@
-Source for all cards: http://cah.frustratednerd.com/
+Source for all cards: http://cah.frustratednerd.com/ (https://frustratednerd.com/cahd)
 
 Draw 2 or Draw 3 cards removed as they are currently not supported.
 
@@ -27,3 +27,4 @@ Draw 2 or Draw 3 cards removed as they are currently not supported.
 - http://cah.frustratednerd.com/tabletop-pack/
 - http://cah.frustratednerd.com/bigger-blacker-box-pack/
 - https://frustratednerd.com/cahd/2000s-nostalgia-pack/
+- https://frustratednerd.com/cahd/college-pack/
