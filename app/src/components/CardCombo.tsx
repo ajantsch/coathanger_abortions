@@ -20,9 +20,7 @@ class CardCombo extends React.PureComponent<ICardComboProps, {}> {
       <CardComboRoot className={this.props.className}>
         <Card card={this.props.question} />
         {this.props.answer && <StyledCard card={this.props.answer} />}
-        {!!!this.props.answer && this.props.showAnswerPlaceholder && (
-          <StyledCardPlaceholder type="answer" content={this.props.answerPlaceholderText || ""} />
-        )}
+        {!!!this.props.answer && this.props.showAnswerPlaceholder && <StyledCardPlaceholder type="answer" />}
       </CardComboRoot>
     );
   };

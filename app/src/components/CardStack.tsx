@@ -15,6 +15,7 @@ interface ICardStackProps {
   cardsReplaceable?: boolean;
   onCardReplaceClick?: (cardId: string) => void;
   touchSupported?: boolean;
+  className?: string;
 }
 
 class CardStack extends React.PureComponent<ICardStackProps, {}> {
@@ -32,7 +33,7 @@ class CardStack extends React.PureComponent<ICardStackProps, {}> {
 
   render = () => {
     return (
-      <CardBoxWrapper className={this.props.condensed ? "condensed" : null}>
+      <CardBoxWrapper className={`${this.props.className} ${this.props.condensed ? `condensed` : null}`}>
         {this.props.cards.map(card => (
           <CardBox key={card.id} className={this.props.condensed ? "condensed" : null}>
             <ScalableCard
@@ -72,11 +73,12 @@ const CardBoxWrapper: AnyStyledComponent = styled(Box)`
 
     &.condensed {
       padding-right: 285px;
+      justify-content: center;
     }
 
     @media (min-width: 600px) {
       flex-wrap: wrap;
-      justify-content: space-between;
+      justify-content: space-evenly;
       overflow-x: hidden;
       margin-left: 0;
       margin-right: 0;

@@ -7,7 +7,7 @@ import styled, { AnyStyledComponent } from "styled-components";
 import { ICard } from "../interfaces";
 import { AppState } from "../reducers";
 import actions from "../actions";
-import { playerIsRoundCzar, canSelectWinner, otherActivePlayersAnswerCards } from "../selectors";
+import { playerIsRoundCzar, canSelectWinner, canGiveAnswer, otherActivePlayersAnswerCards } from "../selectors";
 
 import CardCombo from "../components/CardCombo";
 import CardStack from "../components/CardStack";
@@ -19,6 +19,7 @@ const mapStateToProps = (state: AppState) => ({
   playerId: state.player?.id,
   playerIsRoundCzar: playerIsRoundCzar(state),
   canSelectWinner: canSelectWinner(state),
+  canGiveAnswer: canGiveAnswer(state),
   otherActivePlayersAnswerCards: otherActivePlayersAnswerCards(state),
 });
 
@@ -65,8 +66,7 @@ class GameRound extends React.Component<
             <StyledCardCombo
               question={this.props.round.question}
               answer={this.props.round.answers.find(answer => answer.player === this.props.playerId)?.card}
-              showAnswerPlaceholder={!this.props.playerIsRoundCzar}
-              answerPlaceholderText={"your answer will show up here"}
+              showAnswerPlaceholder={this.props.canGiveAnswer}
             />
           )}
         </QuestionCardSpace>
@@ -91,6 +91,7 @@ const CurrentRound: AnyStyledComponent = styled(Box)`
     flex-direction: row;
     flex-wrap: wrap;
     justify-content: center;
+    padding: 20px 0;
   }
 `;
 
@@ -99,7 +100,6 @@ const QuestionCardSpace: AnyStyledComponent = styled(Box)`
     flex-grow: 0;
     flex-shrink: 0;
     flex-basis: 250px;
-    padding: 20px;
   }
 `;
 
@@ -114,7 +114,7 @@ const AnswerCardsSpace: AnyStyledComponent = styled(Box)`
     flex-grow: 1;
     flex-shrink: 0;
     flex-basis: 250px;
-    padding: 20px;
+    max-width: 100%;
   }
 `;
 

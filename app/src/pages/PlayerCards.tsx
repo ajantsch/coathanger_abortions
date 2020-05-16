@@ -1,6 +1,7 @@
 import React from "react";
 import { connect } from "react-redux";
 import { AnyAction, bindActionCreators, Dispatch } from "redux";
+import styled, { AnyStyledComponent } from "styled-components";
 
 import { AppContext } from "../AppContext";
 import { ICard, IAnswerCard } from "../interfaces";
@@ -39,7 +40,7 @@ class PlayerCards extends React.Component<
 
   render = () => {
     return this.props.player ? (
-      <CardStack
+      <StyledCardStack
         cards={this.props.player.activeCards}
         condensed={this.props.playerIsRoundCzar}
         cardsClickable={!this.props.playerIsRoundCzar}
@@ -55,5 +56,11 @@ class PlayerCards extends React.Component<
 }
 
 PlayerCards.contextType = AppContext;
+
+const StyledCardStack: AnyStyledComponent = styled(CardStack)`
+  && {
+    padding: 20px 0;
+  }
+`;
 
 export default connect(mapStateToProps, mapDispatchToProps)(PlayerCards);

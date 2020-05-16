@@ -19,7 +19,11 @@ class CardPlaceholder extends React.PureComponent<ICardPlaceholderProps, {}> {
   render = () => {
     return (
       <CardRoot className={`${this.props.className} ${this.props.type}`} onClick={this.handleClick}>
-        <CardContent>{this.props.content && <Typography variant="h6">{this.props.content}</Typography>}</CardContent>
+        {this.props.content && (
+          <CardContent>
+            <Typography variant="h6">{this.props.content}</Typography>
+          </CardContent>
+        )}
       </CardRoot>
     );
   };

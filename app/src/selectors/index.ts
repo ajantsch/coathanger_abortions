@@ -35,12 +35,15 @@ export const getRoundWinnerName = createSelector([getRoundWinner, getPlayers], (
   return winningPlayer?.name;
 });
 
-export const canGiveAnswer = createSelector([getRoundAnswers, getPlayerId], (answers, playerId) => {
-  if (answers && !!answers.find(answer => answer.player === playerId)) {
-    return false;
-  }
-  return true;
-});
+export const canGiveAnswer = createSelector(
+  [playerIsRoundCzar, getRoundAnswers, getRoundAnswersRevealed, getPlayerId],
+  (isCzar, answers, answersRevealed, playerId) => {
+    return (
+      !isCzar &&
+      (!answersRevealed || !answers || !answers.length || !answers.find(answer => answer.player === playerId))
+    );
+  },
+);
 
 export const otherActivePlayersAnswerCards = createSelector(
   [getRoundAnswers, getActivePlayers, getPlayerId],
