@@ -1,0 +1,16 @@
+{
+  "name": "coathanger-abortion",
+  "version": "1.0.0",
+  "description": "Coathanger Abortions game",
+  "author": "andreas.jantschnig@gmail.com",
+  "license": "MIT",
+  "private": true,
+  "scripts": {
+    "create-release": "node add-release-tag",
+    "deploy-release": "node deploy-release"
+  },
+  "dependencies": {
+    "colors": "^1.4.0",
+    "project-name-generator": "^2.1.7"
+  }
+}
