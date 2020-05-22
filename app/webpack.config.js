@@ -8,6 +8,7 @@ const ForkTsCheckerWebpackPlugin = require("fork-ts-checker-webpack-plugin");
 const WebpackShellPlugin = require("webpack-shell-plugin");
 const LiveReloadPlugin = require("webpack-livereload-plugin");
 const { CleanWebpackPlugin } = require("clean-webpack-plugin");
+const WorkboxPlugin = require("workbox-webpack-plugin");
 
 const { NODE_ENV, OPTIMIZED_BUILD } = process.env;
 
@@ -94,6 +95,11 @@ const config = {
       "process.env.NODE_ENV": JSON.stringify(NODE_ENV),
     }),
     new CleanWebpackPlugin(),
+    new WorkboxPlugin.GenerateSW({
+      swDest: "service-worker.js",
+      clientsClaim: true,
+      skipWaiting: true,
+    }),
   ],
   optimization: {
     // Don't let webpack override our NODE_ENV
