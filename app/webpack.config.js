@@ -1,11 +1,11 @@
 const webpack = require("webpack");
 const path = require("path");
-const exec = require("child_process").exec;
 const Dotenv = require("dotenv");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 const CopyWebpackPlugin = require("copy-webpack-plugin");
 const TerserPlugin = require("terser-webpack-plugin");
 const ForkTsCheckerWebpackPlugin = require("fork-ts-checker-webpack-plugin");
+const WebpackShellPlugin = require("webpack-shell-plugin");
 const LiveReloadPlugin = require("webpack-livereload-plugin");
 const { CleanWebpackPlugin } = require("clean-webpack-plugin");
 const WorkboxPlugin = require("workbox-webpack-plugin");
@@ -15,7 +15,8 @@ const { NODE_ENV, OPTIMIZED_BUILD } = process.env;
 const envConfigPath = `./config/.env.${NODE_ENV}`;
 const envConfig = Dotenv.config({ path: envConfigPath }).parsed;
 const localEnvironment = NODE_ENV === "local";
-const isOptimized = OPTIMIZED_BUILD === "true" || NODE_ENV === "production";
+const productionEnvironment = NODE_ENV === "production";
+const isOptimized = OPTIMIZED_BUILD === "true" || productionEnvironment;
 const webpackWatch = localEnvironment && !isOptimized;
 const webpackMode = isOptimized ? "production" : "development";
 const webpackDevtool = isOptimized ? "hidden-source-map" : "cheap-eval-source-map";
@@ -107,11 +108,6 @@ const config = {
       "process.env.NODE_ENV": JSON.stringify(NODE_ENV),
     }),
     new CleanWebpackPlugin(),
-    new WorkboxPlugin.GenerateSW({
-      swDest: "service-worker.js",
-      clientsClaim: true,
-      skipWaiting: true,
-    }),
   ],
   optimization: {
     // Don't let webpack override our NODE_ENV
@@ -120,16 +116,24 @@ const config = {
 };
 
 if (localEnvironment) {
-  config.plugins.push(new ForkTsCheckerWebpackPlugin(), new LiveReloadPlugin(), {
-    apply: compiler => {
-      compiler.hooks.afterEmit.tap("AfterEmitPlugin", () => {
-        exec("yarn server:build", (err, stdout, stderr) => {
-          if (stdout) process.stdout.write(stdout);
-          if (stderr) process.stderr.write(stderr);
-        });
-      });
-    },
-  });
+  config.plugins.push(
+    new ForkTsCheckerWebpackPlugin(),
+    new LiveReloadPlugin(),
+    new WebpackShellPlugin({
+      dev: true,
+      onBuildEnd: ["yarn server:build"],
+    }),
+  );
+}
+
+if (productionEnvironment) {
+  config.plugins.push(
+    new WorkboxPlugin.GenerateSW({
+      swDest: "service-worker.js",
+      clientsClaim: true,
+      skipWaiting: true,
+    }),
+  );
 }
 
 if (isOptimized) {
