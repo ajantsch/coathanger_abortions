@@ -151,13 +151,16 @@ if (isOptimized) {
         },
       },
     },
+    minimize: true,
     minimizer: [
       new TerserPlugin({
-        test: /\.js(\?.*)?$/i,
-        cache: true,
         parallel: true,
         sourceMap: true,
         terserOptions: {
+          compress: {
+            drop_console: true,
+            pure_funcs: ["console.info", "console.debug", "console.warn"],
+          },
           output: {
             beautify: false,
             comments: false,
