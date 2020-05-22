@@ -99,7 +99,6 @@ const config = {
       swDest: "service-worker.js",
       clientsClaim: true,
       skipWaiting: true,
-      ignoreUrlParametersMatching: [/\/(api|socket\.io).*/],
     }),
   ],
   optimization: {
