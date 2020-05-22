@@ -9,12 +9,14 @@ import "./styles/base.css";
 
 import App from "./App";
 
+const { NODE_ENV } = process.env;
+
 const target = document.getElementById("root");
 if (target) {
   ReactDOM.render(<App />, target);
 }
 
-if ("serviceWorker" in navigator) {
+if (NODE_ENV === "production" && "serviceWorker" in navigator) {
   window.addEventListener("load", () => {
     navigator.serviceWorker
       .register("/service-worker.js")
