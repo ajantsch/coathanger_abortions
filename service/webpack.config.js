@@ -3,6 +3,7 @@ const path = require("path");
 const exec = require("child_process").exec;
 const Dotenv = require("dotenv");
 const NodeExternals = require("webpack-node-externals");
+const TerserPlugin = require("terser-webpack-plugin");
 const ForkTsCheckerWebpackPlugin = require("fork-ts-checker-webpack-plugin");
 const { CleanWebpackPlugin } = require("clean-webpack-plugin");
 
@@ -81,6 +82,29 @@ const config = {
     nodeEnv: false,
   },
 };
+
+if (isOptimized) {
+  config.optimization = {
+    ...config.optimization,
+    minimize: true,
+    minimizer: [
+      new TerserPlugin({
+        parallel: true,
+        sourceMap: true,
+        terserOptions: {
+          compress: {
+            drop_console: true,
+            pure_funcs: ["console.info", "console.debug", "console.warn"],
+          },
+          output: {
+            beautify: false,
+            comments: false,
+          },
+        },
+      }),
+    ],
+  };
+}
 
 if (localEnvironment) {
   config.plugins.push(new CleanWebpackPlugin(), new ForkTsCheckerWebpackPlugin(), {
