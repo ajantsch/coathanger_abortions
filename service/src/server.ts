@@ -28,6 +28,6 @@ app.use("/health", (_req, res) => {
 app.use("/api/games/", routes.games);
 
 const server = http.createServer(app);
-const socket = socketio.listen(server, { pingTimeout: 7000, pingInterval: 3000 });
+const socket = socketio(server, { pingTimeout: 7000, pingInterval: 3000, cookie: false });
 
 export { server, socket };
