@@ -7,6 +7,7 @@ import { composeWithDevTools } from "redux-devtools-extension";
 import { load, save } from "redux-localstorage-simple";
 import { BrowserRouter as Router, Switch, Route, Redirect } from "react-router-dom";
 import { ThemeProvider } from "@material-ui/styles";
+import { CssBaseline } from "@material-ui/core";
 import ReactGA from "react-ga";
 
 import { touchSupported } from "./utils";
@@ -40,15 +41,17 @@ class App extends React.Component {
     return (
       <Provider store={store}>
         <ThemeProvider theme={theme}>
-          <AppContext.Provider value={{ touchSupported: touchSupported() }}>
-            <Router>
-              <Switch>
-                <Route path="/" exact component={NewGame} />
-                <Route path="/:game_id/" component={GameManager} />
-                <Redirect to="/" />
-              </Switch>
-            </Router>
-          </AppContext.Provider>
+          <CssBaseline>
+            <AppContext.Provider value={{ touchSupported: touchSupported() }}>
+              <Router>
+                <Switch>
+                  <Route path="/" exact component={NewGame} />
+                  <Route path="/:game_id/" component={GameManager} />
+                  <Redirect to="/" />
+                </Switch>
+              </Router>
+            </AppContext.Provider>
+          </CssBaseline>
         </ThemeProvider>
       </Provider>
     );

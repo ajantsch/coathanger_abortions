@@ -1,4 +1,39 @@
 import { createMuiTheme, responsiveFontSizes } from "@material-ui/core/styles";
+import { FontFace } from "csstype";
+
+import OpenSansRegularTtf from "../fonts/open-sans/open-sans-v17-latin-regular.ttf";
+import OpenSansRegularWoff from "../fonts/open-sans/open-sans-v17-latin-regular.woff";
+import OpenSansRegularWoff2 from "../fonts/open-sans/open-sans-v17-latin-regular.woff2";
+
+import OpenSans700Ttf from "../fonts/open-sans/open-sans-v17-latin-700.ttf";
+import OpenSans700Woff from "../fonts/open-sans/open-sans-v17-latin-700.woff";
+import OpenSans700Woff2 from "../fonts/open-sans/open-sans-v17-latin-700.woff2";
+
+const OpenSansRegular: FontFace = {
+  fontFamily: "Open Sans",
+  fontStyle: "normal",
+  fontWeight: 400,
+  fontDisplay: "swap",
+  src: `
+    local('Open Sans Regular'), local('OpenSans-Regular')
+    url(${OpenSansRegularWoff2}) format('woff2'),
+    url(${OpenSansRegularWoff}) format('woff'),
+    url(${OpenSansRegularTtf}) format('truetype'),
+  `,
+};
+
+const OpenSans700: FontFace = {
+  fontFamily: "Open Sans",
+  fontStyle: "normal",
+  fontWeight: 700,
+  fontDisplay: "swap",
+  src: `
+    local('Open Sans Bold'), local('OpenSans-Bold')
+    url(${OpenSans700Woff2}) format('woff2'),
+    url(${OpenSans700Woff}) format('woff'),
+    url(${OpenSans700Ttf}) format('truetype'),
+  `,
+};
 
 export const colors = {
   dark: "#1c1c1c",
@@ -62,6 +97,13 @@ export default responsiveFontSizes(
       button: { fontFamily: ['"Open Sans"', "sans-serif"].join(",") },
       caption: { fontFamily: ['"Open Sans"', "sans-serif"].join(",") },
       overline: { fontFamily: ['"Open Sans"', "sans-serif"].join(",") },
+    },
+    overrides: {
+      MuiCssBaseline: {
+        "@global": {
+          "@font-face": [OpenSansRegular, OpenSans700],
+        },
+      },
     },
   }),
 );

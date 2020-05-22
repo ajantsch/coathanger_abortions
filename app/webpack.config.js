@@ -33,7 +33,7 @@ const config = {
   target: "web",
   devtool: webpackDevtool,
   resolve: {
-    extensions: [".js", ".jsx", ".ts", ".tsx"],
+    extensions: [".js", ".jsx", ".ts", ".tsx", "woff", "woff2", "ttf"],
   },
   module: {
     rules: [
@@ -63,6 +63,18 @@ const config = {
             loader: "file-loader",
             options: {
               outputPath: "images",
+            },
+          },
+        ],
+      },
+      {
+        test: /\.(woff(2)?|eot|ttf|otf)$/,
+        use: [
+          {
+            loader: "file-loader",
+            options: {
+              name: "[name].[contenthash].[ext]",
+              outputPath: "fonts",
             },
           },
         ],
