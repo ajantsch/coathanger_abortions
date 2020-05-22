@@ -7,6 +7,7 @@ import { composeWithDevTools } from "redux-devtools-extension";
 import { load, save } from "redux-localstorage-simple";
 import { BrowserRouter as Router, Switch, Route, Redirect } from "react-router-dom";
 import { ThemeProvider } from "@material-ui/styles";
+import ReactGA from "react-ga";
 
 import { touchSupported } from "./utils";
 import rootReducer from "./reducers";
@@ -16,7 +17,7 @@ import { AppContext } from "./AppContext";
 import NewGame from "./pages/NewGame";
 import GameManager from "./pages/GameManager";
 
-const { NODE_ENV } = process.env;
+const { NODE_ENV, GA_TRACKING_ID } = process.env;
 const reduxLocalStorageSettings = { states: ["game", "player", "round"], namespace: "coathanger_abortions" };
 
 const store = createStore(
@@ -28,6 +29,13 @@ const store = createStore(
 );
 
 class App extends React.Component {
+  componentDidMount = () => {
+    if (GA_TRACKING_ID) {
+      ReactGA.initialize(GA_TRACKING_ID);
+      ReactGA.pageview(window.location.pathname + window.location.search);
+    }
+  };
+
   render = () => {
     return (
       <Provider store={store}>
