@@ -1,8 +1,8 @@
 const webpack = require("webpack");
 const path = require("path");
+const exec = require("child_process").exec;
 const Dotenv = require("dotenv");
 const NodeExternals = require("webpack-node-externals");
-const WebpackShellPlugin = require("webpack-shell-plugin");
 const ForkTsCheckerWebpackPlugin = require("fork-ts-checker-webpack-plugin");
 const { CleanWebpackPlugin } = require("clean-webpack-plugin");
 
@@ -83,14 +83,16 @@ const config = {
 };
 
 if (localEnvironment) {
-  config.plugins.push(
-    new CleanWebpackPlugin(),
-    new ForkTsCheckerWebpackPlugin(),
-    new WebpackShellPlugin({
-      dev: true,
-      onBuildEnd: ["npm run start:watch"],
-    }),
-  );
+  config.plugins.push(new CleanWebpackPlugin(), new ForkTsCheckerWebpackPlugin(), {
+    apply: compiler => {
+      compiler.hooks.afterEmit.tap("AfterEmitPlugin", () => {
+        exec("npm run start:watch", (err, stdout, stderr) => {
+          if (stdout) process.stdout.write(stdout);
+          if (stderr) process.stderr.write(stderr);
+        });
+      });
+    },
+  });
 }
 
 module.exports = config;

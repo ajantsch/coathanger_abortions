@@ -1,11 +1,11 @@
 const webpack = require("webpack");
 const path = require("path");
+const exec = require("child_process").exec;
 const Dotenv = require("dotenv");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 const CopyWebpackPlugin = require("copy-webpack-plugin");
 const TerserPlugin = require("terser-webpack-plugin");
 const ForkTsCheckerWebpackPlugin = require("fork-ts-checker-webpack-plugin");
-const WebpackShellPlugin = require("webpack-shell-plugin");
 const LiveReloadPlugin = require("webpack-livereload-plugin");
 const { CleanWebpackPlugin } = require("clean-webpack-plugin");
 const WorkboxPlugin = require("workbox-webpack-plugin");
@@ -120,14 +120,16 @@ const config = {
 };
 
 if (localEnvironment) {
-  config.plugins.push(
-    new ForkTsCheckerWebpackPlugin(),
-    new LiveReloadPlugin(),
-    new WebpackShellPlugin({
-      dev: true,
-      onBuildEnd: ["yarn server:build"],
-    }),
-  );
+  config.plugins.push(new ForkTsCheckerWebpackPlugin(), new LiveReloadPlugin(), {
+    apply: compiler => {
+      compiler.hooks.afterEmit.tap("AfterEmitPlugin", () => {
+        exec("yarn server:build", (err, stdout, stderr) => {
+          if (stdout) process.stdout.write(stdout);
+          if (stderr) process.stderr.write(stderr);
+        });
+      });
+    },
+  });
 }
 
 if (isOptimized) {
