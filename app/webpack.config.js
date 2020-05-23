@@ -1,11 +1,12 @@
 const webpack = require("webpack");
 const path = require("path");
+const { spawn } = require("child_process");
+const colors = require("colors");
 const Dotenv = require("dotenv");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 const CopyWebpackPlugin = require("copy-webpack-plugin");
 const TerserPlugin = require("terser-webpack-plugin");
 const ForkTsCheckerWebpackPlugin = require("fork-ts-checker-webpack-plugin");
-const WebpackShellPlugin = require("webpack-shell-plugin");
 const LiveReloadPlugin = require("webpack-livereload-plugin");
 const { CleanWebpackPlugin } = require("clean-webpack-plugin");
 const WorkboxPlugin = require("workbox-webpack-plugin");
@@ -116,14 +117,26 @@ const config = {
 };
 
 if (localEnvironment) {
-  config.plugins.push(
-    new ForkTsCheckerWebpackPlugin(),
-    new LiveReloadPlugin(),
-    new WebpackShellPlugin({
-      dev: true,
-      onBuildEnd: ["yarn server:build"],
-    }),
-  );
+  config.plugins.push(new ForkTsCheckerWebpackPlugin(), new LiveReloadPlugin(), {
+    apply: compiler => {
+      let executed = false;
+      compiler.hooks.afterEmit.tap("AfterFirstEmitPlugin", () => {
+        if (!executed) {
+          const cmd = spawn("yarn", ["server:build"], { stdio: "pipe" });
+          cmd.stdout.on("data", function(data) {
+            console.log(colors.green.bold(data.toString()));
+          });
+          cmd.stderr.on("data", function(data) {
+            console.error(colors.red.bold(data.toString()));
+          });
+          cmd.on("exit", function(code) {
+            console.log("AfterFirstEmitPlugin exited with code " + code.toString());
+          });
+          executed = true;
+        }
+      });
+    },
+  });
 }
 
 if (productionEnvironment) {

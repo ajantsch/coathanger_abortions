@@ -8,8 +8,8 @@
   "private": true,
   "scripts": {
     "start": "yarn build",
-    "build": "webpack --profile",
-    "build:local": "env NODE_ENV=local OPTIMIZED_BUILD=true webpack --profile --progress",
+    "build": "webpack",
+    "build:local": "env NODE_ENV=local OPTIMIZED_BUILD=true webpack --progress",
     "server:build": "node express --base build",
     "lint": "eslint --ext .ts,.tsx,.js,.tsx src",
     "lint:apply": "eslint --ext .ts,.tsx,.js,.tsx src --fix"
@@ -22,6 +22,7 @@
     "@typescript-eslint/parser": "^2.14.0",
     "axios": "^0.19.0",
     "clean-webpack-plugin": "^3.0.0",
+    "colors": "^1.4.0",
     "compression": "^1.7.4",
     "copy-webpack-plugin": "^5.1.1",
     "core-js": "^3.6.5",
@@ -65,7 +66,6 @@
     "webpack": "^4.43.0",
     "webpack-cli": "^3.3.11",
     "webpack-livereload-plugin": "^2.3.0",
-    "webpack-shell-plugin": "^0.5.0",
     "workbox-webpack-plugin": "^5.1.3",
     "yargs": "^15.3.1"
   },

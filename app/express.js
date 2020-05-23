@@ -24,6 +24,6 @@ app.get("/*", renderIndex);
 
 var server = app.listen(port, function() {
   if (!argv.silent) {
-    console.log("This express server is listening on port:" + server.address().port);
+    console.log(`CA app is available on http://localhost:${server.address().port}`);
   }
 });

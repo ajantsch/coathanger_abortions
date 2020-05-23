@@ -1,9 +1,10 @@
 const webpack = require("webpack");
 const path = require("path");
+const { spawn } = require("child_process");
+const colors = require("colors");
 const Dotenv = require("dotenv");
 const NodeExternals = require("webpack-node-externals");
 const TerserPlugin = require("terser-webpack-plugin");
-const WebpackShellPlugin = require("webpack-shell-plugin");
 const ForkTsCheckerWebpackPlugin = require("fork-ts-checker-webpack-plugin");
 const { CleanWebpackPlugin } = require("clean-webpack-plugin");
 
@@ -107,14 +108,26 @@ if (isOptimized) {
 }
 
 if (localEnvironment) {
-  config.plugins.push(
-    new CleanWebpackPlugin(),
-    new ForkTsCheckerWebpackPlugin(),
-    new WebpackShellPlugin({
-      dev: true,
-      onBuildEnd: ["npm run start:watch"],
-    }),
-  );
+  config.plugins.push(new CleanWebpackPlugin(), new ForkTsCheckerWebpackPlugin(), {
+    apply: compiler => {
+      let executed = false;
+      compiler.hooks.afterEmit.tap("AfterFirstEmitPlugin", () => {
+        if (!executed) {
+          const cmd = spawn("yarn", ["start:watch"], { stdio: "pipe" });
+          cmd.stdout.on("data", function(data) {
+            console.log(colors.blue.bold(data.toString()));
+          });
+          cmd.stderr.on("data", function(data) {
+            console.error(colors.red.bold(data.toString()));
+          });
+          cmd.on("exit", function(code) {
+            console.log("AfterFirstEmitPlugin exited with code " + code.toString());
+          });
+          executed = true;
+        }
+      });
+    },
+  });
 }
 
 module.exports = config;
