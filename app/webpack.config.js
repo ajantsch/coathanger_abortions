@@ -98,7 +98,7 @@ const config = {
     ],
   },
   plugins: [
-    new CopyWebpackPlugin(["public"], { copyUnmodified: localEnvironment }),
+    new CopyWebpackPlugin({ patterns: [{ from: "public" }] }),
     new HtmlWebpackPlugin({
       template: "./public/index.html",
     }),
