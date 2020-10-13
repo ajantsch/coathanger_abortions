@@ -29,7 +29,7 @@ class PauseGameDialogContent extends React.PureComponent<IPauseGameDialogContent
             life choices. When you feel ready, join your buddies again.
             <br />
             <br />
-            While you are taking your break, any card you have alreay put into the round will not be considered.
+            While you are taking your break, any card you have already put into the round will not be considered.
           </DialogContentText>
         </DialogContent>
         <DialogActions>
