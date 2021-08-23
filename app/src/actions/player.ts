@@ -18,7 +18,7 @@ export enum PlayerActionTypes {
   PAUSE_PLAYING = "PAUSE_PLAYING",
   RESUME_PLAYING = "RESUME_PLAYING",
   LEAVE_GAME = "LEAVE_GAME",
-  GIVE_ANSER = "GIVE_ANSWER",
+  GIVE_ANSWER = "GIVE_ANSWER",
   DRAW_ANSWER = "DRAW_ANSWER",
   REPLACE_CARD = "REPLACE_CARD",
   RECEIVE_WON_QUESTION = "RECEIVE_WON_QUESTION",
@@ -55,7 +55,7 @@ export interface IGetPlayerAction extends IBaseAction {
 }
 
 export interface IGiveAnswerAction extends IBaseAction {
-  type: PlayerActionTypes.GIVE_ANSER;
+  type: PlayerActionTypes.GIVE_ANSWER;
   payload: IGivenAnswer;
 }
 
@@ -198,7 +198,7 @@ export function giveAnswer(
     try {
       await GameApi.selectAnswer(gameId, playerId, answer.card);
       return dispatch({
-        type: PlayerActionTypes.GIVE_ANSER,
+        type: PlayerActionTypes.GIVE_ANSWER,
         payload: answer,
       });
     } catch (e) {

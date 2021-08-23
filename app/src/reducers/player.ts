@@ -17,7 +17,7 @@ export default function(state: IPlayer | null = null, action: PlayerAction) {
       return state ? { ...state, active: true } : null;
     case PlayerActionTypes.LEAVE_GAME:
       return null;
-    case PlayerActionTypes.GIVE_ANSER:
+    case PlayerActionTypes.GIVE_ANSWER:
       return state
         ? { ...state, activeCards: [...state.activeCards].filter(card => card.id !== action.payload.card.id) }
         : null;
